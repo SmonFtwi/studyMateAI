@@ -23,3 +23,6 @@ const FileSchema = new mongoose.Schema({
   textContent: { type: String }, // extracted text
   uploadedAt: { type: Date, default: Date.now },
 });
+
+export const Project = mongoose.model("Project", ProjectSchema);
+export const File = mongoose.model("File", FileSchema);

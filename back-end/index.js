@@ -1,7 +1,7 @@
 // --- index.js ---
 import express from "express";
 import connectDB from "./database/db.js";
-//import projectRoutes from "./routes/projectRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -20,7 +20,7 @@ app.use(
 
 connectDB();
 
-//app.use('/projects', projectRoutes);
+app.use("/projects", projectRoutes);
 app.use("/users", userRoutes);
 
 app.get("/", (req, res) => {
