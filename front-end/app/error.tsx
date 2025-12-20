@@ -31,10 +31,11 @@ export default function Error({
         >
           Try Again
         </button>
-        <Link href="/" passHref>
-          <a className="px-6 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
-            Go to Homepage
-          </a>
+        <Link
+          href="/"
+          className="px-6 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
+        >
+          Go to Homepage
         </Link>
       </div>
     </div>

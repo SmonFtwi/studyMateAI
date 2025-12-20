@@ -30,13 +30,20 @@ import {
   GraduationCap,
   LogOut,
   MoreVertical,
+  PlusCircle,
   Settings,
   Sparkles,
   Trash2,
   User,
 } from "lucide-react";
 import { DashboardIcon } from "@radix-ui/react-icons";
-import { deleteProject, getProjects } from "@/lib/apicall/project";
+import {
+  createProject,
+  deleteProject,
+  getProjects,
+} from "@/lib/apicall/project";
+import CreateProjectDialog from "./createProject";
+import { Button } from "../ui/button";
 
 interface Projects {
   project_id: string;
@@ -47,6 +54,22 @@ interface Projects {
 export default function Sidebar() {
   const { user, logout } = useAuthContext();
   const [projects, setProjects] = useState<Projects[]>([]);
+  const [open, setOpen] = useState(false);
+
+  const handleCreateProject = async (data: {
+    name: string;
+    description: string;
+  }) => {
+    const token = localStorage.getItem("token") as string;
+
+    const res = await createProject(token, {
+      title: data.name,
+      description: data.description,
+    });
+    console.log("data", res);
+    //onCreate(data);
+    setOpen(false);
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token") as string;
@@ -103,15 +126,19 @@ export default function Sidebar() {
           </div>
         </div>
 
-        <button
-          onClick={() => {
-            window.location.href = "/Dashboard";
-          }}
-          className="flex items-center gap-3 w-full px-4 py-3 mt-6 rounded-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] border border-blue-400/30 dark:border-white/10"
+        <Button
+          onClick={() => setOpen(true)}
+          className="bg-blue-600 text-white hover:bg-blue-700 rounded-xl flex items-start justify-start gap-2 w-full "
         >
-          <FaPlus className="text-lg" />
-          <span>New Project</span>
-        </button>
+          <PlusCircle className="h-4 w-4" />
+          New Project
+        </Button>
+
+        <CreateProjectDialog
+          open={open}
+          onOpenChange={setOpen}
+          onCreate={handleCreateProject}
+        />
       </div>
 
       <div className="mx-4 border-t border-blue-200/50 dark:border-white/10"></div>
@@ -127,7 +154,7 @@ export default function Sidebar() {
               >
                 {/* Chat Title */}
                 <Link
-                  href={`/Dashboard/?session_id=${project.project_id}`}
+                  href={`/Dashboard/projects/${project.project_id}`}
                   className="flex items-center space-x-3 flex-1 min-w-0"
                 >
                   <FaComments className="text-lg text-blue-500 dark:text-blue-300 flex-shrink-0" />

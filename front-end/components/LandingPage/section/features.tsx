@@ -1,70 +1,92 @@
 'use client'
 
-import { Upload, ListOrdered, StickyNote, BookOpen, MessageSquare, History } from 'lucide-react'
+import { ArrowRight } from "lucide-react";
 
-const features = [
+const featureLines = [
   {
-    icon: <Upload className="w-6 h-6 text-blue-500" />,
-    title: 'Upload & Analyze',
-    description: 'Upload PDFs, Word docs, or notes. Content is extracted and processed automatically.'
+    label: "Ingest",
+    title: "Drop PDFs, slides, sheets",
+    description:
+      "We extract clean text across formats and prep it for chunking, OCR where needed.",
   },
   {
-    icon: <ListOrdered className="w-6 h-6 text-indigo-500" />,
-    title: 'Smart Summarization',
-    description: 'Generate concise summaries of complex material, organized for clarity and retention.'
+    label: "Embed",
+    title: "Gemini → Pinecone",
+    description:
+      "text-embedding-004 generates the vectors; Pinecone keeps them scoped to each project.",
   },
   {
-    icon: <StickyNote className="w-6 h-6 text-purple-500" />,
-    title: 'Instant Flashcards',
-    description: 'Automatically turn your notes into Q&A flashcards for active recall and memorization.'
+    label: "Study",
+    title: "Summaries, cards, answers",
+    description:
+      "Flashcards, concise briefs, and contextual Q&A stay linked to the underlying chunks.",
   },
   {
-    icon: <BookOpen className="w-6 h-6 text-green-500" />,
-    title: 'Cheatsheet Builder',
-    description: 'Create printable cheatsheets focused on key topics, formulas, and facts.'
+    label: "Control",
+    title: "Version and revisit",
+    description:
+      "Keep iterations of your uploads and return to past sessions without reprocessing.",
   },
   {
-    icon: <MessageSquare className="w-6 h-6 text-yellow-500" />,
-    title: 'Chat With Content',
-    description: 'Ask questions and get contextual answers from your uploaded study material.'
+    label: "Signal",
+    title: "Progress markers",
+    description:
+      "Lightweight metrics—what you shipped, recall lift, and how recently you reviewed.",
   },
   {
-    icon: <History className="w-6 h-6 text-pink-500" />,
-    title: 'Track & Revisit',
-    description: 'Maintain versioned study sessions and return to key content at any time.'
-  }
-]
+    label: "Collab",
+    title: "Shareable spaces",
+    description:
+      "Invite peers to view curated flashcards or summaries without exposing raw docs.",
+  },
+];
 
 export default function FeatureGridSection() {
   return (
-    <section className="w-full px-6 md:px-12 py-20 ">
-      <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
-          Key Features
-        </h2>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-12">
-          Powerful tools designed to enhance how you study, organize content, and interact with your materials.
-        </p>
+    <section className="w-full px-6 md:px-12 py-16">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-start justify-between gap-6 flex-col md:flex-row md:items-end">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
+              Capabilities
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-neutral-900 dark:text-white">
+              A toolkit built for deliberate study
+            </h2>
+            <p className="text-neutral-600 dark:text-neutral-300 max-w-2xl mt-3">
+              Less neon, more signal: every feature is designed to keep your
+              attention on the material, not the UI.
+            </p>
+          </div>
+          <div className="text-sm text-neutral-600 dark:text-neutral-300 flex items-center gap-2">
+            Explore the workflow
+            <ArrowRight className="h-4 w-4" />
+          </div>
+        </div>
 
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 text-left">
-          {features.map((feature, index) => (
+        <div className="mt-10 grid gap-4 sm:grid-cols-2">
+          {featureLines.map((item, idx) => (
             <div
-              key={index}
-              className="flex flex-col gap-3 rounded-xl border border-gray-200 dark:border-gray-900 p-6 hover:shadow-md transition"
+              key={item.title}
+              className="relative overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/60 p-4 shadow-[0_18px_60px_-48px_rgba(0,0,0,0.45)]"
             >
-              <div className="w-10 h-10 flex items-center justify-center rounded-md bg-gray-100 dark:bg-gray-800">
-                {feature.icon}
+              <div className="flex items-center justify-between text-xs uppercase tracking-[0.16em] text-neutral-500 dark:text-neutral-400 mb-3">
+                <span>{item.label}</span>
+                <span className="flex items-center gap-1 text-neutral-400">
+                  <span className="h-[2px] w-8 bg-neutral-300 dark:bg-neutral-700" />
+                  {String(idx + 1).padStart(2, "0")}
+                </span>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {feature.title}
+              <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+                {item.title}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {feature.description}
+              <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
+                {item.description}
               </p>
             </div>
           ))}
         </div>
       </div>
     </section>
-  )
-} 
+  );
+}

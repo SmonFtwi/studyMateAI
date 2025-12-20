@@ -11,17 +11,16 @@ import FaqSection from "@/components/LandingPage/section/faqSection";
 
 export default function Home() {
   return (
-    <>
-    <Navbar/>
-  
-    <div className=" container mx-auto flex flex-col  gap-4 py-4 md:py-5">
-        <HeroSection/> 
-        <FeaturesSection/>
-         <HowItWorksSection/>
-         <FaqSection/>
-        <CallToActionSection/>
+    <div className="min-h-screen bg-neutral-100 dark:bg-neutral-950">
+      <Navbar />
+      <div className="container mx-auto flex flex-col gap-6 py-6 md:py-10">
+        <HeroSection />
+        <FeaturesSection />
+        <HowItWorksSection />
+        <FaqSection />
+        <CallToActionSection />
+      </div>
+      <Footer />
     </div>
-    <Footer/>
-    </>
   );
 }

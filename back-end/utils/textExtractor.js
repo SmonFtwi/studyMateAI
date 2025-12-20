@@ -1,4 +1,4 @@
-import pdf from "pdf-parse";
+import { PDFParse } from "pdf-parse";
 //import poppler from "pdf-poppler";
 import Tesseract from "tesseract.js";
 import fs from "fs";
@@ -28,13 +28,14 @@ export const extractTextFromPDF = async (fileBuffer) => {
       throw new Error("Invalid or empty file buffer provided.");
     }
 
-    // Step 1: Try extracting text using pdf-parse
-    const data = await pdf(fileBuffer);
-    if (data.text.trim()) {
+    const parser = new PDFParse({ data: fileBuffer });
+    const data = await parser.getText();
+    await parser.destroy?.();
+
+    if (data?.text?.trim()) {
       return data.text.trim();
-    } else {
-      console.log("PDF appears to be scanned. Converting to images for OCR...");
     }
+    console.log("PDF appears to be scanned. Converting to images for OCR...");
 
     // Step 2: Write PDF buffer to a temporary file
     const pdfPath = path.join(TEMP_DIR, "uploaded.pdf");

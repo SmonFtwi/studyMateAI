@@ -62,3 +62,51 @@ export const deleteProject = async (token: string, project_id: string) => {
     throw error;
   }
 };
+
+export const uploadProjectSources = async (
+  token: string,
+  projectId: string,
+  files: File[]
+) => {
+  const formData = new FormData();
+  files.forEach((file) => formData.append("files", file));
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/sources`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      errorText || "Failed to upload sources. Please try again later."
+    );
+  }
+
+  return response.json();
+};
+
+export const getProjectFiles = async (token: string, projectId: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/files`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Failed to fetch project files");
+  }
+
+  return response.json();
+};
