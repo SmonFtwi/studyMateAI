@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import { ArrowRight } from 'lucide-react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function CallToActionSection() {
   return (
     <section className="py-14">
-      <div className="max-w-3xl mx-auto text-center space-y-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/70 p-8 shadow-[0_22px_70px_-55px_rgba(0,0,0,0.5)]">
+      <div className="max-w-3xl mx-auto text-center space-y-6 rounded-2xl  bg-transparent">
         <p className="text-xs uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
           Join the workspace
         </p>
@@ -28,5 +28,5 @@ export default function CallToActionSection() {
         </div>
       </div>
     </section>
-  )
-} 
+  );
+}

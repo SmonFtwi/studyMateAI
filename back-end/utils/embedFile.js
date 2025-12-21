@@ -104,7 +104,9 @@ export const embedFileToVectorDB = async (
     })
   );
 
+  const vectorIds = vectors.map((v) => v.id);
+
   await index.upsert(vectors);
 
-  return { chunkCount: vectors.length };
+  return { chunkCount: vectors.length, namespace, vectorIds };
 };

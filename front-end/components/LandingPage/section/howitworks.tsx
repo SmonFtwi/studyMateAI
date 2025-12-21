@@ -28,22 +28,22 @@ const steps = [
 export default function HowItWorksSection() {
   return (
     <section className="py-16 px-6">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto text-white">
         <div className="mb-10">
-          <p className="text-xs uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400">
+          <p className="text-xs uppercase tracking-[0.18em] text-white/60">
             Workflow
           </p>
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-neutral-900 dark:text-white mt-2">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mt-2">
             From source to answers
           </h2>
-          <p className="text-neutral-600 dark:text-neutral-300 max-w-3xl mt-3">
+          <p className="text-white/70 max-w-3xl mt-3">
             A straight line from upload to insight, without the carnival colors:
             keep your focus on the material.
           </p>
         </div>
 
-        <div className="relative border-l border-neutral-200 dark:border-neutral-800 pl-6 space-y-8">
-          <div className="absolute left-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-neutral-300 dark:via-neutral-700 to-transparent" />
+        <div className="relative border-l border-white/5 pl-6 space-y-8">
+          <div className="absolute left-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-white/20 to-transparent" />
           {steps.map((step, idx) => {
             const Icon = step.icon;
             return (
@@ -51,17 +51,17 @@ export default function HowItWorksSection() {
                 key={step.title}
                 className="relative flex items-start gap-4"
               >
-                <div className="absolute -left-[34px] mt-1 h-6 w-6 rounded-full border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex items-center justify-center text-xs font-semibold text-neutral-700 dark:text-neutral-200">
+                <div className="absolute -left-[34px] mt-1 h-6 w-6 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-xs font-semibold text-white/80">
                   {idx + 1}
                 </div>
-                <div className="h-10 w-10 rounded-lg bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 flex items-center justify-center shadow-sm">
+                <div className="h-10 w-10 rounded-lg bg-white text-[#0c0f1a] flex items-center justify-center shadow-sm">
                   <Icon className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
+                  <h3 className="text-lg font-semibold text-white">
                     {step.title}
                   </h3>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-300 mt-1 leading-relaxed">
+                  <p className="text-sm text-white/70 mt-1 leading-relaxed">
                     {step.detail}
                   </p>
                 </div>

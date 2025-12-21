@@ -1,77 +1,66 @@
-'use client'
+"use client";
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button"
-import { Menu, X, Sparkles, GraduationCap, Zap } from 'lucide-react';
-import { ModeToggle } from "./theme-mode";
+import { Button } from "@/components/ui/button";
+import { Menu, X, Sparkles } from "lucide-react";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState('home');
+  const [activeItem, setActiveItem] = useState("home");
 
-  // Add useEffect to detect current page and set active item
   useEffect(() => {
     const currentPath = window.location.pathname;
-    if (currentPath === '/') {
-      setActiveItem('home');
-    } else if (currentPath === '/about') {
-      setActiveItem('about');
-    } else if (currentPath === '/ourService') {
-      setActiveItem('services');
+    if (currentPath === "/") {
+      setActiveItem("home");
     }
   }, []);
 
   const navItems = [
-    { href: '/', label: 'Home', id: 'home' },
+    { href: "/", label: "Home", id: "home" },
+    { href: "#capabilities", label: "Capabilities", id: "capabilities" },
   ];
 
   return (
     <>
-      {/* Top Navigation Bar */}
-      <nav className="sticky top-0 z-50 w-full bg-gray-100/95 dark:bg-gray-900/95 border-b dark:border-gray-700 border-gray-200 ">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="fixed top-0 left-0 right-0 z-50 w-full backdrop-blur-sm bg-gradient-to-b from-[#0c0f1a]/90 via-[#0c0f1a]/45 to-transparent  text-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-4">
           <div className="flex items-center justify-between h-16">
-            {/* Left: Logo */}
             <div className="flex items-center">
               <Link href="/" className="flex items-center space-x-3 group">
                 <div className="flex items-center">
-                  <Avatar className="w-10 h-10 rounded-full">
-                    <AvatarImage 
-                      src="/studyMate2.png" 
+                  <Avatar className="w-9 h-9 rounded-full border border-white/20">
+                    <AvatarImage
+                      src="/studyMate2.png"
                       alt="StudyMate"
                       className="w-full h-full object-cover"
                     />
                   </Avatar>
-                  <Sparkles className="w-3 h-3 text-yellow-400 animate-pulse ml-1" />
+                  <Sparkles className="w-3 h-3 text-amber-300 animate-pulse ml-1" />
                 </div>
                 <div className="hidden sm:block">
                   <div className="flex items-center space-x-2">
-                    <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                      StudyMate
-                    </h1>
-                    <GraduationCap className="w-5 h-5 text-blue-400" />
+                    <h1 className="text-lg font-semibold">StudyMate</h1>
                   </div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 font-light">
-                    AI-Powered Learning
+                  <p className="text-[11px] text-white/60 font-light">
+                    AI-Powered Study Partner
                   </p>
                 </div>
               </Link>
             </div>
 
-            {/* Right: Navigation + Actions */}
             <div className="flex items-center space-x-4">
-              {/* Desktop Nav */}
               <div className="hidden lg:flex items-center space-x-1">
                 {navItems.map((item) => (
                   <Link
                     key={item.id}
                     href={item.href}
                     onClick={() => setActiveItem(item.id)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                       activeItem === item.id
-                        ? 'text-gray-900 dark:text-white bg-gradient-to-r from-blue-500/30 to-purple-500/30 border border-blue-500/50'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200/50 dark:hover:bg-gray-700/50'
+                        ? "bg-white/10 border border-white/20 text-white"
+                        : "text-white/70 hover:text-white hover:bg-white/5"
                     }`}
                   >
                     {item.label}
@@ -79,34 +68,32 @@ export default function Navbar() {
                 ))}
               </div>
 
-              {/* Desktop Buttons */}
               <div className="hidden lg:flex items-center space-x-3">
                 <Link href="/login">
-                  <Button variant="ghost" className="rounded-lg px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200/50 dark:hover:bg-gray-700/50 border border-gray-300 dark:border-gray-600/50 hover:border-gray-400 dark:hover:border-gray-500/50 transition-all duration-300">
-                    Sign In
+                  <Button
+                    variant="ghost"
+                    className="rounded-full px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 border border-white/20 transition-all"
+                  >
+                    Sign in
                   </Button>
                 </Link>
                 <Link href="/register">
-                  <Button className="rounded-lg px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300">
-                    <span className="flex items-center space-x-1">
-                      <span>Get Started</span>
-                      <Zap className="w-4 h-4" />
-                    </span>
+                  <Button className="rounded-full px-4 py-2 bg-white text-[#0c0f1a] hover:bg-white/90 transition-all font-semibold shadow-lg">
+                    Sign Up
                   </Button>
                 </Link>
-                <div className="ml-2 pl-2 border-l border-gray-300 dark:border-gray-600/50">
-                  <ModeToggle />
-                </div>
               </div>
 
-              {/* Mobile Menu Button */}
               <div className="lg:hidden flex items-center space-x-3">
-                <ModeToggle />
                 <button
                   onClick={() => setIsOpen(!isOpen)}
-                  className="w-9 h-9 rounded-lg bg-gray-200/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600/50 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-300/50 dark:hover:bg-gray-700/50 transition-colors"
+                  className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/15 transition-colors"
                 >
-                  {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                  {isOpen ? (
+                    <X className="w-5 h-5" />
+                  ) : (
+                    <Menu className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -114,11 +101,9 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Menu Dropdown */}
       {isOpen && (
-        <div className="lg:hidden w-full bg-gray-100/95 dark:bg-gray-900/95 border-b border-gray-200 dark:border-gray-700 shadow-lg">
-          <div className="max-w-7xl mx-auto px-4 py-4 space-y-3">
-            {/* Mobile Navigation Links */}
+        <div className="lg:hidden w-full bg-[#0c0f1a]/95 border-b border-white/10 shadow-lg text-white">
+          <div className="max-w-6xl mx-auto px-4 py-4 space-y-3">
             {navItems.map((item) => (
               <Link
                 key={item.id}
@@ -129,27 +114,28 @@ export default function Navbar() {
                 }}
                 className={`block py-3 px-4 rounded-lg text-base font-medium transition-all duration-200 ${
                   activeItem === item.id
-                    ? 'bg-gradient-to-r from-blue-500/30 to-purple-500/30 text-gray-900 dark:text-white border border-blue-500/50'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white'
+                    ? "bg-white/10 border border-white/20 text-white"
+                    : "text-white/80 hover:bg-white/5"
                 }`}
               >
                 {item.label}
               </Link>
             ))}
-            
-            {/* Mobile Action Buttons */}
-            <div className="space-y-3 pt-4 border-t border-gray-200 dark:border-gray-700/50">
+
+            <div className="space-y-3 pt-4 border-t border-white/10">
               <Link href="/login" onClick={() => setIsOpen(false)}>
-                <Button variant="outline" className="w-full py-2.5 rounded-lg border-gray-300 dark:border-gray-600/50 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200/50 dark:hover:bg-gray-800/50">
-                  Sign In
+                <Button
+                  variant="outline"
+                  className="w-full py-2.5 rounded-lg border-white/25 text-white hover:bg-white/10"
+                >
+                  Sign in
                 </Button>
               </Link>
-              
+
               <Link href="/register" onClick={() => setIsOpen(false)}>
-                <Button className="w-full py-2.5 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-lg">
+                <Button className="w-full py-2.5 rounded-lg bg-white text-[#0c0f1a] border-0 shadow-lg">
                   <span className="flex items-center justify-center space-x-2">
-                    <span>Get Started</span>
-                    <Zap className="w-4 h-4" />
+                    <span>Start free trial</span>
                   </span>
                 </Button>
               </Link>

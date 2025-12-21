@@ -101,22 +101,31 @@ export const uploadProjectFiles = async (req, res) => {
         filename: file.originalname,
       });
 
-      uploadedFiles.push(newFile);
-
       // Optional — embed content in vector DB
+      let vectorInfo = null;
       try {
-        await embedFileToVectorDB(
+        vectorInfo = await embedFileToVectorDB(
           file.path,
           projectId,
           newFile._id,
           file.originalname
         );
+
+        if (vectorInfo) {
+          newFile.vectorNamespace = vectorInfo.namespace;
+          newFile.vectorIds = vectorInfo.vectorIds || [];
+          await newFile.save();
+        }
       } catch (err) {
         console.error("Embedding failed, continuing without embedding:", err);
+      } finally {
+        // cleanup temporary file after embedding attempt completes
+        if (file.path && fs.existsSync(file.path)) {
+          fs.unlinkSync(file.path);
+        }
       }
 
-      // cleanup temporary file
-      fs.unlinkSync(file.path);
+      uploadedFiles.push(newFile);
     }
 
     res.status(200).json({

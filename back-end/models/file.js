@@ -16,6 +16,14 @@ const FileSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    vectorNamespace: {
+      type: String,
+      default: null,
+    },
+    vectorIds: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true }
 );
