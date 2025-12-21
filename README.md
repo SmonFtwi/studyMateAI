@@ -78,7 +78,15 @@ Set `NEXT_PUBLIC_backend_url` in `front-end/.env.local` to point to your API (e.
 
 ## Screenshot
 
-The screenshot above is referenced from `docs/dashboard-preview.png`. Place the provided image in that path (or update the link) so the preview renders in the README.
+Landing page
+
+<div align="center">
+  <img src="assets/landingPage.png" alt="StudyMate AI dashboard preview" width="100%" />
+</div>
+Dashboard page
+<div align="center">
+  <img src="assets/studymageDash.png" alt="StudyMate AI dashboard preview" width="100%" />
+</div>
 
 ## Contributing
 
