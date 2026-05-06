@@ -1,130 +1,127 @@
-// components/AboutSection.js
+"use client";
+
 import Navbar from "@/components/navbar";
 import Image from "next/image";
 import Link from "next/link";
-import { CheckCircle, Globe, Users } from "lucide-react";
+import { motion } from "framer-motion";
+import { Sparkles, Globe, Users, Target, Rocket, Heart } from "lucide-react";
 import Footer from "@/components/footer";
+import { CosmicBackground } from "@/components/LandingPage/CosmicBackground";
 
-export default function AboutSection() {
+const stats = [
+  { label: "Students Empowered", value: "50,000+", icon: Users },
+  { label: "Questions Answered", value: "1.2M", icon: Target },
+  { label: "Countries Reached", value: "120+", icon: Globe },
+];
+
+export default function AboutPage() {
   return (
-    <>
+    <div className="relative min-h-screen text-white bg-[#030303] overflow-x-hidden">
+      <CosmicBackground />
       <Navbar />
 
-      <section className="py-16 px-6 md:px-10">
-        {/* Overview Section */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-20 mb-16">
-          <div className="flex flex-col flex-1 gap-10">
-            <div className="flex-1">
-              <h2 className="text-3xl font-semibold mb-4">Who We Are</h2>
-              <p className="leading-relaxed">
-                Al Samamat has been a trusted name for over 28 years, delivering
-                solutions that drive industrial progress. From advanced machinery
-                to expert services, we meet the diverse needs of our clients with
-                precision and excellence.
-              </p>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-semibold mb-4">Our Mission</h3>
-              <p className="leading-relaxed">
-                To consistently deliver high-quality, efficient services that drive
-                national growth, provide rewarding careers, and exceed client
-                expectations. We are dedicated to innovation and building a
-                sustainable future.
-              </p>
-            </div>
-          </div>
-          <div className="flex-1">
-            <Image
-              src="/about.png"
-              alt="About Us Illustration"
-              className="rounded-md"
-              width={400}
-              height={400}
-            />
-          </div>
-        </div>
+      <main className="relative z-10 pt-32 pb-24">
+        <div className="container mx-auto px-6">
+          {/* Hero Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center max-w-3xl mx-auto mb-24"
+          >
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              Our Mission to <span className="text-gradient-cosmic">Elevate Education</span>
+            </h1>
+            <p className="text-white/60 text-lg leading-relaxed">
+              At StudyMate AI, we believe that every student deserves a personalized, intelligent, and efficient learning experience. We're building the future of education, one galaxy at a time.
+            </p>
+          </motion.div>
 
-        {/* Key Highlights */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-semibold text-center mb-8">
-            Why Choose Al Samamat?
-          </h3>
-          <div className="grid gap-8 md:grid-cols-3">
-            {[
-              {
-                title: "28+ Years of Excellence",
-                description:
-                  "Decades of experience delivering innovative industrial solutions.",
-                icon: <CheckCircle className="w-10 h-10 mb-4" />,
-              },
-              {
-                title: "Global Reach",
-                description:
-                  "We cater to clients across the globe with tailored solutions.",
-                icon: <Globe className="w-10 h-10 mb-4" />,
-              },
-              {
-                title: "Dedicated Team",
-                description:
-                  "A team of professionals committed to delivering quality and excellence.",
-                icon: <Users className="w-10 h-10 mb-4" />,
-              },
-            ].map((highlight, index) => (
-              <div
-                key={index}
-                className="p-6 border rounded-md shadow-md flex flex-col items-center text-center"
-              >
-                {highlight.icon}
-                <h4 className="text-lg font-medium mb-2">{highlight.title}</h4>
-                <p>{highlight.description}</p>
+          {/* Core Values */}
+          <div className="grid md:grid-cols-2 gap-12 items-center mb-32">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-8"
+            >
+              <div>
+                <h2 className="text-3xl font-bold mb-4 flex items-center gap-3">
+                  <Rocket className="text-purple-500" /> Who We Are
+                </h2>
+                <p className="text-white/60 leading-relaxed text-lg">
+                  Born out of the need for smarter study tools, StudyMate AI is a team of educators, engineers, and AI researchers dedicated to making learning more accessible and engaging.
+                </p>
               </div>
+              <div>
+                <h2 className="text-3xl font-bold mb-4 flex items-center gap-3">
+                  <Heart className="text-pink-500" /> Our Vision
+                </h2>
+                <p className="text-white/60 leading-relaxed text-lg">
+                  We envision a world where technology removes the barriers to knowledge, allowing students to focus on mastery and creativity rather than rote memorization.
+                </p>
+              </div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/20 to-blue-500/20 blur-3xl -z-10" />
+              <img
+                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop"
+                alt="Our Team"
+                className="rounded-3xl border border-white/10 shadow-2xl"
+              />
+            </motion.div>
+          </div>
+
+          {/* Stats Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="glass-cosmos p-8 rounded-3xl text-center border-white/5"
+              >
+                <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <stat.icon className="text-purple-400 w-6 h-6" />
+                </div>
+                <div className="text-4xl font-bold mb-2">{stat.value}</div>
+                <div className="text-white/40 font-medium uppercase tracking-wider text-xs">{stat.label}</div>
+              </motion.div>
             ))}
           </div>
-        </div>
 
-        {/* Contact Section */}
-        <div className="grid gap-8 md:grid-cols-2 items-center">
-          {/* Contact Info */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold mb-4">Get In Touch</h3>
-            <p>
-              Phone: +966 (14) 325 - 4047 <br />
-              Email: <br />
-              <Link href="mailto:info@alsamamat.com" className="underline">
-                info@alsamamat.com
+          {/* Join Us Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="glass-cosmos p-12 rounded-[40px] text-center border-white/10 relative overflow-hidden"
+          >
+            <div className="relative z-10">
+              <h2 className="text-4xl font-bold mb-6">Be Part of the Future</h2>
+              <p className="text-white/60 text-lg max-w-2xl mx-auto mb-10">
+                Whether you're a student, educator, or developer, there's a place for you in our cosmic journey. Let's reshape education together.
+              </p>
+              <Link href="/register">
+                <button className="bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-purple-50 transition-colors shadow-xl">
+                  Get Started for Free
+                </button>
               </Link>
-              ,
-              <Link href="mailto:contact@alsamamat.com" className="underline">
-                contact@alsamamat.com
-              </Link>
-            </p>
-            <p>
-              Website: <br />
-              <Link
-                href="http://www.alsamamat.com"
-                target="_blank"
-                className="underline"
-                rel="noopener noreferrer"
-              >
-                www.alsamamat.com
-              </Link>
-            </p>
-          </div>
-
-          {/* Interactive Contact Illustration */}
-          {/* <div className="flex justify-center">
-            <Image
-              src="/contact-us.png"
-              alt="Contact Us Illustration"
-              width={400}
-              height={400}
-              className="rounded-md"
-            />
-          </div> */}
+            </div>
+            {/* Background elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px]" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px]" />
+          </motion.div>
         </div>
-        
-      </section>
-      <Footer/>
-    </>
+      </main>
+
+      <Footer />
+    </div>
   );
 }

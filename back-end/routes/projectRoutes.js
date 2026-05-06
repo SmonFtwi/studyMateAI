@@ -9,43 +9,51 @@ import {
   uploadProjectFiles,
   getProjectFiles,
 } from "../controllers/projectController.js";
+import {
+  createChatSession,
+  getChatSessions,
+  getChatMessages,
+  sendChatMessage,
+} from "../controllers/chatController.js";
+import {
+  generateFlashcards,
+  getFlashcards,
+  deleteFlashcard,
+} from "../controllers/flashcardController.js";
+import {
+  generateQuiz,
+  getQuiz,
+} from "../controllers/quizController.js";
 import { authMiddleware } from "../MiddleWares/auth.js";
 
 const router = express.Router();
-const uploadDir = path.join(process.cwd(), "uploads");
 
+const uploadDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
-
 const upload = multer({ dest: uploadDir });
 
-// Project
+// Project Management
 router.get("/getProjects", authMiddleware, getProjects);
 router.post("/createProject", authMiddleware, createProject);
 router.delete("/deleteProject/:project_id", authMiddleware, deleteProject);
-router.post(
-  "/:projectId/sources",
-  authMiddleware,
-  upload.array("files"),
-  uploadProjectFiles
-);
 router.get("/:projectId/files", authMiddleware, getProjectFiles);
+router.post("/:projectId/sources", authMiddleware, upload.array("files"), uploadProjectFiles);
 
-// // Files
-// router.get("/:projectId/files", getFiles);
-// router.post("/:projectId/files", uploadFile);
+// Chat
+router.post("/:projectId/chat/sessions", authMiddleware, createChatSession);
+router.get("/:projectId/chat/sessions", authMiddleware, getChatSessions);
+router.get("/:projectId/chat/:sessionId/messages", authMiddleware, getChatMessages);
+router.post("/:projectId/chat/:sessionId/messages", authMiddleware, sendChatMessage);
 
-// // Embeddings
-// router.get("/:projectId/embeddings", getEmbeddings);
-// router.post("/:projectId/embeddings", addEmbedding);
+// Flashcards
+router.get("/:projectId/flashcards", authMiddleware, getFlashcards);
+router.post("/:projectId/flashcards/generate", authMiddleware, generateFlashcards);
+router.delete("/:projectId/flashcards/:id", authMiddleware, deleteFlashcard);
 
-// // Flashcards
-// router.get("/:projectId/flashcards", getFlashcards);
-// router.post("/:projectId/flashcards", createFlashcards);
-
-// // Summaries (includes cheatsheet)
-// router.get("/:projectId/summaries", getSummaries);
-// router.post("/:projectId/summaries", createSummary);
+// Quizzes
+router.get("/:projectId/quiz", authMiddleware, getQuiz);
+router.post("/:projectId/quiz/generate", authMiddleware, generateQuiz);
 
 export default router;

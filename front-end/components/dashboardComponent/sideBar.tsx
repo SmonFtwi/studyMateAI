@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "@/context/authContext";
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  FaComments,
-  FaDatabase,
-  FaPlus,
-  FaUser,
-  FaUsersCog,
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  FaComments, 
+  FaDatabase, 
+  FaUser, 
+  FaUsersCog 
 } from "react-icons/fa";
 import {
   DropdownMenu,
@@ -18,8 +18,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteChat, listChatHistory } from "@/lib/apicall/chat";
-import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
   TooltipContent,
@@ -35,12 +33,15 @@ import {
   Sparkles,
   Trash2,
   User,
+  LayoutDashboard,
+  Cpu,
+  Shield,
+  Activity
 } from "lucide-react";
-import { DashboardIcon } from "@radix-ui/react-icons";
-import {
-  createProject,
-  deleteProject,
-  getProjects,
+import { 
+  createProject, 
+  deleteProject, 
+  getProjects 
 } from "@/lib/apicall/project";
 import CreateProjectDialog from "./createProject";
 import { Button } from "../ui/button";
@@ -61,20 +62,17 @@ export default function Sidebar() {
     description: string;
   }) => {
     const token = localStorage.getItem("token") as string;
-
-    const res = await createProject(token, {
+    await createProject(token, {
       title: data.name,
       description: data.description,
     });
-    console.log("data", res);
-    //onCreate(data);
     setOpen(false);
+    fetchProjects(token);
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token") as string;
-
-    fetchProjects(token);
+    if (token) fetchProjects(token);
   }, []);
 
   const fetchProjects = async (token: string) => {
@@ -87,52 +85,45 @@ export default function Sidebar() {
   };
 
   const handleDeleteProject = async (project_id: string) => {
-    console.log("project_id", project_id);
     const token = localStorage.getItem("token") as string;
-    const response = await deleteProject(token, project_id);
-    console.log("response", response);
+    await deleteProject(token, project_id);
     fetchProjects(token);
   };
 
   return (
-    <div className="flex flex-col h-full relative rounded-lg text-gray-800 dark:text-white overflow-hidden border border-blue-200/50 dark:border-white/10">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-pink-500/10 dark:from-purple-500/20 dark:to-pink-500/20 rounded-full blur-xl"></div>
-      <div className="absolute bottom-1/3 left-0 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 dark:from-blue-500/20 dark:to-cyan-500/20 rounded-full blur-lg"></div>
+    <div className="flex flex-col h-full glass-cosmos border-white/5 relative overflow-hidden group/sidebar transition-all duration-500 rounded-3xl">
+      {/* Dynamic Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 via-transparent to-blue-500/5 pointer-events-none" />
+      <div className="absolute -top-24 -left-24 w-48 h-48 bg-purple-500/10 blur-[100px] rounded-full group-hover/sidebar:bg-purple-500/20 transition-all duration-1000" />
 
-      {/* Header Section */}
-      <div className="p-4 space-y-4 relative z-10">
-        <div className="flex items-center">
-          <div className="flex items-center">
-            <Avatar className="w-10 h-10 rounded-full">
-              <AvatarImage
-                src="/studyMate2.png"
-                alt="StudyMate"
-                className="w-full h-full object-cover"
-              />
-            </Avatar>
-            <Sparkles className="w-3 h-3 text-yellow-400 animate-pulse ml-1" />
-          </div>
-          <div className="hidden sm:block">
-            <div className="flex items-center space-x-2">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                StudyMate
-              </h1>
-              <GraduationCap className="w-5 h-5 text-blue-400" />
+      {/* Header: Project Initialization */}
+      <div className="p-6 space-y-6 relative z-10">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="absolute inset-0 bg-purple-500/30 blur-md rounded-lg animate-pulse" />
+              <div className="w-10 h-10 bg-slate-900 rounded-lg border border-white/10 flex items-center justify-center relative overflow-hidden group/logo">
+                <Cpu className="w-6 h-6 text-purple-400 group-hover/logo:scale-110 transition-transform" />
+              </div>
             </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400 font-light">
-              AI-Powered Learning
-            </p>
+            <div>
+              <h2 className="text-sm font-black tracking-[0.2em] text-white/40 uppercase leading-none mb-1">Terminal</h2>
+              <h1 className="text-lg font-black tracking-tight text-white">CORE<span className="text-purple-500">_V1</span></h1>
+            </div>
           </div>
+          <Activity className="w-4 h-4 text-emerald-500 animate-pulse" />
         </div>
 
-        <Button
-          onClick={() => setOpen(true)}
-          className="bg-blue-600 text-white hover:bg-blue-700 rounded-xl flex items-start justify-start gap-2 w-full "
-        >
-          <PlusCircle className="h-4 w-4" />
-          New Project
-        </Button>
+        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+          <Button
+            onClick={() => setOpen(true)}
+            className="w-full h-14 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white border-0 rounded-2xl shadow-[0_0_20px_rgba(168,85,247,0.2)] group/btn relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+            <PlusCircle className="mr-2 h-5 w-5" />
+            <span className="font-bold tracking-wider uppercase text-xs">Initialize Project</span>
+          </Button>
+        </motion.div>
 
         <CreateProjectDialog
           open={open}
@@ -141,184 +132,145 @@ export default function Sidebar() {
         />
       </div>
 
-      <div className="mx-4 border-t border-blue-200/50 dark:border-white/10"></div>
+      {/* System Status Indicators */}
+      <div className="px-6 py-2 flex items-center gap-4 border-y border-white/5 bg-white/[0.02]">
+        <div className="flex items-center gap-1.5">
+          <Shield className="w-3 h-3 text-purple-400/50" />
+          <span className="text-[9px] font-black tracking-widest text-white/20 uppercase">Secure</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Sparkles className="w-3 h-3 text-blue-400/50" />
+          <span className="text-[9px] font-black tracking-widest text-white/20 uppercase">AI Active</span>
+        </div>
+      </div>
 
-      {/* Chat List */}
-      <div className="flex-1 py-4 overflow-y-auto px-4 scrollbar-thin scrollbar-thumb-blue-300/50 dark:scrollbar-thumb-white/20 scrollbar-track-transparent hover:scrollbar-thumb-blue-400/70 dark:hover:scrollbar-thumb-white/30 relative z-10">
-        <div className="space-y-2">
-          {projects.length > 0 ? (
-            projects.map((project) => (
-              <div
-                key={project.project_id}
-                className="flex items-center justify-between p-2 rounded-lg hover:bg-blue-100/50 dark:hover:bg-white/10 backdrop-blur-sm transition-all duration-200 border border-transparent hover:border-blue-200/50 dark:hover:border-white/10"
+      {/* Project Navigation */}
+      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1 custom-scrollbar relative z-10">
+        <h3 className="px-2 text-[10px] font-black tracking-[0.3em] text-white/20 uppercase mb-4">Active Modules</h3>
+        
+        <AnimatePresence mode="popLayout">
+          {projects.map((project, idx) => (
+            <motion.div
+              key={project.project_id}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: idx * 0.05 }}
+              className="group/item relative"
+            >
+              <Link
+                href={`/Dashboard/projects/${project.project_id}`}
+                className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all duration-300 overflow-hidden relative"
               >
-                {/* Chat Title */}
-                <Link
-                  href={`/Dashboard/projects/${project.project_id}`}
-                  className="flex items-center space-x-3 flex-1 min-w-0"
-                >
-                  <FaComments className="text-lg text-blue-500 dark:text-blue-300 flex-shrink-0" />
-                  <span className="truncate text-gray-700 dark:text-white/90 hover:text-gray-900 dark:hover:text-white transition-colors">
-                    {project.title.split(" ").slice(0, 3).join(" ")}
+                <div className="flex items-center gap-3 min-w-0 relative z-10">
+                  <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover/item:bg-purple-500/20 transition-colors">
+                    <FaComments className="text-purple-400/50 group-hover/item:text-purple-400" />
+                  </div>
+                  <span className="truncate text-sm font-bold text-white/60 group-hover/item:text-white transition-colors">
+                    {project.title}
                   </span>
-                </Link>
+                </div>
 
-                {/* Dropdown Menu for Delete */}
-                <div className="relative flex-shrink-0">
+                <div className="flex items-center opacity-0 group-hover/item:opacity-100 transition-opacity relative z-10">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="p-2 rounded-full hover:bg-blue-200/50 dark:hover:bg-white/10 transition-colors duration-200">
-                        <MoreVertical className="text-lg text-gray-500 dark:text-white/70 hover:text-gray-700 dark:hover:text-white" />
+                      <button className="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
+                        <MoreVertical className="w-4 h-4 text-white/40" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      align="end"
-                      className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-blue-200/50 dark:border-white/10 p-2 rounded-lg shadow-xl"
-                    >
-                      <DropdownMenuItem asChild>
-                        <button
-                          onClick={() =>
-                            handleDeleteProject(project.project_id)
-                          }
-                          className="flex items-center space-x-2 text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 w-full px-2 py-1 rounded transition-colors"
-                        >
-                          <Trash2 className="text-sm" />
-                          <span>Delete</span>
-                        </button>
+                    <DropdownMenuContent align="end" className="glass-cosmos border-white/10 bg-slate-900/95">
+                      <DropdownMenuItem 
+                        onClick={() => handleDeleteProject(project.project_id)}
+                        className="text-red-400 focus:text-red-300 focus:bg-red-500/10 cursor-pointer"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        <span>Purge Project</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-              </div>
-            ))
-          ) : (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 dark:from-blue-500/20 dark:to-purple-500/20 flex items-center justify-center">
-                <FaComments className="text-2xl text-blue-500 dark:text-blue-300" />
-              </div>
-              <p className="text-sm text-gray-600 dark:text-white/60">
-                No chats available yet
-              </p>
-              <p className="text-xs text-gray-500 dark:text-white/40 mt-1">
-                Start a new conversation to get started
-              </p>
+
+                {/* Hover Glow */}
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-transparent opacity-0 group-hover/item:opacity-100 transition-opacity" />
+              </Link>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+
+        {projects.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
+            <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4 border border-white/5">
+              <FaComments className="text-white/10 text-xl" />
             </div>
-          )}
-        </div>
+            <p className="text-xs font-bold text-white/20 uppercase tracking-widest">No active modules found</p>
+          </div>
+        )}
       </div>
 
-      {/* Footer Section */}
-      <div className="p-4 space-y-3 relative z-10">
+      {/* Footer: Admin & Settings */}
+      <div className="p-4 space-y-2 relative z-10 border-t border-white/5 bg-black/20">
         {user?.role === "admin" && (
-          <>
-            <div className="border-t border-blue-200/50 dark:border-white/10 pt-4"></div>
+          <div className="grid grid-cols-3 gap-2 mb-2">
             <TooltipProvider>
-              <div className="grid grid-cols-3 gap-2">
-                <Tooltip>
+              {[
+                { href: "/Dashboard/users", icon: FaUser, label: "Users" },
+                { href: "/Dashboard/Manageusers", icon: FaUsersCog, label: "Manage" },
+                { href: "/Dashboard/listPdf", icon: FaDatabase, label: "Storage" }
+              ].map((item) => (
+                <Tooltip key={item.label}>
                   <TooltipTrigger asChild>
                     <Link
-                      href="/Dashboard/users"
-                      className="flex items-center justify-center p-3 rounded-lg bg-blue-100/50 dark:bg-white/10 hover:bg-blue-200/50 dark:hover:bg-white/20 backdrop-blur-sm transition-all duration-200 border border-blue-200/50 dark:border-white/10 hover:border-blue-300/70 dark:hover:border-white/20"
+                      href={item.href}
+                      className="flex items-center justify-center h-10 rounded-xl bg-white/5 hover:bg-purple-500/20 border border-white/5 hover:border-purple-500/30 transition-all group/admin"
                     >
-                      <FaUser className="text-lg text-blue-600 dark:text-blue-300" />
+                      <item.icon className="text-white/30 group-hover/admin:text-purple-400" />
                     </Link>
                   </TooltipTrigger>
-                  <TooltipContent
-                    side="top"
-                    className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-blue-200/50 dark:border-white/10"
-                  >
-                    <p>Pending Accounts</p>
+                  <TooltipContent side="top" className="glass-cosmos border-white/10 text-[10px] font-black uppercase tracking-widest">
+                    {item.label}
                   </TooltipContent>
                 </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link
-                      href="/Dashboard/Manageusers"
-                      className="flex items-center justify-center p-3 rounded-lg bg-blue-100/50 dark:bg-white/10 hover:bg-blue-200/50 dark:hover:bg-white/20 backdrop-blur-sm transition-all duration-200 border border-blue-200/50 dark:border-white/10 hover:border-blue-300/70 dark:hover:border-white/20"
-                    >
-                      <FaUsersCog className="text-lg text-purple-600 dark:text-purple-300" />
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="top"
-                    className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-blue-200/50 dark:border-white/10"
-                  >
-                    <p>Manage Users</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Link
-                      href="/Dashboard/listPdf"
-                      className="flex items-center justify-center p-3 rounded-lg bg-blue-100/50 dark:bg-white/10 hover:bg-blue-200/50 dark:hover:bg-white/20 backdrop-blur-sm transition-all duration-200 border border-blue-200/50 dark:border-white/10 hover:border-blue-300/70 dark:hover:border-white/20"
-                    >
-                      <FaDatabase className="text-lg text-cyan-600 dark:text-cyan-300" />
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="top"
-                    className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-blue-200/50 dark:border-white/10"
-                  >
-                    <p>Manage Source Data</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
+              ))}
             </TooltipProvider>
-          </>
+          </div>
         )}
 
-        <div className="border-t border-blue-200/50 dark:border-white/10 pt-3"></div>
-
         <Link
-          href={"/Dashboard/Dash"}
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg font-medium bg-blue-100/50 dark:bg-white/10 hover:bg-blue-200/50 dark:hover:bg-white/20 backdrop-blur-sm transition-all duration-200 border border-blue-200/50 dark:border-white/10 hover:border-blue-300/70 dark:hover:border-white/20"
+          href="/Dashboard/Dash"
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all group/nav"
         >
-          <DashboardIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-300" />
-          <span className="text-gray-700 dark:text-white/90">Dashboard</span>
+          <LayoutDashboard className="w-4 h-4 text-blue-400/50 group-hover/nav:text-blue-400" />
+          <span className="text-sm font-bold text-white/50 group-hover/nav:text-white transition-colors uppercase tracking-widest text-[10px]">Dashboard</span>
         </Link>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="flex items-center gap-3 w-full px-4 py-3 rounded-lg font-medium bg-blue-100/50 dark:bg-white/10 hover:bg-blue-200/50 dark:hover:bg-white/20 backdrop-blur-sm transition-all duration-200 border border-blue-200/50 dark:border-white/10 hover:border-blue-300/70 dark:hover:border-white/20 cursor-pointer">
-              <Settings className="w-5 h-5 text-pink-600 dark:text-pink-300" />
-              <span className="text-gray-700 dark:text-white/90">Settings</span>
-            </div>
+            <button className="flex items-center gap-3 w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all group/nav cursor-pointer">
+              <Settings className="w-4 h-4 text-pink-400/50 group-hover/nav:text-pink-400" />
+              <span className="text-sm font-bold text-white/50 group-hover/nav:text-white transition-colors uppercase tracking-widest text-[10px]">Settings</span>
+            </button>
           </DropdownMenuTrigger>
-
-          <DropdownMenuContent
-            align="end"
-            className="w-48 rounded-lg shadow-xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-blue-200/50 dark:border-white/10"
-          >
-            <DropdownMenuLabel className="text-gray-700 dark:text-white/80">
-              Account
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator className="border-blue-200/50 dark:border-white/10" />
+          <DropdownMenuContent align="end" className="w-56 glass-cosmos border-white/10 bg-slate-900/95 p-2">
+            <DropdownMenuLabel className="text-[10px] font-black text-white/30 uppercase tracking-widest px-2 mb-1">Control Panel</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <Link
-                href="/Dashboard/profile"
-                className="flex items-center space-x-2 px-4 py-2 hover:bg-blue-100/50 dark:hover:bg-white/10 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white transition-colors"
-              >
-                <User className="w-4 h-4" />
-                <span>View Profile</span>
+              <Link href="/Dashboard/profile" className="flex items-center gap-2 p-3 rounded-lg hover:bg-white/5 cursor-pointer">
+                <User className="w-4 h-4 text-purple-400" />
+                <span className="font-bold text-sm">Neural Identity</span>
               </Link>
             </DropdownMenuItem>
-
-            <DropdownMenuSeparator className="border-blue-200/50 dark:border-white/10" />
-            <DropdownMenuItem asChild>
-              <Link
-                href="/"
-                className="flex items-center space-x-2 px-4 py-2 hover:bg-red-100/50 dark:hover:bg-red-500/20 text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"
-                onClick={logout}
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Logout</span>
-              </Link>
+            <DropdownMenuSeparator className="bg-white/5" />
+            <DropdownMenuItem onClick={logout} className="flex items-center gap-2 p-3 rounded-lg hover:bg-red-500/10 text-red-400 cursor-pointer focus:text-red-300">
+              <LogOut className="w-4 h-4" />
+              <span className="font-bold text-sm">Terminate Link</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      {/* Decorative Border Glow */}
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
+      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
     </div>
   );
 }
+
+

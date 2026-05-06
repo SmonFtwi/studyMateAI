@@ -1,5 +1,6 @@
-import { PDFParse } from "pdf-parse";
-//import poppler from "pdf-poppler";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const pdf = require("pdf-parse");
 import Tesseract from "tesseract.js";
 import fs from "fs";
 import path from "path";
@@ -9,6 +10,7 @@ import csvParser from "csv-parser";
 import { Readable } from "stream";
 import { Poppler } from "node-poppler";
 import xlsx from "node-xlsx";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Temporary directory for images
 const __filename = fileURLToPath(import.meta.url);
@@ -22,51 +24,58 @@ if (!fs.existsSync(TEMP_DIR)) {
   console.log("TEMP_DIR exists.");
 }
 
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const genAI = GEMINI_API_KEY ? new GoogleGenerativeAI(GEMINI_API_KEY) : null;
+const visionModel = genAI ? genAI.getGenerativeModel({ model: "gemini-1.5-flash" }) : null;
+
+const extractTextWithGemini = async (fileBuffer, mimeType) => {
+  if (!visionModel) return null;
+  try {
+    const result = await visionModel.generateContent([
+      {
+        inlineData: {
+          data: fileBuffer.toString("base64"),
+          mimeType,
+        },
+      },
+      "Extract all text from this document. Maintain the structure as much as possible. Only return the extracted text.",
+    ]);
+    return result.response.text();
+  } catch (err) {
+    console.error(`Gemini extraction failed for ${mimeType}:`, err);
+    return null;
+  }
+};
+
 export const extractTextFromPDF = async (fileBuffer) => {
   try {
     if (!fileBuffer || fileBuffer.length === 0) {
       throw new Error("Invalid or empty file buffer provided.");
     }
 
-    const parser = new PDFParse({ data: fileBuffer });
-    const data = await parser.getText();
-    await parser.destroy?.();
+    let data;
+    try {
+      data = await pdf(fileBuffer);
+    } catch (err) {
+      console.warn("pdf-parse failed, falling back to Gemini OCR", err);
+    }
 
-    if (data?.text?.trim()) {
+    if (data?.text?.trim() && data.text.length > 50) {
       return data.text.trim();
     }
-    console.log("PDF appears to be scanned. Converting to images for OCR...");
+    
+    console.log("PDF appears to be scanned or text extraction failed. Using Gemini Multimodal OCR...");
+    
+    // Fallback to Gemini Multimodal
+    const geminiText = await extractTextWithGemini(fileBuffer, "application/pdf");
+    if (geminiText) return geminiText;
 
-    // Step 2: Write PDF buffer to a temporary file
-    const pdfPath = path.join(TEMP_DIR, "uploaded.pdf");
-    fs.writeFileSync(pdfPath, fileBuffer);
-
-    // Step 3: Convert PDF pages to images
-    const imagePaths = await convertPDFToImages(pdfPath);
-    //console.log("Generated image paths:", imagePaths);
-
-    // Step 4: Perform OCR on each image
-    let extractedText = "";
-    for (const imagePath of imagePaths) {
-      //console.log(`Performing OCR on image: ${imagePath}`);
-      const ocrResult = await Tesseract.recognize(imagePath, "eng", {
-        //logger: (info) => console.log(info), // Optional: Log OCR progress
-      });
-      extractedText += `${ocrResult.data.text}\n`;
-
-      // Clean up temporary image
-      fs.unlinkSync(imagePath);
-    }
-
-    // Clean up temporary PDF
-    fs.unlinkSync(pdfPath);
-
-    //console.log("Extracted text:", extractedText.trim());
-
-    return extractedText.trim();
+    // Last resort fallback (Tesseract) would require splitting images, 
+    // but since Gemini supports PDF directly we should rely on it.
+    throw new Error("Gemini OCR failed to extract text from PDF.");
   } catch (error) {
     console.error("Error extracting text from PDF:", error.message);
-    throw new Error("Failed to extract text from PDF.");
+    throw new Error(`Failed to extract text from PDF: ${error.message}`);
   }
 };
 
@@ -171,29 +180,21 @@ export const extractTextFromCSV = async (fileBuffer) => {
 //     }
 //   };
 // Convert PDF pages to images using node-poppler
-const convertPDFToImages = async (pdfPath) => {
-  const poppler = new Poppler();
-  const options = {
-    pngFile: true, // Output images in PNG format
-    singleFile: false, // Generate separate files for each page
-  };
-
+// Gemini handles PDFs directly, so we don't need poppler anymore
+export const extractTextFromImage = async (fileBuffer, mimeType = "image/png") => {
   try {
-    // Convert PDF to images
-    await poppler.pdfToCairo(pdfPath, path.join(TEMP_DIR, "page"), options);
-    console.log("PDF successfully converted to images.");
-
-    // Retrieve generated image paths
-    const imageFiles = fs
-      .readdirSync(TEMP_DIR)
-      .filter((file) => file.endsWith(".png"));
-    if (imageFiles.length === 0) {
-      throw new Error("No images were generated from the PDF.");
+    // Try Gemini first
+    let text = await extractTextWithGemini(fileBuffer, mimeType);
+    
+    if (!text) {
+      console.log("Gemini OCR failed for image, falling back to Tesseract");
+      const result = await Tesseract.recognize(fileBuffer, "eng");
+      text = result.data.text;
     }
-
-    return imageFiles.map((file) => path.join(TEMP_DIR, file));
+    
+    return text.trim();
   } catch (error) {
-    console.error("Error during PDF to image conversion:", error.message);
-    throw new Error("Failed to convert PDF to images.");
+    console.error("Error extracting text from Image:", error.message);
+    throw new Error("Failed to extract text from Image.");
   }
 };

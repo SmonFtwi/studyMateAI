@@ -110,3 +110,156 @@ export const getProjectFiles = async (token: string, projectId: string) => {
 
   return response.json();
 };
+
+export const createChatSession = async (
+  token: string,
+  projectId: string,
+  title?: string
+) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/chat/sessions`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ title }),
+    }
+  );
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Failed to create chat session");
+  }
+  return response.json();
+};
+
+export const getChatSessions = async (token: string, projectId: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/chat/sessions`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Failed to fetch chat sessions");
+  }
+  return response.json();
+};
+
+export const getChatMessages = async (
+  token: string,
+  projectId: string,
+  sessionId: string
+) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/chat/${sessionId}/messages`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Failed to fetch chat messages");
+  }
+  return response.json();
+};
+
+export const sendChatMessage = async (
+  token: string,
+  projectId: string,
+  sessionId: string,
+  message: string
+) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/chat/${sessionId}/messages`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ message }),
+    }
+  );
+  if (!response.ok) {
+    const messageText = await response.text();
+    throw new Error(messageText || "Failed to send chat message");
+  }
+  return response.json();
+};
+
+export const generateFlashcards = async (token: string, projectId: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/flashcards/generate`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Failed to generate flashcards");
+  }
+  return response.json();
+};
+
+export const getFlashcards = async (token: string, projectId: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/flashcards`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Failed to fetch flashcards");
+  }
+  return response.json();
+};
+
+export const generateQuiz = async (token: string, projectId: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/quiz/generate`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Failed to generate quiz");
+  }
+  return response.json();
+};
+
+export const getQuiz = async (token: string, projectId: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/quiz`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "Failed to fetch quiz");
+  }
+  return response.json();
+};

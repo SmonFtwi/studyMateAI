@@ -12,18 +12,14 @@ import { registerUser } from "@/lib/apicall/user";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/navbar";
 
+import Navbar from "@/components/navbar";
+import { CosmicBackground } from "@/components/LandingPage/CosmicBackground";
+
 export default function SignUpPage() {
   const [registerMessage, setRegisterMessage] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
   const router = useRouter();
-
-  interface FormErrors {
-    name?: string;
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
-  }
 
   const {
     formData,
@@ -48,7 +44,7 @@ export default function SignUpPage() {
 
   const validateForm = (): boolean => {
     let isValid = true;
-    const newErrors: FormErrors = {};
+    const newErrors: any = {};
 
     if (formData.name.trim() === "") {
       newErrors.name = "Name is required";
@@ -137,41 +133,40 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0f1a] text-white overflow-hidden relative">
+    <div className="min-h-screen bg-[#030303] text-white overflow-hidden relative">
+      <CosmicBackground />
       <Navbar />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.05),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.06),transparent_25%)]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0b0e17]" />
 
-      <div className="relative max-w-6xl mx-auto px-6 pt-28 pb-16 flex flex-col lg:flex-row gap-12">
-        <div className="flex-1 flex flex-col justify-center space-y-4">
-          <p className="text-sm uppercase tracking-[0.3em] text-white/70">
-            StudyMate
+      <div className="relative max-w-6xl mx-auto px-6 pt-32 pb-16 flex flex-col lg:flex-row gap-20">
+        <div className="flex-1 flex flex-col justify-center space-y-6">
+          <p className="text-sm uppercase tracking-[0.3em] text-purple-400 font-bold">
+            Join the Universe
           </p>
-          <h1 className="text-4xl sm:text-5xl font-semibold leading-tight">
-            Create your desk and keep every study session connected.
+          <h1 className="text-5xl md:text-6xl font-bold leading-tight">
+            Start your journey with <span className="text-gradient-cosmic">StudyMate AI.</span>
           </h1>
-          <p className="text-white/70 max-w-xl">
+          <p className="text-white/60 text-lg max-w-xl leading-relaxed">
             Upload, embed, generate flashcards, and quiz yourself—all inside one
             workspace built for deliberate learning.
           </p>
-          <div className="flex gap-4 text-sm text-white/60">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-white/70" />
+          <div className="grid gap-4 text-sm text-white/50">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
               Project-aware embeddings
             </div>
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-white/70" />
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
               Flashcards on upload
             </div>
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-white/70" />
-              Questions that adapt
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.5)]" />
+              Questions that adapt to your progress
             </div>
           </div>
         </div>
 
-        <div className="flex-1">
-          <Card className="w-full bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl shadow-[0_30px_90px_-50px_rgba(0,0,0,0.8)]">
+        <div className="flex-1 w-full max-w-md">
+          <Card className="w-full glass-cosmos border-white/10 rounded-[32px] shadow-2xl overflow-hidden">
             <div className="p-8 space-y-6">
               <div className="space-y-2 text-center">
                 <h2 className="text-2xl font-semibold">Create your account</h2>

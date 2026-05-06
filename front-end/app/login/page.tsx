@@ -10,12 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import { loginUser } from "@/lib/apicall/user";
 import Navbar from "@/components/navbar";
-
-interface FormErrors {
-  email?: string;
-  password?: string;
-  general?: string;
-}
+import { CosmicBackground } from "@/components/LandingPage/CosmicBackground";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -114,41 +109,40 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0f1a] text-white overflow-hidden relative">
+    <div className="min-h-screen bg-[#030303] text-white overflow-hidden relative">
+      <CosmicBackground />
       <Navbar />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.05),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.06),transparent_25%)]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0b0e17]" />
 
-      <div className="relative max-w-6xl mx-auto px-6 pt-28 pb-16 flex flex-col justify-center items-center lg:flex-row gap-12">
-        <div className="flex-1 flex flex-col justify-center space-y-4">
-          <p className="text-sm uppercase tracking-[0.3em] text-white/70">
-            StudyMate
+      <div className="relative max-w-6xl mx-auto px-6 pt-32 pb-16 flex flex-col justify-center items-center lg:flex-row gap-20">
+        <div className="flex-1 flex flex-col justify-center space-y-6">
+          <p className="text-sm uppercase tracking-[0.3em] text-purple-400 font-bold">
+            StudyMate AI
           </p>
-          <h1 className="text-4xl sm:text-5xl font-semibold leading-tight">
-            Sign in and get back to studying with context.
+          <h1 className="text-5xl md:text-6xl font-bold leading-tight">
+            Sign in and get back to <span className="text-gradient-cosmic">Intelligent Learning.</span>
           </h1>
-          <p className="text-white/70 max-w-xl">
+          <p className="text-white/60 text-lg max-w-xl leading-relaxed">
             Your projects, embeddings, flashcards, and answers stay organized in
             one desk. Pick up exactly where you left off.
           </p>
-          <div className="flex gap-4 text-sm text-white/60">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-white/70" />
-              Instant answers
+          <div className="grid gap-4 text-sm text-white/50">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
+              Instant answers from your documents
             </div>
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-white/70" />
-              Flashcards on upload
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+              Flashcards generated on upload
             </div>
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-white/70" />
-              Project-aware chat
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.5)]" />
+              Project-aware cosmic chat
             </div>
           </div>
         </div>
 
-        <div className="flex-1">
-          <Card className="w-full bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl shadow-[0_30px_90px_-50px_rgba(0,0,0,0.8)]">
+        <div className="flex-1 w-full max-w-md">
+          <Card className="w-full glass-cosmos border-white/10 rounded-[32px] shadow-2xl overflow-hidden">
             <div className="p-8 space-y-6">
               <div className="space-y-2 text-center">
                 <h2 className="text-2xl font-semibold">Welcome back</h2>

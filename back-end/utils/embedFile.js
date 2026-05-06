@@ -7,6 +7,7 @@ import {
   extractTextFromDoc,
   extractTextFromExcel,
   extractTextFromPDF,
+  extractTextFromImage,
 } from "./textExtractor.js";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -56,6 +57,10 @@ const extractTextByExtension = async (fileBuffer, extension) => {
       return extractTextFromExcel(fileBuffer);
     case ".csv":
       return extractTextFromCSV(fileBuffer);
+    case ".png":
+    case ".jpg":
+    case ".jpeg":
+      return extractTextFromImage(fileBuffer);
     default:
       return fileBuffer.toString("utf8");
   }
