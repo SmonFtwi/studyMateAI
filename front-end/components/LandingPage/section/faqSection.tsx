@@ -53,8 +53,8 @@ export default function FaqSection() {
               viewport={{ once: true }}
               className="flex items-center gap-3 mb-8"
             >
-              <div className="w-10 h-[2px] bg-purple-500" />
-              <span className="text-xs font-black tracking-[0.5em] text-purple-400 uppercase">Help Center</span>
+              <div className="w-10 h-[2px] bg-blue-500" />
+              <span className="text-xs font-black tracking-[0.5em] text-blue-400 uppercase">Help Center</span>
             </motion.div>
             
             <motion.h2
@@ -73,7 +73,7 @@ export default function FaqSection() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-xl text-purple-100/40 font-medium max-w-md leading-relaxed mb-12"
+              className="text-xl text-blue-100/40 font-medium max-w-md leading-relaxed mb-12"
             >
               Got questions? We've got answers. Find everything you need 
               to know about StudyMate AI below.
@@ -117,20 +117,20 @@ export default function FaqSection() {
                 >
                   <div className={`p-8 rounded-[32px] border transition-all duration-500 ${
                     openIndex === i 
-                      ? "glass-cosmos border-purple-500/40 bg-purple-500/5 shadow-[0_20px_50px_rgba(139,92,246,0.1)]" 
+                      ? "glass-cosmos border-blue-500/40 bg-blue-500/5 shadow-[0_20px_50px_rgba(59,130,246,0.1)]" 
                       : "bg-white/5 border-white/5 hover:border-white/10"
                   }`}>
                     <div className="flex items-center justify-between mb-2">
                        <div className="flex items-center gap-4">
-                          <div className={`p-2.5 rounded-xl transition-all duration-500 ${openIndex === i ? "bg-purple-500 text-black" : "bg-white/5 text-purple-400 group-hover:bg-white/10"}`}>
+                          <div className={`p-2.5 rounded-xl transition-all duration-500 ${openIndex === i ? "bg-blue-500 text-black" : "bg-white/5 text-blue-400 group-hover:bg-white/10"}`}>
                              <faq.icon className="w-5 h-5" />
                           </div>
-                          <span className="text-[10px] font-black tracking-[0.3em] text-purple-300/40 uppercase">{faq.category}</span>
+                          <span className="text-[10px] font-black tracking-[0.3em] text-blue-300/40 uppercase">{faq.category}</span>
                        </div>
                        <ChevronDown className={`w-5 h-5 transition-transform duration-500 ${openIndex === i ? "rotate-180 text-white" : "text-white/20"}`} />
                     </div>
                     
-                    <h3 className={`text-xl font-black transition-colors duration-500 mt-4 ${openIndex === i ? "text-white" : "text-purple-100/60"}`}>
+                    <h3 className={`text-xl font-black transition-colors duration-500 mt-4 ${openIndex === i ? "text-white" : "text-blue-100/60"}`}>
                       {faq.question}
                     </h3>
 
@@ -142,14 +142,14 @@ export default function FaqSection() {
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                         >
-                          <p className="mt-6 text-purple-100/50 leading-relaxed font-medium">
+                          <p className="mt-6 text-blue-100/50 leading-relaxed font-medium">
                             {faq.answer}
                           </p>
                           <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
                              <span className="text-[9px] font-black text-white/10 tracking-[0.3em]">HELPFUL ANSWER</span>
                              <div className="flex gap-1">
                                 {[1,2,3,4].map(j => (
-                                  <div key={j} className="w-3 h-1 bg-purple-500/20 rounded-full" />
+                                  <div key={j} className="w-3 h-1 bg-blue-500/20 rounded-full" />
                                 ))}
                              </div>
                           </div>
@@ -165,7 +165,7 @@ export default function FaqSection() {
       </div>
       
       {/* Dynamic light effects */}
-      <div className="absolute top-1/2 left-0 w-[800px] h-[800px] bg-purple-600/5 rounded-full blur-[160px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+      <div className="absolute top-1/2 left-0 w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[160px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
     </section>
   );
 }

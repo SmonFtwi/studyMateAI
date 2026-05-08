@@ -13,7 +13,7 @@ export default function DashboardLayout({
 }) {
   return (
     <AuthProvider>
-      <div className="relative min-h-screen bg-[#030303] text-white overflow-hidden selection:bg-purple-500/30">
+      <div className="relative min-h-screen bg-slate-50 dark:bg-[#030303] text-slate-900 dark:text-white overflow-hidden selection:bg-blue-500/30">
         <CosmicBackground />
         
         {/* Scanline Effect */}
@@ -44,8 +44,8 @@ export default function DashboardLayout({
               </div>
 
               {/* Terminal-style corner accents */}
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-purple-500/20 rounded-tl-3xl pointer-events-none" />
-              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-purple-500/20 rounded-tr-3xl pointer-events-none" />
+              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-blue-500/20 rounded-tl-3xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-blue-500/20 rounded-tr-3xl pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-blue-500/20 rounded-bl-3xl pointer-events-none" />
               <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-blue-500/20 rounded-br-3xl pointer-events-none" />
             </main>
@@ -53,7 +53,7 @@ export default function DashboardLayout({
         </div>
 
         {/* Floating background glows */}
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-purple-600/5 rounded-full blur-[150px] pointer-events-none animate-pulse" />
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[150px] pointer-events-none animate-pulse" />
         <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[150px] pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
     </AuthProvider>

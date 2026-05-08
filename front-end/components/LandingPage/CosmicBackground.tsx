@@ -76,7 +76,7 @@ export const CosmicBackground: React.FC = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-[#030303]">
+    <div ref={containerRef} className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-slate-50 dark:bg-[#030303]">
       <style jsx global>{`
         @keyframes shooting-star {
           0% { transform: translateX(0) translateY(0) rotate(-45deg) scale(0); opacity: 0; }
@@ -94,13 +94,13 @@ export const CosmicBackground: React.FC = () => {
       `}</style>
 
       {/* Deep Space Gradients - Nebula Effects */}
-      <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] rounded-full bg-indigo-600/10 blur-[140px] animate-pulse" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[80%] h-[80%] rounded-full bg-purple-600/10 blur-[140px] animate-pulse" style={{ animationDelay: "1s" }} />
+      <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] rounded-full bg-blue-600/10 blur-[140px] animate-pulse" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[80%] h-[80%] rounded-full bg-blue-500/10 blur-[140px] animate-pulse" style={{ animationDelay: "1s" }} />
       <div className="absolute top-[20%] right-[10%] w-[50%] h-[50%] rounded-full bg-blue-600/5 blur-[120px] animate-pulse" style={{ animationDelay: "2s" }} />
       
       {/* Dynamic Aurora-like streak */}
       <motion.div 
-        className="absolute top-[40%] left-[-50%] w-[200%] h-[20%] bg-gradient-to-r from-transparent via-purple-500/5 to-transparent blur-[100px] -rotate-12"
+        className="absolute top-[40%] left-[-50%] w-[200%] h-[20%] bg-gradient-to-r from-transparent via-blue-500/5 to-transparent blur-[100px] -rotate-12"
         animate={{ x: ["-20%", "20%"] }}
         transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
       />
@@ -124,7 +124,7 @@ export const CosmicBackground: React.FC = () => {
             .map((star) => (
               <div
                 key={star.id}
-                className="absolute rounded-full bg-white opacity-0 animate-pulse"
+                className="absolute rounded-full bg-slate-300 dark:bg-white opacity-0 animate-pulse"
                 style={{
                   left: `${star.x}%`,
                   top: `${star.y}%`,
@@ -133,7 +133,7 @@ export const CosmicBackground: React.FC = () => {
                   animationDuration: `${star.duration}s`,
                   animationDelay: `${Math.random() * 5}s`,
                   opacity: Math.random() * 0.5 + 0.2,
-                  boxShadow: star.size > 1.2 ? `0 0 4px 1px rgba(255, 255, 255, 0.3)` : 'none'
+                  boxShadow: star.size > 1.2 ? `0 0 4px 1px rgba(59, 130, 246, 0.3)` : 'none'
                 }}
               />
             ))}
@@ -145,8 +145,8 @@ export const CosmicBackground: React.FC = () => {
         style={{ y: y2 }}
         className="absolute inset-0 opacity-40"
       >
-        <div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-purple-900/10 rounded-full blur-[120px] animate-blob" />
-        <div className="absolute bottom-[20%] right-[10%] w-[600px] h-[600px] bg-indigo-900/10 rounded-full blur-[150px] animate-blob" style={{ animationDelay: "4s" }} />
+        <div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[120px] animate-blob" />
+        <div className="absolute bottom-[20%] right-[10%] w-[600px] h-[600px] bg-blue-800/10 rounded-full blur-[150px] animate-blob" style={{ animationDelay: "4s" }} />
       </motion.div>
     </div>
   );

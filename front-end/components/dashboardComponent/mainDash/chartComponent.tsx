@@ -9,53 +9,54 @@ interface ChartCardProps {
 }
 
 export const ChartCard: React.FC<ChartCardProps> = ({ title, children }) => (
-  <Card className=" shadow-none">
-    <CardHeader>
-      <CardTitle className="text-lg font-semibold ">{title}</CardTitle>
+  <Card className="glass-cosmos border-slate-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.01] overflow-hidden">
+    <CardHeader className="border-b border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
+      <CardTitle className="text-lg font-bold tracking-tight text-slate-800 dark:text-slate-100">{title}</CardTitle>
     </CardHeader>
-    <CardContent>{children}</CardContent>
+    <CardContent className="pt-6">{children}</CardContent>
   </Card>
 );
-
-
-
-
 
 export const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white dark:bg-zinc-950 p-4 shadow-lg rounded-lg border">
-        <p className="text-sm text-gray-600 dark:text-gray-300">{format(new Date(label), "MMM dd, yyyy")}</p>
-        {payload.map((entry, index) => (
-          <p key={index} className="text-sm font-semibold" style={{ color: entry.color }}>
-            {entry.name}: {entry.value}
-          </p>
-        ))}
+      <div className="glass-cosmos p-4 shadow-xl rounded-xl border border-slate-200 dark:border-white/10 animate-in fade-in zoom-in duration-200">
+        <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+          {label ? format(new Date(label), "MMM dd, yyyy") : ""}
+        </p>
+        <div className="space-y-1.5">
+          {payload.map((entry, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                <span className="opacity-70">{entry.name}:</span> {entry.value}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
   return null;
 };
 
-
-
-
 export const CustomBarTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white dark:bg-zinc-950 p-4 shadow-lg rounded-lg border">
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+      <div className="glass-cosmos p-4 shadow-xl rounded-xl border border-slate-200 dark:border-white/10 animate-in fade-in zoom-in duration-200">
+        <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           {label}
         </p>
-        {payload.map((entry, index) => (
-          <p
-            key={index}
-            className="text-sm font-semibold"
-            style={{ color: entry.color }}
-          >
-            {entry.name}: {entry.value}
-          </p>
-        ))}
+        <div className="space-y-1.5">
+          {payload.map((entry, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                <span className="opacity-70">{entry.name}:</span> {entry.value}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

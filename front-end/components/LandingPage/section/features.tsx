@@ -10,32 +10,32 @@ const featureLines = [
     title: "Instant Knowledge",
     description: "Ask anything about your uploads and get grounded responses sourced from your material.",
     icon: Brain,
-    color: "bg-purple-500",
-    glow: "rgba(168, 85, 247, 0.3)"
+    color: "bg-blue-500",
+    glow: "rgba(59, 130, 246, 0.3)"
   },
   {
     label: "Flashcards",
     title: "Smart Review",
     description: "Auto-create flashcards from your documents and refine them as you study.",
     icon: Layers,
-    color: "bg-purple-500",
-    glow: "rgba(168, 85, 247, 0.3)"
+    color: "bg-blue-500",
+    glow: "rgba(59, 130, 246, 0.3)"
   },
   {
     label: "Practice",
     title: "Mastery Quizzes",
     description: "Generate practice questions to gauge your retention and identify gaps.",
     icon: Target,
-    color: "bg-purple-500",
-    glow: "rgba(168, 85, 247, 0.3)"
+    color: "bg-blue-500",
+    glow: "rgba(59, 130, 246, 0.3)"
   },
   {
     label: "Projects",
     title: "Fluid Workflow",
     description: "Group files by subject or course to keep your universe organized.",
     icon: Zap,
-    color: "bg-purple-500",
-    glow: "rgba(168, 85, 247, 0.3)"
+    color: "bg-blue-500",
+    glow: "rgba(59, 130, 246, 0.3)"
   },
 ];
 
@@ -75,15 +75,15 @@ const FeatureCard = ({ item, idx }: { item: any; idx: number }) => {
           <item.icon className="w-full h-full text-white" />
         </div>
         
-        <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.3em] text-purple-300/30 mb-6 font-black">
+        <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.3em] text-blue-300/30 mb-6 font-black">
           <span>{item.label}</span>
           <span className="opacity-0 group-hover:opacity-100 transition-opacity">LVL {String(idx + 1).padStart(2, "0")}</span>
         </div>
         
-        <h3 className="text-2xl font-black text-white mb-4 group-hover:text-purple-300 transition-colors tracking-tight">
+        <h3 className="text-2xl font-black text-white mb-4 group-hover:text-blue-300 transition-colors tracking-tight">
           {item.title}
         </h3>
-        <p className="text-base text-purple-100/40 leading-relaxed font-medium group-hover:text-purple-100/60 transition-colors">
+        <p className="text-base text-blue-100/40 leading-relaxed font-medium group-hover:text-blue-100/60 transition-colors">
           {item.description}
         </p>
 
@@ -109,8 +109,8 @@ export default function FeatureGridSection() {
               viewport={{ once: true }}
               className="flex items-center gap-3 mb-6"
             >
-              <div className="w-12 h-[2px] bg-gradient-to-r from-purple-500 to-transparent" />
-              <p className="text-xs uppercase tracking-[0.4em] text-purple-400 font-black">
+              <div className="w-12 h-[2px] bg-gradient-to-r from-blue-500 to-transparent" />
+              <p className="text-xs uppercase tracking-[0.4em] text-blue-400 font-black">
                 KEY FEATURES
               </p>
             </motion.div>
@@ -133,7 +133,7 @@ export default function FeatureGridSection() {
             transition={{ delay: 0.3 }}
             className="group flex flex-col items-start gap-4"
           >
-            <p className="text-purple-100/40 max-w-xs text-sm font-medium leading-relaxed">
+            <p className="text-blue-100/40 max-w-xs text-sm font-medium leading-relaxed">
               Powerful AI tools that help you understand, review, and master any subject.
             </p>
             <div className="flex items-center gap-3 text-sm font-black text-white group cursor-pointer">

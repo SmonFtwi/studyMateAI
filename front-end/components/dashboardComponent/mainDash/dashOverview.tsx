@@ -50,29 +50,29 @@ const DashboardOverview = () => {
       title: "Total Users",
       value: stats.totalUsers,
       icon: Users,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
+      color: "text-blue-500 dark:text-blue-400",
+      bgColor: "bg-blue-500/10",
     },
     {
       title: "Chat Messages",
       value: stats.totalChatMessages,
       icon: MessageCircle,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
+      color: "text-emerald-500 dark:text-emerald-400",
+      bgColor: "bg-emerald-500/10",
     },
     {
       title: "Chat Sessions",
       value: stats.totalChatSessions,
       icon: LayoutGrid,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
+      color: "text-indigo-500 dark:text-indigo-400",
+      bgColor: "bg-indigo-500/10",
     },
     {
       title: "Files",
       value: stats.totalFiles,
       icon: FileText,
-      color: "text-red-600",
-      bgColor: "bg-red-50",
+      color: "text-rose-500 dark:text-rose-400",
+      bgColor: "bg-rose-500/10",
     },
   ];
 
@@ -80,17 +80,17 @@ const DashboardOverview = () => {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat) => (
-          <Card key={stat.title} className="shadow-sm hover:shadow-md transition-shadow">
+          <Card key={stat.title} className="glass-cosmos border-slate-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium ">
+              <CardTitle className="text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-white/40">
                 {stat.title}
               </CardTitle>
-              <div className={`p-2 rounded-full ${stat.bgColor}`}>
+              <div className={`p-2 rounded-xl ${stat.bgColor}`}>
                 <stat.icon className={`w-4 h-4 ${stat.color}`} />
               </div>
             </CardHeader>
             <CardContent>
-              <div className={`text-2xl font-bold ${stat.color}`}>
+              <div className={`text-2xl font-black ${stat.color} tracking-tight`}>
                 {stat.value.toLocaleString()}
               </div>
             </CardContent>

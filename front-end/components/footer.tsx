@@ -50,7 +50,7 @@ export default function Footer() {
               </span>
             </Link>
             
-            <p className="text-xl text-purple-100/30 max-w-sm mb-12 leading-relaxed font-medium">
+            <p className="text-xl text-blue-100/30 max-w-sm mb-12 leading-relaxed font-medium">
               Your AI-powered study companion. Upload your materials and let 
               smart tools help you learn faster and ace your exams.
             </p>
@@ -77,9 +77,9 @@ export default function Footer() {
                   <li key={j}>
                     <Link
                       href={link.href}
-                      className="text-sm font-bold text-purple-100/40 hover:text-white transition-all duration-300 flex items-center group"
+                      className="text-sm font-bold text-blue-100/40 hover:text-white transition-all duration-300 flex items-center group"
                     >
-                      <div className="w-0 group-hover:w-4 h-px bg-purple-500 mr-0 group-hover:mr-3 transition-all duration-300" />
+                      <div className="w-0 group-hover:w-4 h-px bg-blue-500 mr-0 group-hover:mr-3 transition-all duration-300" />
                       {link.name}
                     </Link>
                   </li>
@@ -96,9 +96,9 @@ export default function Footer() {
                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                  <span className="text-[10px] font-black tracking-widest text-green-400 uppercase">All Systems Online</span>
               </div>
-              <div className="hidden lg:flex items-center gap-3 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20">
-                 <Radio className="w-3 h-3 text-purple-400" />
-                 <span className="text-[10px] font-black tracking-widest text-purple-400 uppercase">Fast & Reliable</span>
+              <div className="hidden lg:flex items-center gap-3 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20">
+                 <Radio className="w-3 h-3 text-blue-400" />
+                 <span className="text-[10px] font-black tracking-widest text-blue-400 uppercase">Fast & Reliable</span>
               </div>
            </div>
            
@@ -124,7 +124,7 @@ export default function Footer() {
       </div>
 
       {/* Extreme ambient decoration */}
-      <div className="absolute bottom-0 left-0 w-full h-[500px] bg-gradient-to-t from-purple-900/10 to-transparent pointer-events-none -z-10" />
+      <div className="absolute bottom-0 left-0 w-full h-[500px] bg-gradient-to-t from-blue-900/10 to-transparent pointer-events-none -z-10" />
       <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-600/10 rounded-full blur-[160px] pointer-events-none -z-10" />
     </footer>
   );

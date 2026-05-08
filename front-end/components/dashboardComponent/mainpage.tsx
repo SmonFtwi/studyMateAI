@@ -131,14 +131,14 @@ export default function MainPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <div className="relative">
-            <div className="absolute inset-0 bg-purple-500/20 blur-xl rounded-full" />
+            <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
             <div className="w-14 h-14 bg-slate-900 border border-white/10 rounded-2xl flex items-center justify-center relative overflow-hidden">
-              <LayoutGrid className="w-7 h-7 text-purple-400" />
+              <LayoutGrid className="w-7 h-7 text-blue-400" />
             </div>
           </div>
           <div>
             <h1 className="text-3xl font-black tracking-tight text-white uppercase italic">
-              Project<span className="text-purple-500 text-4xl">.</span>Hub
+              Project<span className="text-blue-500 text-4xl">.</span>Hub
             </h1>
             <p className="text-xs font-black text-white/30 tracking-[0.2em] uppercase mt-1">
               Neural Network Archives // Active Modules: {projects.length}
@@ -149,7 +149,7 @@ export default function MainPage() {
         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <Button
             onClick={() => setOpen(true)}
-            className="h-14 px-8 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-2xl border-0 shadow-[0_0_30px_rgba(168,85,247,0.3)] group/btn relative overflow-hidden"
+            className="h-14 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-2xl border-0 shadow-[0_0_30px_rgba(59,130,246,0.3)] group/btn relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
             <FolderPlus className="mr-3 h-5 w-5" />
@@ -169,7 +169,7 @@ export default function MainPage() {
               transition={{ duration: 0.4, delay: index * 0.05 }}
               layout
             >
-              <div className="group/card glass-cosmos border-white/5 rounded-[2rem] p-8 min-h-[280px] flex flex-col relative overflow-hidden hover:border-purple-500/30 transition-all duration-500">
+              <div className="group/card glass-cosmos border-white/5 rounded-[2rem] p-8 min-h-[280px] flex flex-col relative overflow-hidden hover:border-blue-500/30 transition-all duration-500">
                 {/* Background Text Accent */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[120px] font-black text-white/[0.01] pointer-events-none select-none italic tracking-tighter">
                   {index + 1 < 10 ? `0${index + 1}` : index + 1}
@@ -198,10 +198,10 @@ export default function MainPage() {
                 {/* Project Header */}
                 <div className="mb-6 relative z-10">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
-                    <span className="text-[10px] font-black text-purple-500 tracking-[0.2em] uppercase italic">Module Linked</span>
+                    <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
+                    <span className="text-[10px] font-black text-blue-500 tracking-[0.2em] uppercase italic">Module Linked</span>
                   </div>
-                  <h3 className="text-2xl font-black text-white group-hover/card:text-purple-400 transition-colors line-clamp-1">
+                  <h3 className="text-2xl font-black text-white group-hover/card:text-blue-400 transition-colors line-clamp-1">
                     {project.title}
                   </h3>
                 </div>
@@ -223,17 +223,17 @@ export default function MainPage() {
                   <Link href={`/Dashboard/projects/${project.project_id}`}>
                     <motion.div
                       whileHover={{ scale: 1.05, x: 5 }}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 group-hover/card:border-purple-500/50 group-hover/card:bg-purple-500/10 transition-all cursor-pointer"
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 group-hover/card:border-blue-500/50 group-hover/card:bg-blue-500/10 transition-all cursor-pointer"
                     >
-                      <Database className="w-3.5 h-3.5 text-purple-400" />
-                      <span className="text-[10px] font-black text-purple-100 uppercase tracking-widest">Access Module</span>
+                      <Database className="w-3.5 h-3.5 text-blue-400" />
+                      <span className="text-[10px] font-black text-blue-100 uppercase tracking-widest">Access Module</span>
                     </motion.div>
                   </Link>
                 </div>
 
                 {/* Hover Effects */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/[0.03] to-blue-500/[0.03] opacity-0 group-hover/card:opacity-100 transition-opacity pointer-events-none" />
-                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-purple-500/10 blur-[50px] rounded-full opacity-0 group-hover/card:opacity-100 transition-all duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.03] to-indigo-500/[0.03] opacity-0 group-hover/card:opacity-100 transition-opacity pointer-events-none" />
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full opacity-0 group-hover/card:opacity-100 transition-all duration-700" />
               </div>
             </motion.div>
           ))}
@@ -243,10 +243,10 @@ export default function MainPage() {
         {projects.length === 0 && (
           <div className="col-span-full py-32 flex flex-col items-center justify-center text-center">
             <div className="relative mb-8">
-              <div className="absolute inset-0 bg-purple-500/20 blur-3xl animate-pulse rounded-full" />
+              <div className="absolute inset-0 bg-blue-500/20 blur-3xl animate-pulse rounded-full" />
               <div className="w-24 h-24 bg-slate-900 border border-white/10 rounded-3xl flex items-center justify-center relative overflow-hidden group">
-                <Sparkles className="w-10 h-10 text-purple-400 group-hover:scale-125 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-purple-500/20 to-transparent" />
+                <Sparkles className="w-10 h-10 text-blue-400 group-hover:scale-125 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent" />
               </div>
             </div>
             <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter mb-2">Neural Archives Empty</h3>

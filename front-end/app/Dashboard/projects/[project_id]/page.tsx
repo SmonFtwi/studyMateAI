@@ -452,7 +452,7 @@ const ProjectPage: React.FC<{ params: { project_id: string } }> = ({
             onClick={() => setActiveTab(tab as any)}
             className={`flex-1 py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all rounded-xl ${
               activeTab === tab
-                ? "bg-purple-500/20 text-purple-400 shadow-[inset_0_0_20px_rgba(168,85,247,0.2)]"
+                ? "bg-blue-500/20 text-blue-400 shadow-[inset_0_0_20px_rgba(59,130,246,0.2)]"
                 : "text-white/30 hover:text-white/50"
             }`}
           >
@@ -503,12 +503,12 @@ const ProjectPage: React.FC<{ params: { project_id: string } }> = ({
                 onDragLeave={handleDragLeave}
                 className={`relative rounded-2xl border border-dashed transition-all duration-300 group/upload ${
                   isDragging
-                    ? "border-purple-500 bg-purple-500/5 shadow-[0_0_20px_rgba(168,85,247,0.1)]"
+                    ? "border-blue-500 bg-blue-500/5 shadow-[0_0_20px_rgba(59,130,246,0.1)]"
                     : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20"
                 }`}
               >
                 <div className="p-6 flex flex-col items-center justify-center text-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${isDragging ? 'bg-purple-500 text-white scale-110' : 'bg-white/5 text-white/30'}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${isDragging ? 'bg-blue-500 text-white scale-110' : 'bg-white/5 text-white/30'}`}>
                     <Upload className="h-5 w-5" />
                   </div>
                   <div>
@@ -661,7 +661,7 @@ const ProjectPage: React.FC<{ params: { project_id: string } }> = ({
                           onClick={() => handleSelectSession(session._id)}
                           className={`w-full text-left px-4 py-3 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${
                             selectedSessionId === session._id
-                              ? "border-purple-500/50 bg-purple-500/10 text-purple-400 shadow-[inset_0_0_15px_rgba(168,85,247,0.1)]"
+                              ? "border-blue-500/50 bg-blue-500/10 text-blue-400 shadow-[inset_0_0_15px_rgba(59,130,246,0.1)]"
                               : "border-white/5 bg-white/[0.02] text-white/40 hover:border-white/10 hover:bg-white/[0.04] hover:text-white/60"
                           }`}
                         >
@@ -1295,14 +1295,14 @@ const ProjectPage: React.FC<{ params: { project_id: string } }> = ({
             <>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                    <Workflow className="h-4 w-4 text-purple-400" />
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                    <Workflow className="h-4 w-4 text-blue-400" />
                   </div>
                   <div>
                     <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] block">
                       Cognitive_Modules
                     </span>
-                    <span className="text-[8px] font-black text-purple-400/50 uppercase tracking-[0.1em]">
+                    <span className="text-[8px] font-black text-blue-400/50 uppercase tracking-[0.1em]">
                       Enhancement_Suites
                     </span>
                   </div>

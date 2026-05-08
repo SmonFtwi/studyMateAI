@@ -49,8 +49,8 @@ export default function CallToActionSection() {
         >
           {/* Cosmic Vortex Background */}
           <div className="absolute inset-0 z-0">
-             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.2),transparent_70%)] animate-pulse" />
-             <div className="absolute inset-0 bg-[conic-gradient(from_0deg_at_50%_50%,transparent,rgba(139,92,246,0.05),transparent)] animate-spin-slow" />
+             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.2),transparent_70%)] animate-pulse" />
+             <div className="absolute inset-0 bg-[conic-gradient(from_0deg_at_50%_50%,transparent,rgba(59,130,246,0.05),transparent)] animate-spin-slow" />
           </div>
 
           {/* Floating UI Bits */}
@@ -59,8 +59,8 @@ export default function CallToActionSection() {
              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
              className="absolute top-20 left-20 hidden lg:flex items-center gap-3 glass-cosmos px-4 py-2 rounded-full border-white/10"
           >
-             <Radio className="w-4 h-4 text-purple-400" />
-             <span className="text-[10px] font-black tracking-widest text-purple-300/50 uppercase">Free to Use</span>
+             <Radio className="w-4 h-4 text-blue-400" />
+             <span className="text-[10px] font-black tracking-widest text-blue-300/50 uppercase">Free to Use</span>
           </motion.div>
 
           <motion.div 
@@ -68,8 +68,8 @@ export default function CallToActionSection() {
              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
              className="absolute bottom-20 right-20 hidden lg:flex items-center gap-3 glass-cosmos px-4 py-2 rounded-full border-white/10"
           >
-             <Target className="w-4 h-4 text-purple-400" />
-             <span className="text-[10px] font-black tracking-widest text-purple-300/50 uppercase">Ready for You</span>
+             <Target className="w-4 h-4 text-blue-400" />
+             <span className="text-[10px] font-black tracking-widest text-blue-300/50 uppercase">Ready for You</span>
           </motion.div>
 
           <div className="relative z-10 max-w-3xl mx-auto">
@@ -93,7 +93,7 @@ export default function CallToActionSection() {
             
             <p 
               style={{ transform: "translateZ(20px)" }}
-              className="text-xl md:text-2xl text-purple-100/40 mb-16 leading-relaxed font-medium"
+              className="text-xl md:text-2xl text-blue-100/40 mb-16 leading-relaxed font-medium"
             >
               Join thousands of students already using AI to study more 
               effectively. Sign up today — it's completely free.
@@ -104,7 +104,7 @@ export default function CallToActionSection() {
               className="flex flex-col sm:flex-row gap-8 justify-center items-center"
             >
               <Link href="/register">
-                <Button size="lg" className="h-20 px-14 rounded-3xl bg-white text-black hover:bg-purple-50 font-black text-2xl shadow-[0_20px_50px_rgba(255,255,255,0.15)] group transition-all hover:-translate-y-2">
+                <Button size="lg" className="h-20 px-14 rounded-3xl bg-white text-black hover:bg-blue-50 font-black text-2xl shadow-[0_20px_50px_rgba(255,255,255,0.15)] group transition-all hover:-translate-y-2">
                   GET STARTED FREE
                   <ArrowRight className="ml-4 w-7 h-7 group-hover:translate-x-2 transition-transform" />
                 </Button>
@@ -119,19 +119,19 @@ export default function CallToActionSection() {
             {/* Neural lines indicator */}
             <div className="mt-20 flex justify-center gap-2">
                {[...Array(12)].map((_, i) => (
-                 <div key={i} className="w-1 h-8 bg-purple-500/20 rounded-full animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
+                 <div key={i} className="w-1 h-8 bg-blue-500/20 rounded-full animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
                ))}
             </div>
           </div>
           
           {/* Edge Glows */}
-          <div className="absolute top-0 left-1/4 w-1/2 h-px bg-purple-500/30" />
-          <div className="absolute bottom-0 left-1/4 w-1/2 h-px bg-purple-500/30" />
+          <div className="absolute top-0 left-1/4 w-1/2 h-px bg-blue-500/30" />
+          <div className="absolute bottom-0 left-1/4 w-1/2 h-px bg-blue-500/30" />
         </motion.div>
       </div>
 
       {/* Extreme atmospheric decoration */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.03),transparent_70%)] pointer-events-none -z-20" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.03),transparent_70%)] pointer-events-none -z-20" />
     </section>
   );
 }

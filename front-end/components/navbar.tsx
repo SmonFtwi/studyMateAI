@@ -47,7 +47,7 @@ export default function Navbar() {
                 initial={{ x: "-100%" }}
                 animate={{ x: "100%" }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="absolute bottom-0 left-0 w-1/2 h-px bg-purple-500 opacity-50"
+                className="absolute bottom-0 left-0 w-1/2 h-px bg-blue-500 opacity-50"
               />
             )}
 
@@ -55,7 +55,7 @@ export default function Navbar() {
               <div className="flex items-center">
                 <Link href="/" className="flex items-center space-x-4 group">
                   <div className="relative">
-                    <div className="absolute -inset-2 bg-purple-500 rounded-full blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-700"></div>
+                    <div className="absolute -inset-2 bg-blue-500 rounded-full blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-700"></div>
                     <div className="relative w-12 h-12 rounded-2xl glass-cosmos border border-white/20 overflow-hidden flex items-center justify-center group-hover:rotate-[15deg] transition-transform duration-500 bg-black">
                       <img
                         src="/studyMate2.png"
@@ -68,7 +68,7 @@ export default function Navbar() {
                     </div>
                   </div>
                   <div className="hidden sm:block">
-                    <h1 className="text-2xl font-black tracking-tighter text-white group-hover:text-purple-300 transition-colors">
+                    <h1 className="text-2xl font-black tracking-tighter text-white group-hover:text-blue-300 transition-colors">
                       STUDYMATE<span className="text-gradient-cosmic">AI</span>
                     </h1>
                   </div>
@@ -85,7 +85,7 @@ export default function Navbar() {
                       className={`relative px-6 py-2 text-[11px] font-black tracking-[0.3em] transition-all duration-300 uppercase ${
                         activeItem === item.id
                           ? "text-white"
-                          : "text-purple-100/30 hover:text-white"
+                          : "text-blue-100/30 hover:text-white"
                       }`}
                     >
                       {item.label}
@@ -109,7 +109,7 @@ export default function Navbar() {
                     </Button>
                   </Link>
                   <Link href="/register">
-                    <Button className="rounded-2xl px-8 h-12 bg-white text-black hover:bg-purple-50 transition-all font-black text-xs tracking-[0.2em] uppercase shadow-[0_10px_30px_rgba(255,255,255,0.1)] hover:shadow-[0_15px_40px_rgba(255,255,255,0.2)] hover:-translate-y-0.5">
+                    <Button className="rounded-2xl px-8 h-12 bg-white text-black hover:bg-blue-50 transition-all font-black text-xs tracking-[0.2em] uppercase shadow-[0_10px_30px_rgba(255,255,255,0.1)] hover:shadow-[0_15px_40px_rgba(255,255,255,0.2)] hover:-translate-y-0.5">
                       SIGN UP
                     </Button>
                   </Link>

@@ -11,8 +11,6 @@ import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import { registerUser } from "@/lib/apicall/user";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/navbar";
-
-import Navbar from "@/components/navbar";
 import { CosmicBackground } from "@/components/LandingPage/CosmicBackground";
 
 export default function SignUpPage() {
@@ -139,7 +137,7 @@ export default function SignUpPage() {
 
       <div className="relative max-w-6xl mx-auto px-6 pt-32 pb-16 flex flex-col lg:flex-row gap-20">
         <div className="flex-1 flex flex-col justify-center space-y-6">
-          <p className="text-sm uppercase tracking-[0.3em] text-purple-400 font-bold">
+          <p className="text-sm uppercase tracking-[0.3em] text-blue-400 font-bold">
             Join the Universe
           </p>
           <h1 className="text-5xl md:text-6xl font-bold leading-tight">
@@ -151,7 +149,7 @@ export default function SignUpPage() {
           </p>
           <div className="grid gap-4 text-sm text-white/50">
             <div className="flex items-center gap-3">
-              <div className="w-1.5 h-1.5 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
+              <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
               Project-aware embeddings
             </div>
             <div className="flex items-center gap-3">
@@ -159,7 +157,7 @@ export default function SignUpPage() {
               Flashcards on upload
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-1.5 h-1.5 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.5)]" />
+              <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.5)]" />
               Questions that adapt to your progress
             </div>
           </div>

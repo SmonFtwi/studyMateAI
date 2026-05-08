@@ -1,12 +1,16 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import {  XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
+import { XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, CartesianGrid } from "recharts";
 import { getFilesUploaded } from "@/lib/apicall/dashboard";
 import { format } from "date-fns";
 import { CustomTooltip } from "./chartComponent";
+import { useTheme } from "next-themes";
+
 export const FilesUploadedChart = () => {
   const [data, setData] = useState<{ date: string; total_files: number }[]>([]);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,22 +25,38 @@ export const FilesUploadedChart = () => {
     fetchData();
   }, []);
 
+  const strokeColor = isDark ? "#94a3b8" : "#64748b";
+  const gridColor = isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)";
+
   return (
     <ResponsiveContainer width="100%" height={300}>
-       <BarChart data={data}>
-       <XAxis 
+       <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} />
+        <XAxis 
           dataKey="date" 
           tickFormatter={(date) => format(new Date(date), 'MMM dd')}
-          className="text-gray-900 dark:text-gray-200"
+          stroke={strokeColor}
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+          dy={10}
         />
-        <YAxis />
-      <Tooltip content={<CustomTooltip/>} />
-       <Bar  dataKey="total_files"  fill="#83a6ed" barSize={30} />
+        <YAxis 
+          stroke={strokeColor}
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+          dx={-10}
+        />
+        <Tooltip content={<CustomTooltip/>} cursor={{ fill: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' }} />
+        <Bar 
+          dataKey="total_files" 
+          fill="#6366f1" 
+          radius={[4, 4, 0, 0]}
+          barSize={32}
+          animationDuration={1500}
+        />
        </BarChart>
-       
-        {/* <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" /> */}
-        
-        
     </ResponsiveContainer>
   );
 };

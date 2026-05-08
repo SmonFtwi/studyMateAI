@@ -46,7 +46,7 @@ export default function AboutPage() {
             >
               <div>
                 <h2 className="text-3xl font-bold mb-4 flex items-center gap-3">
-                  <Rocket className="text-purple-500" /> Who We Are
+                  <Rocket className="text-blue-500" /> Who We Are
                 </h2>
                 <p className="text-white/60 leading-relaxed text-lg">
                   Born out of the need for smarter study tools, StudyMate AI is a team of educators, engineers, and AI researchers dedicated to making learning more accessible and engaging.
@@ -54,7 +54,7 @@ export default function AboutPage() {
               </div>
               <div>
                 <h2 className="text-3xl font-bold mb-4 flex items-center gap-3">
-                  <Heart className="text-pink-500" /> Our Vision
+                  <Heart className="text-cyan-500" /> Our Vision
                 </h2>
                 <p className="text-white/60 leading-relaxed text-lg">
                   We envision a world where technology removes the barriers to knowledge, allowing students to focus on mastery and creativity rather than rote memorization.
@@ -67,7 +67,7 @@ export default function AboutPage() {
               viewport={{ once: true }}
               className="relative"
             >
-              <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/20 to-blue-500/20 blur-3xl -z-10" />
+              <div className="absolute -inset-4 bg-gradient-to-r from-blue-600/20 to-blue-400/20 blur-3xl -z-10" />
               <img
                 src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop"
                 alt="Our Team"
@@ -88,7 +88,7 @@ export default function AboutPage() {
                 className="glass-cosmos p-8 rounded-3xl text-center border-white/5"
               >
                 <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <stat.icon className="text-purple-400 w-6 h-6" />
+                  <stat.icon className="text-blue-400 w-6 h-6" />
                 </div>
                 <div className="text-4xl font-bold mb-2">{stat.value}</div>
                 <div className="text-white/40 font-medium uppercase tracking-wider text-xs">{stat.label}</div>
@@ -109,13 +109,13 @@ export default function AboutPage() {
                 Whether you're a student, educator, or developer, there's a place for you in our cosmic journey. Let's reshape education together.
               </p>
               <Link href="/register">
-                <button className="bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-purple-50 transition-colors shadow-xl">
+                <button className="bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-blue-50 transition-colors shadow-xl">
                   Get Started for Free
                 </button>
               </Link>
             </div>
             {/* Background elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px]" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px]" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px]" />
           </motion.div>
         </div>

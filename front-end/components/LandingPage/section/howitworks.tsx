@@ -9,29 +9,29 @@ const steps = [
     title: "SIGN UP",
     description: "Create your free account in seconds and set up your study profile.",
     icon: UserPlus,
-    color: "bg-purple-500",
-    shadow: "shadow-purple-500/20",
+    color: "bg-blue-500",
+    shadow: "shadow-blue-500/20",
   },
   {
     title: "UPLOAD",
     description: "Drop in your PDFs, notes, or textbooks — we handle the rest.",
     icon: Upload,
-    color: "bg-purple-500",
-    shadow: "shadow-purple-500/20",
+    color: "bg-blue-500",
+    shadow: "shadow-blue-500/20",
   },
   {
     title: "LEARN",
     description: "AI breaks down your material into summaries, flashcards, and practice quizzes.",
     icon: Brain,
-    color: "bg-purple-500",
-    shadow: "shadow-purple-500/20",
+    color: "bg-blue-500",
+    shadow: "shadow-blue-500/20",
   },
   {
     title: "SUCCEED",
     description: "Ace your exams with confidence, backed by personalized study tools.",
     icon: Trophy,
-    color: "bg-purple-500",
-    shadow: "shadow-purple-500/20",
+    color: "bg-blue-500",
+    shadow: "shadow-blue-500/20",
   },
 ];
 
@@ -52,7 +52,7 @@ export default function HowItWorksSection() {
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="inline-block px-4 py-1 rounded-full glass-cosmos border-white/10 text-[10px] font-black tracking-[0.3em] text-purple-400 mb-6"
+              className="inline-block px-4 py-1 rounded-full glass-cosmos border-white/10 text-[10px] font-black tracking-[0.3em] text-blue-400 mb-6"
             >
               HOW IT WORKS
             </motion.div>
@@ -78,7 +78,7 @@ export default function HowItWorksSection() {
                   </div>
                   <div>
                     <h3 className="text-xl font-black text-white mb-2">{step.title}</h3>
-                    <p className="text-sm text-purple-100/60 font-medium leading-relaxed">
+                    <p className="text-sm text-blue-100/60 font-medium leading-relaxed">
                       {step.description}
                     </p>
                   </div>
@@ -96,14 +96,14 @@ export default function HowItWorksSection() {
                 rotate: 360 
               }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="relative w-48 h-48 rounded-full glass-cosmos border-white/20 flex items-center justify-center z-20 shadow-[0_0_100px_rgba(139,92,246,0.3)]"
+              className="relative w-48 h-48 rounded-full glass-cosmos border-white/20 flex items-center justify-center z-20 shadow-[0_0_100px_rgba(59,130,246,0.3)]"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full animate-pulse" />
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-full animate-pulse" />
               <Brain className="w-20 h-20 text-white" />
               
               {/* Spinning data particles around core */}
               <div className="absolute inset-[-40px] animate-spin-slow">
-                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full blur-[4px]" />
+                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-blue-500 rounded-full blur-[4px]" />
               </div>
               <div className="absolute inset-[-60px] animate-spin" style={{ animationDirection: 'reverse', animationDuration: '4s' }}>
                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-blue-400 rounded-full blur-[2px]" />
@@ -141,9 +141,9 @@ export default function HowItWorksSection() {
             <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
                 <defs>
                     <linearGradient id="orbit-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0" />
-                        <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.5" />
-                        <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0" />
+                        <stop offset="0%" stopColor="#3b82f6" stopOpacity="0" />
+                        <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.5" />
+                        <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
                     </linearGradient>
                 </defs>
                 <circle 
@@ -161,7 +161,7 @@ export default function HowItWorksSection() {
       
       {/* Decorative Orbs */}
       <div className="absolute top-1/4 -left-40 w-96 h-96 bg-blue-600/5 rounded-full blur-[140px] -z-10 animate-pulse" />
-      <div className="absolute bottom-1/4 -right-40 w-[500px] h-[500px] bg-purple-600/5 rounded-full blur-[160px] -z-10 animate-pulse" />
+      <div className="absolute bottom-1/4 -right-40 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[160px] -z-10 animate-pulse" />
     </section>
   );
 }

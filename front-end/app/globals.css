@@ -11,13 +11,13 @@ html {
 :root {
   --bg-color: #ffffff;
   --text-color: #000000;
-  --bg-gradient: linear-gradient(to bottom right, #eff6ff, #e0e7ff, #ede9fe);
+  --bg-gradient: linear-gradient(to bottom right, #eff6ff, #dbeafe, #e0e7ff);
 }
 
 html.dark {
-  --bg-color: #121212;
-  --text-color: #ffffff;
-  --bg-gradient: linear-gradient(to bottom right, #111827, rgba(30, 58, 138, 0.2), rgba(88, 28, 135, 0.2));
+  --bg-color: #0f172a;
+  --text-color: #f8fafc;
+  --bg-gradient: radial-gradient(circle at top right, #1e293b, #0f172a);
 }
 
 body {
@@ -61,11 +61,11 @@ body {
   }
 
   .text-gradient-cosmic {
-    @apply text-purple-400;
+    @apply text-blue-500;
   }
   .glass-cosmos {
-    @apply bg-white/5 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)];
-    background-image: radial-gradient(circle at top left, rgba(255, 255, 255, 0.05), transparent);
+    @apply bg-white/70 dark:bg-slate-900/40 backdrop-blur-2xl border border-blue-500/10 dark:border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+    background-image: radial-gradient(circle at top left, rgba(59, 130, 246, 0.05), transparent);
   }
   .border-beam {
     position: relative;

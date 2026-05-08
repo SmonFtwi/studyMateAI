@@ -25,8 +25,8 @@ const KnowledgeAtom = ({ delay = 0, x = 0, y = 0, icon: Icon }: { delay?: number
     className="absolute z-20 pointer-events-none"
     style={{ left: `${x}%`, top: `${y}%` }}
   >
-    <div className="glass-cosmos p-3 rounded-full border-white/20 shadow-[0_0_20px_rgba(139,92,246,0.3)]">
-      <Icon className="w-5 h-5 text-purple-300" />
+    <div className="glass-cosmos p-3 rounded-full border-white/20 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+      <Icon className="w-5 h-5 text-blue-300" />
     </div>
   </motion.div>
 );
@@ -71,9 +71,9 @@ export default function HeroSection() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="inline-flex items-center gap-3 px-6 py-2 rounded-full glass-cosmos border-white/20 text-sm font-semibold text-purple-200 mb-10 shadow-[0_0_30px_rgba(139,92,246,0.15)]"
+          className="inline-flex items-center gap-3 px-6 py-2 rounded-full glass-cosmos border-white/20 text-sm font-semibold text-blue-200 mb-10 shadow-[0_0_30px_rgba(59,130,246,0.15)]"
         >
-          <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse shadow-[0_0_10px_#8b5cf6]" />
+          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_#3b82f6]" />
           <span className="tracking-[0.2em] uppercase text-[11px]">Now Available — Start for Free</span>
         </motion.div>
 
@@ -83,18 +83,18 @@ export default function HeroSection() {
           transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-8 leading-[0.9]"
         >
-          THINK <span className="text-gradient-cosmic italic">BEYOND</span> <br />
-          THE PAGE
+          MASTER YOUR <span className="text-gradient-cosmic italic">STUDIES</span> <br />
+          WITH AI
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-xl md:text-2xl text-purple-100/70 max-w-3xl mx-auto mb-14 leading-relaxed font-medium"
+          className="text-xl md:text-2xl text-blue-100/70 max-w-3xl mx-auto mb-14 leading-relaxed font-medium"
         >
-          Upload your study materials and let AI create summaries, flashcards, 
-          and quizzes — so you can study smarter, not harder.
+          Transform messy notes into structured knowledge. Get AI-powered 
+          summaries, flashcards, and quizzes in seconds.
         </motion.p>
 
         <motion.div
@@ -104,7 +104,7 @@ export default function HeroSection() {
           className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-32"
         >
           <Link href="/register">
-            <Button size="lg" className="rounded-2xl px-12 py-8 bg-white text-black hover:bg-purple-50 font-black text-xl group transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:shadow-[0_20px_60px_rgba(255,255,255,0.2)] hover:-translate-y-1">
+            <Button size="lg" className="rounded-2xl px-12 py-8 bg-white text-black hover:bg-blue-50 font-black text-xl group transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:shadow-[0_20px_60px_rgba(255,255,255,0.2)] hover:-translate-y-1">
               GET STARTED
               <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-2 transition-transform" />
             </Button>
@@ -142,7 +142,7 @@ export default function HeroSection() {
             className="relative rounded-[40px] p-2 glass-cosmos border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden"
           >
             {/* Animated Glow Border */}
-            <div className="absolute inset-0 bg-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <div className="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
             
             <Image
               src="/studymageDash.png"
@@ -158,8 +158,8 @@ export default function HeroSection() {
               style={{ transform: "translateZ(50px)" }}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none"
             >
-              <div className="absolute top-[10%] left-[10%] w-32 h-32 bg-purple-500/10 blur-[60px] rounded-full" />
-              <div className="absolute bottom-[10%] right-[10%] w-32 h-32 bg-purple-500/10 blur-[60px] rounded-full" />
+              <div className="absolute top-[10%] left-[10%] w-32 h-32 bg-blue-500/10 blur-[60px] rounded-full" />
+              <div className="absolute bottom-[10%] right-[10%] w-32 h-32 bg-blue-500/10 blur-[60px] rounded-full" />
             </div>
           </motion.div>
 
@@ -170,11 +170,11 @@ export default function HeroSection() {
             className="absolute -top-12 -right-8 md:-right-16 glass-cosmos p-6 rounded-3xl border-white/20 shadow-2xl hidden lg:block backdrop-blur-3xl"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-purple-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
               <div className="text-left">
-                <p className="text-[12px] text-purple-300/60 uppercase font-black tracking-widest">Study Time</p>
+                <p className="text-[12px] text-blue-300/60 uppercase font-black tracking-widest">Study Time</p>
                 <p className="text-xl font-black text-white">10x Faster</p>
               </div>
             </div>
@@ -186,11 +186,11 @@ export default function HeroSection() {
             className="absolute -bottom-12 -left-8 md:-left-16 glass-cosmos p-6 rounded-3xl border-white/20 shadow-2xl hidden lg:block backdrop-blur-3xl"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-purple-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
                 <Brain className="w-6 h-6 text-white" />
               </div>
               <div className="text-left">
-                <p className="text-[12px] text-purple-300/60 uppercase font-black tracking-widest">AI Powered</p>
+                <p className="text-[12px] text-blue-300/60 uppercase font-black tracking-widest">AI Powered</p>
                 <p className="text-xl font-black text-white">Always Ready</p>
               </div>
             </div>
@@ -199,7 +199,7 @@ export default function HeroSection() {
       </div>
 
       {/* Decorative atmospheric glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-radial-gradient from-purple-500/5 via-transparent to-transparent pointer-events-none -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-radial-gradient from-blue-500/5 via-transparent to-transparent pointer-events-none -z-10" />
     </section>
   );
 }

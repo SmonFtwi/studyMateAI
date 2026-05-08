@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip,  ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { getUserRegistrations } from "@/lib/apicall/dashboard";
 import { CustomBarTooltip } from "./chartComponent";
+import { useTheme } from "next-themes";
 
 interface TopUserData {
   username: string;
@@ -12,6 +13,8 @@ interface TopUserData {
 
 export const TopUsersChart = () => {
   const [data, setData] = useState<TopUserData[]>([]);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,20 +29,36 @@ export const TopUsersChart = () => {
     fetchData();
   }, []);
 
+  const strokeColor = isDark ? "#94a3b8" : "#64748b";
+  const gridColor = isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)";
+
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data}>
-        
+      <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} />
         <XAxis 
           dataKey="username" 
-          label={{ value: "Users", position: "insideBottom", dy: 10 }}
-          tick={{ fontSize: 12 }}
+          stroke={strokeColor}
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+          dy={10}
         />
         <YAxis 
-          label={{ value: "Total Messages", angle: -90, position: "insideLeft", dx: 0 }}
+          stroke={strokeColor}
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+          dx={-10}
         />
-        <Tooltip content={<CustomBarTooltip/>} />
-        <Bar dataKey="total_messages" fill="#82ca9d" barSize={30} />
+        <Tooltip content={<CustomBarTooltip/>} cursor={{ fill: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' }} />
+        <Bar 
+          dataKey="total_messages" 
+          fill="#10b981" 
+          radius={[4, 4, 0, 0]}
+          barSize={32}
+          animationDuration={1500}
+        />
       </BarChart>
     </ResponsiveContainer>
   );
