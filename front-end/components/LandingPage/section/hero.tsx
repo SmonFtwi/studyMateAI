@@ -71,7 +71,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="inline-flex items-center gap-3 px-6 py-2 rounded-full glass-cosmos border-white/20 text-sm font-semibold text-blue-200 mb-10 shadow-[0_0_30px_rgba(59,130,246,0.15)]"
+          className="inline-flex items-center gap-3 px-6 py-2 rounded-full glass-cosmos border-white/20 text-sm font-semibold text-blue-700 dark:text-blue-200 mb-10 shadow-[0_0_30px_rgba(59,130,246,0.15)]"
         >
           <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_#3b82f6]" />
           <span className="tracking-[0.2em] uppercase text-[11px]">Now Available — Start for Free</span>
@@ -91,7 +91,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-xl md:text-2xl text-blue-100/70 max-w-3xl mx-auto mb-14 leading-relaxed font-medium"
+          className="text-xl md:text-2xl text-slate-600 dark:text-blue-100/70 max-w-3xl mx-auto mb-14 leading-relaxed font-medium"
         >
           Transform messy notes into structured knowledge. Get AI-powered 
           summaries, flashcards, and quizzes in seconds.
@@ -110,7 +110,7 @@ export default function HeroSection() {
             </Button>
           </Link>
           <Link href="#capabilities">
-            <Button size="lg" variant="outline" className="rounded-2xl px-12 py-8 glass-cosmos border-white/20 text-white hover:bg-white/10 font-black text-xl backdrop-blur-2xl transition-all hover:-translate-y-1">
+            <Button size="lg" variant="outline" className="rounded-2xl px-12 py-8 glass-cosmos border-white/20 text-slate-900 dark:text-white hover:bg-slate-200/40 dark:hover:bg-white/10 font-black text-xl backdrop-blur-2xl transition-all hover:-translate-y-1">
               SEE FEATURES
             </Button>
           </Link>
@@ -175,7 +175,7 @@ export default function HeroSection() {
               </div>
               <div className="text-left">
                 <p className="text-[12px] text-blue-300/60 uppercase font-black tracking-widest">Study Time</p>
-                <p className="text-xl font-black text-white">10x Faster</p>
+                <p className="text-xl font-black text-slate-900 dark:text-white">10x Faster</p>
               </div>
             </div>
           </motion.div>
@@ -191,7 +191,7 @@ export default function HeroSection() {
               </div>
               <div className="text-left">
                 <p className="text-[12px] text-blue-300/60 uppercase font-black tracking-widest">AI Powered</p>
-                <p className="text-xl font-black text-white">Always Ready</p>
+                <p className="text-xl font-black text-slate-900 dark:text-white">Always Ready</p>
               </div>
             </div>
           </motion.div>

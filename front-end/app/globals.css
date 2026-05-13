@@ -11,7 +11,7 @@ html {
 :root {
   --bg-color: #ffffff;
   --text-color: #000000;
-  --bg-gradient: linear-gradient(to bottom right, #eff6ff, #dbeafe, #e0e7ff);
+  --bg-gradient: #f8fafc;
 }
 
 html.dark {
@@ -65,7 +65,34 @@ body {
   }
   .glass-cosmos {
     @apply bg-white/70 dark:bg-slate-900/40 backdrop-blur-2xl border border-blue-500/10 dark:border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+    background-image: none;
+  }
+  .dark .glass-cosmos {
     background-image: radial-gradient(circle at top left, rgba(59, 130, 246, 0.05), transparent);
+  }
+  .dashboard-panel-atmosphere {
+    background-image: none;
+  }
+  .dark .dashboard-panel-atmosphere {
+    background-image: repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.045) 0,
+      rgba(255, 255, 255, 0.045) 1px,
+      transparent 1px,
+      transparent 8px
+    );
+  }
+  .message-atmosphere {
+    background-image: none;
+  }
+  .dark .message-atmosphere {
+    background-image: repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.035) 0,
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px,
+      transparent 7px
+    );
   }
   .border-beam {
     position: relative;

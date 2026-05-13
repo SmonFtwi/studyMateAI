@@ -77,8 +77,8 @@ export default function HowItWorksSection() {
                     <step.icon className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-white mb-2">{step.title}</h3>
-                    <p className="text-sm text-blue-100/60 font-medium leading-relaxed">
+                    <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">{step.title}</h3>
+                    <p className="text-sm text-slate-600 dark:text-blue-100/60 font-medium leading-relaxed">
                       {step.description}
                     </p>
                   </div>

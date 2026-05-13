@@ -94,16 +94,15 @@ export default function Sidebar() {
 
   return (
     <div className="flex flex-col h-full glass-cosmos border-slate-200 dark:border-white/5 relative overflow-hidden group/sidebar transition-all duration-500 rounded-3xl">
-      {/* Dynamic Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-indigo-500/5 pointer-events-none" />
-      <div className="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/10 blur-[100px] rounded-full group-hover/sidebar:bg-blue-500/20 transition-all duration-1000" />
+      <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-indigo-500/5 pointer-events-none" />
+      <div className="hidden dark:block absolute -top-24 -left-24 w-48 h-48 bg-blue-500/10 blur-[100px] rounded-full group-hover/sidebar:bg-blue-500/20 transition-all duration-1000" />
 
       {/* Header: Project Initialization */}
       <div className="p-6 space-y-6 relative z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="absolute inset-0 bg-blue-500/30 blur-md rounded-lg animate-pulse" />
+              <div className="hidden dark:block absolute inset-0 bg-blue-500/30 blur-md rounded-lg animate-pulse" />
               <div className="w-10 h-10 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-white/10 flex items-center justify-center relative overflow-hidden group/logo">
                 <Cpu className="w-6 h-6 text-blue-500 dark:text-blue-400 group-hover/logo:scale-110 transition-transform" />
               </div>
@@ -204,7 +203,7 @@ export default function Sidebar() {
                   </div>
 
                   {/* Hover/Active Glow */}
-                  <div className={`absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent transition-opacity ${
+                  <div className={`hidden dark:block absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent transition-opacity ${
                     isActive ? "opacity-100" : "opacity-0 group-hover/item:opacity-100"
                   }`} />
                 </Link>
@@ -302,11 +301,9 @@ export default function Sidebar() {
         </DropdownMenu>
       </div>
 
-      {/* Decorative Border Glow */}
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
-      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
+      <div className="hidden dark:block absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
+      <div className="hidden dark:block absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
     </div>
   );
 }
-
 

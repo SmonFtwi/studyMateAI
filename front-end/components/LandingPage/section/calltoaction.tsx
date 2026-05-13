@@ -85,7 +85,7 @@ export default function CallToActionSection() {
             
             <h2 
               style={{ transform: "translateZ(30px)" }}
-              className="text-5xl md:text-8xl font-black text-white mb-10 tracking-tighter leading-[0.9]"
+              className="text-5xl md:text-8xl font-black text-slate-900 dark:text-white mb-10 tracking-tighter leading-[0.9]"
             >
               READY TO STUDY <br />
               <span className="text-gradient-cosmic italic">SMARTER?</span>
@@ -93,7 +93,7 @@ export default function CallToActionSection() {
             
             <p 
               style={{ transform: "translateZ(20px)" }}
-              className="text-xl md:text-2xl text-blue-100/40 mb-16 leading-relaxed font-medium"
+              className="text-xl md:text-2xl text-slate-600 dark:text-blue-100/40 mb-16 leading-relaxed font-medium"
             >
               Join thousands of students already using AI to study more 
               effectively. Sign up today — it's completely free.
@@ -110,7 +110,7 @@ export default function CallToActionSection() {
                 </Button>
               </Link>
               <Link href="/login">
-                <Button size="lg" variant="outline" className="h-20 px-14 rounded-3xl glass-cosmos border-white/20 text-white hover:bg-white/5 font-black text-2xl backdrop-blur-3xl transition-all hover:-translate-y-1">
+                <Button size="lg" variant="outline" className="h-20 px-14 rounded-3xl glass-cosmos border-white/20 text-slate-900 dark:text-white hover:bg-slate-200/40 dark:hover:bg-white/5 font-black text-2xl backdrop-blur-3xl transition-all hover:-translate-y-1">
                   SIGN IN
                 </Button>
               </Link>

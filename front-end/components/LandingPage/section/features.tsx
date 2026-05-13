@@ -59,7 +59,7 @@ const FeatureCard = ({ item, idx }: { item: any; idx: number }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: idx * 0.1, duration: 0.8 }}
-      className="relative group p-1 rounded-[32px] overflow-hidden bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-500"
+      className="relative group p-1 rounded-[32px] overflow-hidden bg-white/40 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-white/20 transition-all duration-500"
     >
       {/* Background Glow */}
       <motion.div
@@ -70,27 +70,27 @@ const FeatureCard = ({ item, idx }: { item: any; idx: number }) => {
         }}
       />
 
-      <div className="relative z-10 p-8 rounded-[28px] bg-[#0A0A0A]/90 h-full">
+      <div className="relative z-10 p-8 rounded-[28px] bg-white/90 dark:bg-[#0A0A0A]/90 h-full">
         <div className={`w-14 h-14 rounded-2xl ${item.color} p-3.5 mb-8 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
           <item.icon className="w-full h-full text-white" />
         </div>
         
-        <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.3em] text-blue-300/30 mb-6 font-black">
+        <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.3em] text-blue-700/60 dark:text-blue-300/30 mb-6 font-black">
           <span>{item.label}</span>
           <span className="opacity-0 group-hover:opacity-100 transition-opacity">LVL {String(idx + 1).padStart(2, "0")}</span>
         </div>
         
-        <h3 className="text-2xl font-black text-white mb-4 group-hover:text-blue-300 transition-colors tracking-tight">
+        <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors tracking-tight">
           {item.title}
         </h3>
-        <p className="text-base text-blue-100/40 leading-relaxed font-medium group-hover:text-blue-100/60 transition-colors">
+        <p className="text-base text-slate-600 dark:text-blue-100/40 leading-relaxed font-medium group-hover:text-slate-800 dark:group-hover:text-blue-100/60 transition-colors">
           {item.description}
         </p>
 
         {/* Bottom indicator */}
-        <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
-            <span className="text-xs text-white/10 font-bold">LEARN MORE</span>
-            <ArrowRight className="w-4 h-4 text-white/10 group-hover:text-white/50 group-hover:translate-x-1 transition-all" />
+        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-white/5 flex items-center justify-between">
+            <span className="text-xs text-slate-400 dark:text-white/10 font-bold">LEARN MORE</span>
+            <ArrowRight className="w-4 h-4 text-slate-400 dark:text-white/10 group-hover:text-slate-700 dark:group-hover:text-white/50 group-hover:translate-x-1 transition-all" />
         </div>
       </div>
     </motion.div>
@@ -119,7 +119,7 @@ export default function FeatureGridSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tighter text-white mb-8 leading-none"
+              className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tighter text-slate-900 dark:text-white mb-8 leading-none"
             >
               EVERYTHING <br />
               <span className="text-gradient-cosmic italic">YOU NEED</span>
@@ -133,12 +133,12 @@ export default function FeatureGridSection() {
             transition={{ delay: 0.3 }}
             className="group flex flex-col items-start gap-4"
           >
-            <p className="text-blue-100/40 max-w-xs text-sm font-medium leading-relaxed">
+            <p className="text-slate-600 dark:text-blue-100/40 max-w-xs text-sm font-medium leading-relaxed">
               Powerful AI tools that help you understand, review, and master any subject.
             </p>
-            <div className="flex items-center gap-3 text-sm font-black text-white group cursor-pointer">
+            <div className="flex items-center gap-3 text-sm font-black text-slate-900 dark:text-white group cursor-pointer">
               <span>VIEW ALL FEATURES</span>
-              <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+              <div className="w-10 h-10 rounded-full border border-slate-300 dark:border-white/20 flex items-center justify-center group-hover:bg-slate-200 dark:group-hover:bg-white group-hover:text-black transition-all">
                 <ArrowRight className="h-4 w-4" />
               </div>
             </div>

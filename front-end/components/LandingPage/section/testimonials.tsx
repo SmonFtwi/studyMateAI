@@ -73,8 +73,8 @@ const TestimonialCard = ({ testimonial, index }: { testimonial: any; index: numb
             />
           </div>
           <div>
-            <h4 className="font-black text-xl text-white tracking-tight">{testimonial.name}</h4>
-            <p className="text-sm text-blue-300/40 uppercase font-bold tracking-widest">{testimonial.role}</p>
+            <h4 className="font-black text-xl text-slate-900 dark:text-white tracking-tight">{testimonial.name}</h4>
+            <p className="text-sm text-blue-700/60 dark:text-blue-300/40 uppercase font-bold tracking-widest">{testimonial.role}</p>
           </div>
         </div>
 
@@ -90,7 +90,7 @@ const TestimonialCard = ({ testimonial, index }: { testimonial: any; index: numb
 
         <div className="relative">
           <Quote className="absolute -top-4 -left-4 text-white/5 w-16 h-16 -z-0" />
-          <p className="text-xl text-blue-100/70 font-medium leading-relaxed relative z-10 italic">
+          <p className="text-xl text-slate-700 dark:text-blue-100/70 font-medium leading-relaxed relative z-10 italic">
             "{testimonial.content}"
           </p>
         </div>
@@ -99,7 +99,7 @@ const TestimonialCard = ({ testimonial, index }: { testimonial: any; index: numb
         <div className="mt-12 pt-8 border-t border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <testimonial.icon className="w-5 h-5 text-blue-400/30" />
-            <span className="text-[10px] font-black tracking-[0.2em] text-white/10 uppercase">Verified Review</span>
+            <span className="text-[10px] font-black tracking-[0.2em] text-slate-400 dark:text-white/10 uppercase">Verified Review</span>
           </div>
           <div className="flex gap-1">
              {[1,2,3].map(i => (
@@ -144,7 +144,7 @@ export default function TestimonialsSection() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
-            className="text-xl text-blue-100/40 max-w-2xl font-medium"
+            className="text-xl text-slate-600 dark:text-blue-100/40 max-w-2xl font-medium"
           >
             We don't just help you study — we help you succeed. Hear from 
             students who transformed their learning experience.

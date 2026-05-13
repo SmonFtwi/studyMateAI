@@ -62,7 +62,7 @@ export default function FaqSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-6xl md:text-8xl font-black text-white mb-10 tracking-tighter leading-[0.9]"
+              className="text-6xl md:text-8xl font-black text-slate-900 dark:text-white mb-10 tracking-tighter leading-[0.9]"
             >
               QUESTIONS <br />
               <span className="text-gradient-cosmic italic">& ANSWERS</span>
@@ -73,7 +73,7 @@ export default function FaqSection() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-xl text-blue-100/40 font-medium max-w-md leading-relaxed mb-12"
+              className="text-xl text-slate-600 dark:text-blue-100/40 font-medium max-w-md leading-relaxed mb-12"
             >
               Got questions? We've got answers. Find everything you need 
               to know about StudyMate AI below.
@@ -89,7 +89,7 @@ export default function FaqSection() {
                 <div className="w-3 h-3 rounded-full bg-red-500/50" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
                 <div className="w-3 h-3 rounded-full bg-green-500/50" />
-                <span className="ml-2 text-[10px] font-black text-white/20 tracking-[0.2em]">StudyMate AI</span>
+                <span className="ml-2 text-[10px] font-black text-slate-500 dark:text-white/20 tracking-[0.2em]">StudyMate AI</span>
               </div>
               <div className="space-y-3">
                 <div className="h-2 w-3/4 bg-white/5 rounded-full" />
@@ -127,10 +127,10 @@ export default function FaqSection() {
                           </div>
                           <span className="text-[10px] font-black tracking-[0.3em] text-blue-300/40 uppercase">{faq.category}</span>
                        </div>
-                       <ChevronDown className={`w-5 h-5 transition-transform duration-500 ${openIndex === i ? "rotate-180 text-white" : "text-white/20"}`} />
+                       <ChevronDown className={`w-5 h-5 transition-transform duration-500 ${openIndex === i ? "rotate-180 text-slate-900 dark:text-white" : "text-slate-500 dark:text-white/20"}`} />
                     </div>
                     
-                    <h3 className={`text-xl font-black transition-colors duration-500 mt-4 ${openIndex === i ? "text-white" : "text-blue-100/60"}`}>
+                    <h3 className={`text-xl font-black transition-colors duration-500 mt-4 ${openIndex === i ? "text-slate-900 dark:text-white" : "text-slate-700 dark:text-blue-100/60"}`}>
                       {faq.question}
                     </h3>
 
@@ -142,11 +142,11 @@ export default function FaqSection() {
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                         >
-                          <p className="mt-6 text-blue-100/50 leading-relaxed font-medium">
+                          <p className="mt-6 text-slate-600 dark:text-blue-100/50 leading-relaxed font-medium">
                             {faq.answer}
                           </p>
                           <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
-                             <span className="text-[9px] font-black text-white/10 tracking-[0.3em]">HELPFUL ANSWER</span>
+                             <span className="text-[9px] font-black text-slate-400 dark:text-white/10 tracking-[0.3em]">HELPFUL ANSWER</span>
                              <div className="flex gap-1">
                                 {[1,2,3,4].map(j => (
                                   <div key={j} className="w-3 h-1 bg-blue-500/20 rounded-full" />

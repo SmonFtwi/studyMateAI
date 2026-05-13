@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, MoreVertical, Trash2, LayoutGrid, Clock, Database, Sparkles, FolderPlus } from "lucide-react";
+import { MoreVertical, Trash2, LayoutGrid, Clock, Database, Sparkles, FolderPlus } from "lucide-react";
 import CreateProjectDialog from "./createProject";
 import {
   createProject,
@@ -104,18 +104,18 @@ export default function MainPage() {
     return (
       <div className="space-y-8 animate-in fade-in duration-500">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 animate-pulse" />
-          <div className="h-8 w-64 bg-white/5 border border-white/10 rounded-xl animate-pulse" />
+          <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-white/5 border border-slate-300 dark:border-white/10 animate-pulse" />
+          <div className="h-8 w-64 bg-slate-200 dark:bg-white/5 border border-slate-300 dark:border-white/10 rounded-xl animate-pulse" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-64 glass-cosmos border-white/5 rounded-3xl p-6 relative overflow-hidden">
-              <div className="absolute inset-0 bg-white/[0.02] animate-pulse" />
+            <div key={i} className="h-64 glass-cosmos border-slate-200 dark:border-white/5 rounded-3xl p-6 relative overflow-hidden">
+              <div className="absolute inset-0 bg-slate-200/40 dark:bg-white/[0.02] animate-pulse" />
               <div className="space-y-4 relative z-10">
-                <div className="h-6 w-3/4 bg-white/5 rounded-lg" />
+                <div className="h-6 w-3/4 bg-slate-200 dark:bg-white/5 rounded-lg" />
                 <div className="space-y-2">
-                  <div className="h-4 w-full bg-white/5 rounded-lg" />
-                  <div className="h-4 w-2/3 bg-white/5 rounded-lg" />
+                  <div className="h-4 w-full bg-slate-200 dark:bg-white/5 rounded-lg" />
+                  <div className="h-4 w-2/3 bg-slate-200 dark:bg-white/5 rounded-lg" />
                 </div>
               </div>
             </div>
@@ -131,17 +131,17 @@ export default function MainPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <div className="relative">
-            <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
-            <div className="w-14 h-14 bg-slate-900 border border-white/10 rounded-2xl flex items-center justify-center relative overflow-hidden">
+            <div className="hidden dark:block absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
+            <div className="w-14 h-14 bg-slate-900 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl flex items-center justify-center relative overflow-hidden">
               <LayoutGrid className="w-7 h-7 text-blue-400" />
             </div>
           </div>
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-white uppercase italic">
-              Project<span className="text-blue-500 text-4xl">.</span>Hub
+            <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
+              Study Workspace
             </h1>
-            <p className="text-xs font-black text-white/30 tracking-[0.2em] uppercase mt-1">
-              Neural Network Archives // Active Modules: {projects.length}
+            <p className="text-xs font-black text-slate-500 dark:text-white/30 tracking-[0.2em] uppercase mt-1">
+              Manage your subjects and materials in one place // Active projects: {projects.length}
             </p>
           </div>
         </div>
@@ -153,9 +153,28 @@ export default function MainPage() {
           >
             <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
             <FolderPlus className="mr-3 h-5 w-5" />
-            <span className="font-black tracking-[0.1em] uppercase text-xs">New Archive Module</span>
+            <span className="font-black tracking-[0.1em] uppercase text-xs">Create New Project</span>
           </Button>
         </motion.div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl p-4">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-500 dark:text-white/30">Total Projects</p>
+          <p className="text-2xl font-black text-slate-900 dark:text-white mt-2">{projects.length}</p>
+        </div>
+        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl p-4">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-500 dark:text-white/30">Study Sources</p>
+          <p className="text-2xl font-black text-slate-900 dark:text-white mt-2">
+            {projects.reduce((acc, project) => acc + (project.sources || 0), 0)}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl p-4">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-500 dark:text-white/30">Latest Activity</p>
+          <p className="text-sm font-bold text-slate-700 dark:text-white/70 mt-3">
+            {projects[0]?.created_at ? `Last project created ${formatDate(projects[0].created_at)}` : "Create your first project to get started"}
+          </p>
+        </div>
       </div>
 
       {/* Projects Grid */}
@@ -169,9 +188,9 @@ export default function MainPage() {
               transition={{ duration: 0.4, delay: index * 0.05 }}
               layout
             >
-              <div className="group/card glass-cosmos border-white/5 rounded-[2rem] p-8 min-h-[280px] flex flex-col relative overflow-hidden hover:border-blue-500/30 transition-all duration-500">
+              <div className="group/card glass-cosmos border-slate-200 dark:border-white/5 rounded-[2rem] p-8 min-h-[280px] flex flex-col relative overflow-hidden hover:border-blue-500/30 transition-all duration-500">
                 {/* Background Text Accent */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[120px] font-black text-white/[0.01] pointer-events-none select-none italic tracking-tighter">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[120px] font-black text-slate-300/20 dark:text-white/[0.01] pointer-events-none select-none italic tracking-tighter">
                   {index + 1 < 10 ? `0${index + 1}` : index + 1}
                 </div>
 
@@ -179,11 +198,11 @@ export default function MainPage() {
                 <div className="absolute top-6 right-6 z-20">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="p-2.5 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all">
-                        <MoreVertical className="w-5 h-5 text-white/40" />
+                      <button className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 border border-transparent hover:border-slate-300 dark:hover:border-white/10 transition-all">
+                        <MoreVertical className="w-5 h-5 text-slate-500 dark:text-white/40" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="glass-cosmos border-white/10 bg-slate-900/95 p-2">
+                    <DropdownMenuContent align="end" className="glass-cosmos border-slate-300 dark:border-white/10 bg-white/95 dark:bg-slate-900/95 p-2">
                       <DropdownMenuItem 
                         onClick={() => handleDeleteProject(project.project_id)}
                         className="text-red-400 focus:text-red-300 focus:bg-red-500/10 p-3 rounded-xl cursor-pointer"
@@ -199,23 +218,23 @@ export default function MainPage() {
                 <div className="mb-6 relative z-10">
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
-                    <span className="text-[10px] font-black text-blue-500 tracking-[0.2em] uppercase italic">Module Linked</span>
+                    <span className="text-[10px] font-black text-blue-500 tracking-[0.2em] uppercase italic">Project Ready</span>
                   </div>
-                  <h3 className="text-2xl font-black text-white group-hover/card:text-blue-400 transition-colors line-clamp-1">
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white group-hover/card:text-blue-500 dark:group-hover/card:text-blue-400 transition-colors line-clamp-1">
                     {project.title}
                   </h3>
                 </div>
 
                 {/* Description */}
-                <p className="text-sm font-bold text-white/40 line-clamp-3 mb-8 flex-1 leading-relaxed relative z-10">
-                  {project.description || "NO DATA DESCRIPTION AVAILABLE FOR THIS ARCHIVE MODULE."}
+                <p className="text-sm font-bold text-slate-600 dark:text-white/40 line-clamp-3 mb-8 flex-1 leading-relaxed relative z-10">
+                  {project.description || "No description yet. Add details so you can quickly identify this project later."}
                 </p>
 
                 {/* Footer */}
-                <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between relative z-10">
+                <div className="mt-auto pt-6 border-t border-slate-200 dark:border-white/5 flex items-center justify-between relative z-10">
                   <div className="flex items-center gap-2">
-                    <Clock className="w-3 h-3 text-white/20" />
-                    <span className="text-[10px] font-black text-white/20 tracking-widest uppercase">
+                    <Clock className="w-3 h-3 text-slate-500 dark:text-white/20" />
+                    <span className="text-[10px] font-black text-slate-500 dark:text-white/20 tracking-widest uppercase">
                       {formatDate(project.created_at)}
                     </span>
                   </div>
@@ -223,17 +242,17 @@ export default function MainPage() {
                   <Link href={`/Dashboard/projects/${project.project_id}`}>
                     <motion.div
                       whileHover={{ scale: 1.05, x: 5 }}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 group-hover/card:border-blue-500/50 group-hover/card:bg-blue-500/10 transition-all cursor-pointer"
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-300 dark:border-white/10 group-hover/card:border-blue-500/50 group-hover/card:bg-blue-500/10 transition-all cursor-pointer"
                     >
-                      <Database className="w-3.5 h-3.5 text-blue-400" />
-                      <span className="text-[10px] font-black text-blue-100 uppercase tracking-widest">Access Module</span>
+                      <Database className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
+                      <span className="text-[10px] font-black text-blue-700 dark:text-blue-100 uppercase tracking-widest">Open Project</span>
                     </motion.div>
                   </Link>
                 </div>
 
                 {/* Hover Effects */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.03] to-indigo-500/[0.03] opacity-0 group-hover/card:opacity-100 transition-opacity pointer-events-none" />
-                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full opacity-0 group-hover/card:opacity-100 transition-all duration-700" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-br from-blue-500/[0.03] to-indigo-500/[0.03] opacity-0 group-hover/card:opacity-100 transition-opacity pointer-events-none" />
+                <div className="hidden dark:block absolute -bottom-10 -right-10 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full opacity-0 group-hover/card:opacity-100 transition-all duration-700" />
               </div>
             </motion.div>
           ))}
@@ -243,15 +262,15 @@ export default function MainPage() {
         {projects.length === 0 && (
           <div className="col-span-full py-32 flex flex-col items-center justify-center text-center">
             <div className="relative mb-8">
-              <div className="absolute inset-0 bg-blue-500/20 blur-3xl animate-pulse rounded-full" />
-              <div className="w-24 h-24 bg-slate-900 border border-white/10 rounded-3xl flex items-center justify-center relative overflow-hidden group">
+              <div className="hidden dark:block absolute inset-0 bg-blue-500/20 blur-3xl animate-pulse rounded-full" />
+              <div className="w-24 h-24 bg-slate-900 dark:bg-slate-900 border border-slate-300 dark:border-white/10 rounded-3xl flex items-center justify-center relative overflow-hidden group">
                 <Sparkles className="w-10 h-10 text-blue-400 group-hover:scale-125 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent" />
               </div>
             </div>
-            <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter mb-2">Neural Archives Empty</h3>
-            <p className="text-white/30 text-sm font-bold uppercase tracking-widest max-w-sm">
-              Initialize your first project module to begin the cognitive processing sequence.
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter mb-2">No Projects Yet</h3>
+            <p className="text-slate-500 dark:text-white/30 text-sm font-bold uppercase tracking-widest max-w-sm">
+              Create your first project to organize files, chat with your notes, and start studying faster.
             </p>
           </div>
         )}
@@ -265,4 +284,3 @@ export default function MainPage() {
     </div>
   );
 }
-
