@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-'use client';
-import React, { useEffect, useState } from 'react';
-import { deleteUser } from '@/lib/apicall/user';
-import { FiSearch, FiUser, FiRefreshCw, FiMoreVertical} from 'react-icons/fi';
-import UpdateRoleDialog from '@/components/dashboardComponent/manageUser/updateUserrole';
-import DeleteUserDialog from '@/components/dashboardComponent/manageUser/deleteuser';
-import { Edit2, Trash } from 'lucide-react';
+"use client";
+import React, { useCallback, useEffect, useState } from "react";
+
+import { FiSearch, FiUser, FiRefreshCw, FiMoreVertical } from "react-icons/fi";
+import UpdateRoleDialog from "@/components/dashboardComponent/manageUser/updateUserrole";
+import DeleteUserDialog from "@/components/dashboardComponent/manageUser/deleteuser";
+import { Edit2, Trash } from "lucide-react";
 
 interface User {
   user_id: number;
@@ -18,83 +18,77 @@ interface User {
 const AdminPage: React.FC = () => {
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [showUpdateRoleDialog, setShowUpdateRoleDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [currentUsername, setCurrentUsername] = useState('');
-  const [dropdownStates, setDropdownStates] = useState<{ [key: number]: boolean }>({});
+  const [currentUsername, setCurrentUsername] = useState("");
+  const [dropdownStates, setDropdownStates] = useState<{
+    [key: number]: boolean;
+  }>({});
 
   const setErrorWithTimeout = (message: string) => {
     setError(message);
-    setTimeout(() => {
-      setError('');
-    }, 3000);
   };
 
-  const fetchAllUsers = async () => {
+  const fetchAllUsers = useCallback(async () => {
     setLoading(true);
+    setError("");
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_backend_url}/auth/fetchAllUsers`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_backend_url}/auth/fetchAllUsers`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
-      });
-      if (!response.ok) throw new Error('Network response was not ok');
+      );
+      if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
       setAllUsers(data.users);
       setFilteredUsers(data.users);
     } catch (err) {
-      setErrorWithTimeout('Failed to fetch users');
+      setErrorWithTimeout("Failed to fetch users");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const updateUserRole = async (userId: number, newRole: string) => {
-    console.log("cheking")
+    console.log("cheking");
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_backend_url}/auth/updateUserRole`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_backend_url}/auth/updateUserRole`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ user_id: userId, user_role: newRole }),
         },
-        body: JSON.stringify({ user_id: userId, user_role: newRole }),
-      });
-      if(!response.ok){
-        console.log("error", response)
+      );
+      if (!response.ok) {
+        console.log("error", response);
       }
       const data = await response.json();
-      if (data.status === 'success') {
+      if (data.status === "success") {
         fetchAllUsers();
-
       } else {
-        setErrorWithTimeout('Failed to update user role');
+        setErrorWithTimeout("Failed to update user role");
       }
     } catch (err) {
-      setErrorWithTimeout('Error updating role');
+      setErrorWithTimeout("Error updating role");
     }
   };
 
   const handleDeleteUser = async () => {
-    try {
-      const userToDelete = filteredUsers.find((user) => user.user_id === currentUserId);
-      if (!userToDelete) return;
-
-      const response = await deleteUser(userToDelete.email, localStorage.getItem('token')!);
-      const data = await response.json();
-      if (data.status === 'success') {
-        fetchAllUsers();
-      } else {
-        setErrorWithTimeout(data.error);
-      }
-    } catch (err) {
-      setErrorWithTimeout('Failed to delete user');
-    }
+    setError(
+      "Deleting accounts is not available with the current account service.",
+    );
   };
 
   const toggleDropdown = (userId: number) => {
@@ -110,21 +104,31 @@ const AdminPage: React.FC = () => {
 
   useEffect(() => {
     fetchAllUsers();
-  }, []);
+  }, [fetchAllUsers]);
+
+  useEffect(() => {
+    setFilteredUsers(
+      allUsers.filter((user) =>
+        `${user.username} ${user.email}`.toLowerCase().includes(searchTerm),
+      ),
+    );
+  }, [allUsers, searchTerm]);
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
+    <div className="mx-auto max-w-6xl">
       <div className="mb-8 space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center gap-3">
             <FiUser className="w-8 h-8" />
-            <h1 className="text-3xl font-bold">User Management</h1>
+            <h1 className="page-heading">Manage users</h1>
           </div>
           <button
             onClick={fetchAllUsers}
             className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 hover:border-gray-300 transition-all"
           >
-            <FiRefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <FiRefreshCw
+              className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+            />
             <span>Refresh</span>
           </button>
         </div>
@@ -133,23 +137,27 @@ const AdminPage: React.FC = () => {
           <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search by name or email..."
+            aria-label="Search users by name or email"
+            placeholder="Search by name or email…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-            className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            className="bg-transparent w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
           />
         </div>
       </div>
 
       {error && (
-        <div className="mb-6 px-4 py-3 rounded-lg bg-red-50 border border-red-100 text-red-600">
+        <div
+          role="alert"
+          className="notice mb-6 text-red-600 dark:text-red-400"
+        >
           {error}
         </div>
       )}
 
-      <div className=" overflow-x-auto overflow-y-none  rounded-xl  ">
+      <div className="surface overflow-x-auto rounded-xl">
         <table className="w-full text-left table-auto border-collapse">
-          <thead className="">
+          <thead className="text-sm muted">
             <tr>
               <th className="px-6 py-4">Name</th>
               <th className="px-6 py-4">Email</th>
@@ -159,13 +167,17 @@ const AdminPage: React.FC = () => {
           </thead>
           <tbody>
             {filteredUsers.map((user) => (
-              <tr key={user.user_id} className="border-t dark:border-zinc-700 border-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all">
+              <tr
+                key={user.user_id}
+                className="border-t dark:border-zinc-700 border-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-900 transition-all"
+              >
                 <td className="px-6 py-4">{user.username}</td>
                 <td className="px-6 py-4">{user.email}</td>
                 <td className="px-6 py-4">{user.role}</td>
                 <td className="relative px-6 py-4">
-                  
                   <button
+                    aria-label={`Actions for ${user.username}`}
+                    aria-expanded={!!dropdownStates[user.user_id]}
                     onClick={() => toggleDropdown(user.user_id)}
                     className="flex items-center justify-center w-8 h-8 rounded-full  transition-all"
                   >
@@ -184,10 +196,9 @@ const AdminPage: React.FC = () => {
                           closeDropdown();
                         }}
                         className=" w-full flex items-center justify-between space-x-2  text-left px-4 py-2 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-sm"
-                      > 
-                        
+                      >
                         Update Role
-                        <Edit2 className="w-5 h-5"/>
+                        <Edit2 className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => {
@@ -197,10 +208,11 @@ const AdminPage: React.FC = () => {
                           closeDropdown();
                         }}
                         className=" text-red-500 w-full flex items-center justify-between space-x-2  text-left px-4 py-2 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-sm"
-                       
+                        disabled
+                        title="Account deletion is unavailable with the current service"
                       >
-                        Delete User
-                        <Trash className="w-5 h-5"/>
+                        Delete user
+                        <Trash className="w-5 h-5" />
                       </button>
                     </div>
                   )}
@@ -211,10 +223,21 @@ const AdminPage: React.FC = () => {
         </table>
       </div>
 
+      {!loading && !error && filteredUsers.length === 0 && (
+        <p className="notice mt-4 muted">No users found.</p>
+      )}
+      {loading && (
+        <p role="status" className="muted py-4">
+          Loading users…
+        </p>
+      )}
       <UpdateRoleDialog
         open={showUpdateRoleDialog}
         onClose={() => setShowUpdateRoleDialog(false)}
-        currentRole={filteredUsers.find((user) => user.user_id === currentUserId)?.role || ''}
+        currentRole={
+          filteredUsers.find((user) => user.user_id === currentUserId)?.role ||
+          ""
+        }
         onUpdate={(newRole) => {
           if (currentUserId) updateUserRole(currentUserId, newRole);
           setShowUpdateRoleDialog(false);

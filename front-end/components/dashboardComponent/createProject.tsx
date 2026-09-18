@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,80 +10,94 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-interface CreateProjectDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onCreate: (data: { name: string; description: string }) => void;
-}
-
 export default function CreateProjectDialog({
   open,
   onOpenChange,
   onCreate,
-}: CreateProjectDialogProps) {
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
-
-  const handleSubmit = () => {
-    if (!projectName.trim()) {
-      alert("Please enter a project name.");
-      return;
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onCreate: (data: {
+    name: string;
+    description: string;
+  }) => void | Promise<void>;
+}) {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      await onCreate({ name: name.trim(), description: description.trim() });
+      setName("");
+      setDescription("");
+      onOpenChange(false);
+    } catch {
+      setError("We couldn’t create your project. Please try again.");
+    } finally {
+      setBusy(false);
     }
-    onCreate({ name: projectName, description: projectDescription });
-    setProjectName("");
-    setProjectDescription("");
-    onOpenChange(false);
-  };
-
+  }
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+    <Dialog open={open} onOpenChange={(v) => !busy && onOpenChange(v)}>
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a New Project</DialogTitle>
+          <DialogTitle>New project</DialogTitle>
           <DialogDescription>
-            Enter your project details below to get started.
+            A home for a subject, course, or exam. You can add sources next.
           </DialogDescription>
         </DialogHeader>
-
-        <div className="flex flex-col gap-4 py-2">
+        <form onSubmit={submit} className="space-y-5">
           <div>
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Project Name
+            <label htmlFor="project-name" className="text-sm">
+              Project name
             </label>
             <Input
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
-              placeholder="Enter project name"
-              className="mt-1"
+              id="project-name"
+              className="mt-2"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. Biology final"
+              required
+              maxLength={200}
             />
           </div>
-
           <div>
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Description (optional)
+            <label htmlFor="project-description" className="text-sm">
+              Description <span className="muted">(optional)</span>
             </label>
             <textarea
-              value={projectDescription}
-              onChange={(e) => setProjectDescription(e.target.value)}
-              placeholder="Enter project description"
-              className="mt-1 w-full rounded-lg border border-gray-300 dark:border-zinc-700 bg-transparent px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
-              rows={4}
+              id="project-description"
+              className="mt-2 w-full rounded-lg border bg-transparent p-3 text-sm"
+              rows={3}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="What are you working on?"
             />
           </div>
-        </div>
-
-        <DialogFooter className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white hover:bg-blue-700"
-          >
-            Create
-          </Button>
-        </DialogFooter>
+          {error && (
+            <p role="alert" className="text-sm text-red-500">
+              {error}
+            </p>
+          )}
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={busy}
+              onClick={() => onOpenChange(false)}
+            >
+              Cancel
+            </Button>
+            <Button disabled={busy || !name.trim()}>
+              {busy ? "Creating…" : "Create project"}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

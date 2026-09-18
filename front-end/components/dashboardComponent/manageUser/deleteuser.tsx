@@ -32,7 +32,10 @@ const DeleteUserDialog: React.FC<DeleteUserDialogProps> = ({
         <DialogHeader>
           <DialogTitle>Delete User</DialogTitle>
         </DialogHeader>
-        <p>Are you sure you want to delete the user {username}? This action cannot be undone.</p>
+        <p>
+          Are you sure you want to delete the user {username}? This action
+          cannot be undone.
+        </p>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
             Cancel

@@ -1,14 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { listPDFs, deletePDF } from "@/lib/apicall/pdfCall";
 import UploadModal from "@/components/dashboardComponent/UploadModal";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, PlusCircle, Search, SortAsc, SortDesc, Download } from "lucide-react";
-import { TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Trash2,
+  PlusCircle,
+  Search,
+  SortAsc,
+  SortDesc,
+  Download,
+} from "lucide-react";
+import {
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Tooltip } from "@radix-ui/react-tooltip";
 import { format, isToday, isThisWeek, isThisMonth, parseISO } from "date-fns";
 import DeleteFileDialog from "@/components/dashboardComponent/listFiles/deleteFiles";
@@ -32,6 +43,8 @@ interface GroupedFiles {
 }
 
 const PDFManager: React.FC = () => {
+  const [fetchError, setFetchError] = useState("");
+  const [fetching, setFetching] = useState(true);
   const [files, setFiles] = useState<FileData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,23 +57,29 @@ const PDFManager: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [deleted, setdeleted] = useState<boolean>(false);
   const [loading, setloading] = useState<boolean>(false);
-  const [deleteResult, setDeleteResult] = useState<string | null>(null); 
+  const [deleteResult, setDeleteResult] = useState<string | null>(null);
 
-
-  useEffect(() => {
-    fetchFiles();
-  }, [currentPage, searchQuery, deleted]);
-
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
+    setFetching(true);
+    setFetchError("");
     try {
-      const { files: fetchedFiles, total } = await listPDFs(currentPage, searchQuery);
+      const { files: fetchedFiles, total } = await listPDFs(
+        currentPage,
+        searchQuery,
+      );
       setFiles(fetchedFiles);
       setTotalFiles(total);
     } catch (error) {
       console.error("Error fetching files:", error);
-      setFiles([]);
+      setFetchError("Files couldn’t be loaded. Please try again.");
+    } finally {
+      setFetching(false);
     }
-  };
+  }, [currentPage, searchQuery]);
+
+  useEffect(() => {
+    void fetchFiles();
+  }, [fetchFiles, deleted]);
 
   const handleDeleteConfirmation = (file: FileData) => {
     setFileToDelete(file);
@@ -72,9 +91,11 @@ const PDFManager: React.FC = () => {
     if (!fileToDelete) return;
     setloading(true);
     try {
-      const token = await localStorage.getItem("token") as string;
+      const token = (await localStorage.getItem("token")) as string;
       await deletePDF(fileToDelete.file_id, token);
-      setFiles((prevFiles) => prevFiles.filter((file) => file.file_id !== fileToDelete.file_id));
+      setFiles((prevFiles) =>
+        prevFiles.filter((file) => file.file_id !== fileToDelete.file_id),
+      );
       setDeleteResult(`File "${fileToDelete.title}" deleted successfully.`);
       setloading(false);
     } catch (error) {
@@ -86,7 +107,6 @@ const PDFManager: React.FC = () => {
       setTimeout(() => setIsDeleteDialogOpen(false), 2000); // Auto-close dialog after 2 seconds
     }
   };
-
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -130,7 +150,7 @@ const PDFManager: React.FC = () => {
       // Cleanup the URL
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Download failed:", error);
+      setFetchError("Download failed. Please try again.");
     } finally {
       setIsDownloading(null);
     }
@@ -153,10 +173,8 @@ const PDFManager: React.FC = () => {
     }
   };
 
-  
-
   // Pagination Controls
-  const totalPages = Math.ceil(totalFiles / 100);
+  const totalPages = Math.max(1, Math.ceil(totalFiles / 100));
   const PaginationControls = () => (
     <div className="flex justify-between items-center mt-4">
       <Button
@@ -186,7 +204,7 @@ const PDFManager: React.FC = () => {
     // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter((file) =>
-        file.title.toLowerCase().includes(searchQuery.toLowerCase())
+        file.title.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
 
@@ -194,7 +212,8 @@ const PDFManager: React.FC = () => {
     filtered.sort((a, b) => {
       let comparison = 0;
       if (sortField === "date") {
-        comparison = new Date(b.uploaded_at).getTime() - new Date(a.uploaded_at).getTime();
+        comparison =
+          new Date(b.uploaded_at).getTime() - new Date(a.uploaded_at).getTime();
       } else if (sortField === "name") {
         comparison = a.title.localeCompare(b.title);
       }
@@ -211,7 +230,7 @@ const PDFManager: React.FC = () => {
       thisMonth: [],
       older: [],
     };
-  
+
     processedFiles.forEach((file) => {
       const date = parseISO(file.uploaded_at);
       if (isToday(date)) {
@@ -224,18 +243,20 @@ const PDFManager: React.FC = () => {
         groups.older.push(file);
       }
     });
-  
+
     return groups;
   }, [processedFiles]);
 
-
-  const FileGroup: React.FC<{ title: string; files: FileData[] }> = ({ title, files }) => {
+  const FileGroup: React.FC<{ title: string; files: FileData[] }> = ({
+    title,
+    files,
+  }) => {
     if (files.length === 0) return null;
 
     return (
       <div className="mb-6">
         <h2 className="text-sm font-medium text-gray-500 mb-2">{title}</h2>
-        <Card className="divide-y bg-transparent">
+        <Card className="surface divide-y">
           {files.map((file) => (
             <div
               key={file.file_id}
@@ -246,7 +267,9 @@ const PDFManager: React.FC = () => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="text-sm sm:text-base break-all">
-                        {file.title.length > 40 ? `${file.title.substring(0, 40)}...` : file.title}
+                        {file.title.length > 40
+                          ? `${file.title.substring(0, 40)}...`
+                          : file.title}
                       </span>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -255,7 +278,9 @@ const PDFManager: React.FC = () => {
                   </Tooltip>
                 </TooltipProvider>
 
-                <span className="text-sm my-1">Uploaded by: {file.username}</span>
+                <span className="text-sm my-1">
+                  Uploaded by: {file.username}
+                </span>
                 <span className="text-xs text-gray-500">
                   {format(parseISO(file.uploaded_at), "MMM d, yyyy h:mm a")}
                 </span>
@@ -270,12 +295,15 @@ const PDFManager: React.FC = () => {
                   disabled={isDownloading === file.file_id}
                 >
                   <Download className="w-4 h-4 mr-2" />
-                  {isDownloading === file.file_id ? "Downloading..." : "Download"}
+                  {isDownloading === file.file_id
+                    ? "Downloading..."
+                    : "Download"}
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
                   className="flex-1 sm:flex-none text-xs sm:text-sm text-red-500 hover:text-red-600 hover:bg-red-50"
+                  aria-label={`Delete ${file.title}`}
                   onClick={() => handleDeleteConfirmation(file)}
                 >
                   <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -289,17 +317,17 @@ const PDFManager: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 w-full mx-auto">
+    <div className="w-full max-w-6xl mx-auto">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold">Data source manager</h1>
+        <h1 className="page-heading">Manage files</h1>
         <Button
           variant="outline"
           onClick={toggleModal}
           className="w-full sm:w-auto flex items-center justify-center"
         >
           <PlusCircle className="mr-2 w-5 h-5" />
-          Add New File
+          Add file
         </Button>
       </div>
 
@@ -308,7 +336,8 @@ const PDFManager: React.FC = () => {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
           <Input
-            placeholder="Search files..."
+            aria-label="Search files"
+            placeholder="Search files…"
             value={searchQuery}
             onChange={handleSearchChange}
             className="pl-10"
@@ -319,7 +348,7 @@ const PDFManager: React.FC = () => {
             variant="outline"
             size="default"
             onClick={() => toggleSort("date")}
-            className={`flex items-center gap-2 ${sortField === "date" ? "bg-gray-100" : ""}`}
+            className={`flex items-center gap-2 ${sortField === "date" ? "bg-blue-500/10" : ""}`}
           >
             Date
             {sortField === "date" &&
@@ -333,7 +362,7 @@ const PDFManager: React.FC = () => {
             variant="outline"
             size="default"
             onClick={() => toggleSort("name")}
-            className={`flex items-center gap-2 ${sortField === "name" ? "bg-gray-100" : ""}`}
+            className={`flex items-center gap-2 ${sortField === "name" ? "bg-blue-500/10" : ""}`}
           >
             Name
             {sortField === "name" &&
@@ -346,6 +375,19 @@ const PDFManager: React.FC = () => {
         </div>
       </div>
 
+      {fetchError && (
+        <div role="alert" className="notice mb-4">
+          {fetchError}{" "}
+          <button className="accent underline" onClick={fetchFiles}>
+            Try again
+          </button>
+        </div>
+      )}
+      {fetching && (
+        <p role="status" className="muted py-6">
+          Loading files…
+        </p>
+      )}
       {/* File List Section */}
       {processedFiles.length > 0 ? (
         <>
@@ -356,18 +398,27 @@ const PDFManager: React.FC = () => {
           <PaginationControls />
         </>
       ) : (
-        <Card className="py-8 px-4 text-center text-gray-500">
-          <p className="text-sm sm:text-base">
-            {searchQuery ? "No files match your search." : "No files uploaded yet."}
-          </p>
-          <p className="text-xs sm:text-sm mt-2 text-gray-400">
-            {searchQuery ? "Try adjusting your search terms." : "Click Add New File to upload your first document"}
-          </p>
-        </Card>
+        !fetching &&
+        !fetchError && (
+          <Card className="py-8 px-4 text-center text-gray-500">
+            <p className="text-sm sm:text-base">
+              {searchQuery
+                ? "No files match your search."
+                : "No files uploaded yet."}
+            </p>
+            <p className="text-xs sm:text-sm mt-2 text-gray-400">
+              {searchQuery
+                ? "Try adjusting your search terms."
+                : "Click Add file to upload your first document"}
+            </p>
+          </Card>
+        )
       )}
 
       {/* Upload Modal */}
-      {isModalOpen && <UploadModal onClose={toggleModal} onUpload={handleUploadSuccess} />}
+      {isModalOpen && (
+        <UploadModal onClose={toggleModal} onUpload={handleUploadSuccess} />
+      )}
 
       {/* Delete File Dialog */}
       {isDeleteDialogOpen && (

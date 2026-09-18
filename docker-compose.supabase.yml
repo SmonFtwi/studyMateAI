@@ -1,0 +1,52 @@
+name: studymate-supabase
+
+x-backend-runtime: &backend-runtime
+  image: studymate-backend:supabase
+  build:
+    context: ./back-end
+    target: runtime
+  env_file:
+    - ./back-end/.env
+  environment:
+    AUTH_MODE: supabase
+  read_only: true
+  tmpfs:
+    - /tmp:size=64m
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  networks:
+    - backend
+
+services:
+  migrate:
+    <<: *backend-runtime
+    command: ["python", "-m", "app.db.migrate"]
+    healthcheck:
+      disable: true
+    restart: "no"
+    profiles:
+      - setup
+
+  backend:
+    <<: *backend-runtime
+    ports:
+      - "3005:3005"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:3005/health/ready', timeout=3)",
+        ]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    restart: unless-stopped
+
+networks:
+  backend:
+    driver: bridge

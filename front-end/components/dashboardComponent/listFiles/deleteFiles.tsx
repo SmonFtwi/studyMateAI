@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
@@ -25,22 +26,16 @@ const DeleteFileDialog: React.FC<DeleteFileDialogProps> = ({
   loading,
   deleteResult,
 }) => {
-  useEffect(() => {
-    if (open) {
-      // Clear any previous delete result when dialog is opened
-      deleteResult = null;
-    }
-  }, [open]);
-
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={() => !loading && onClose()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Delete File</DialogTitle>
         </DialogHeader>
-        <p>
-          Are you sure you want to delete the file <strong>{title}</strong>? This action cannot be undone.
-        </p>
+        <DialogDescription>
+          Are you sure you want to delete the file <strong>{title}</strong>?
+          This action cannot be undone.
+        </DialogDescription>
         {deleteResult && (
           <p
             className={`mt-2 ${
@@ -54,10 +49,10 @@ const DeleteFileDialog: React.FC<DeleteFileDialogProps> = ({
         )}
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={loading}>
-            No
+            Cancel
           </Button>
           <Button variant="destructive" onClick={onDelete} disabled={loading}>
-            {loading ? "Deleting..." : "Yes"}
+            {loading ? "Deleting..." : "Delete file"}
           </Button>
         </DialogFooter>
       </DialogContent>

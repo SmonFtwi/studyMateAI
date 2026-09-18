@@ -1,195 +1,158 @@
-'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-
-import { Button } from "@/components/ui/button";
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import { AuthShell, PasswordField } from "@/components/auth-form";
 import { Input } from "@/components/ui/input";
-import Link from 'next/link';
-
+import { Button } from "@/components/ui/button";
 export default function PasswordReset() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [confirmationCode, setConfirmationCode] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [step, setStep] = useState(1);
-  const [emailError, setEmailError] = useState('');
-  const [codeError, setCodeError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-
-  const handleSendEmail = async (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-    setLoading(true);
-    setEmailError('');
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_url}/auth/sendVerificationEmail`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        if (errorData.field === 'email') setEmailError(errorData.message);
-        throw new Error(errorData.message);
-      }
-      setStep(2);
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleConfirmCode = async (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-    setLoading(true);
-    setCodeError('');
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_url}/auth/confirmVerificationCode`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, code: confirmationCode }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        setCodeError(errorData.message);
-        throw new Error(errorData.message);
-      }
-      setStep(3);
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleUpdatePassword = async (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-    setLoading(true);
-    setPasswordError('');
-
-    if (newPassword !== confirmNewPassword) {
-      setPasswordError('Passwords do not match.');
-      setLoading(false);
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [done, setDone] = useState(false);
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (busy) return;
+    setError("");
+    if (step === 3 && password !== confirm) {
+      setError("Passwords do not match.");
       return;
     }
-
+    setBusy(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_url}/auth/updatePassword`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password:newPassword }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        setPasswordError(errorData.message);
-        throw new Error(errorData.message);
+      const endpoint = [
+        "sendVerificationEmail",
+        "confirmVerificationCode",
+        "updatePassword",
+      ][step - 1];
+      const body =
+        step === 1
+          ? { email }
+          : step === 2
+            ? { email, code }
+            : { email, password };
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_url || process.env.NEXT_PUBLIC_backend_url}/auth/${endpoint}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        },
+      );
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(
+          data.message ||
+            data.detail ||
+            "We couldn’t complete this step. Please try again.",
+        );
       }
-
-      router.push(`/login`);
-    } catch (error) {
-      console.error('Error:', error);
+      if (step === 3) setDone(true);
+      else setStep((v) => v + 1);
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Connection failed. Please try again.",
+      );
     } finally {
-      setLoading(false);
+      setBusy(false);
     }
-  };
-
+  }
   return (
-    <div className=" flex flex-col items-center justify-center px-6 py-8 mx-auto max-w-3xl  lg:py-0 ">
-      <div className=" w-full md:w-[35vw]  bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md p-10  dark:bg-gray-950 dark:border-gray-700 ">
-        <h2 className="text-center text-2xl font-bold mb-6 dark:text-white">
-          {step === 1 ? 'Reset Password' : step === 2 ? 'Enter Confirmation Code' : 'Set New Password'}
-        </h2>
-
-        {loading && (
-           <div className="flex justify-center">
-           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900 dark:border-white"></div>
-         </div>
-        )}
-
-        <form onSubmit={step === 1 ? handleSendEmail : step === 2 ? handleConfirmCode : handleUpdatePassword}>
-          {step === 1 && (
-            <>
+    <AuthShell
+      title={
+        done
+          ? "Password updated"
+          : [
+              "Reset your password",
+              "Check your email",
+              "Choose a new password",
+            ][step - 1]
+      }
+      description={
+        done
+          ? "You can now sign in with your new password."
+          : `Step ${step} of 3 · ${["Enter the email for your account.", "Enter the confirmation code sent to your email.", "Choose a password and confirm it below."][step - 1]}`
+      }
+    >
+      {!done && (
+        <form onSubmit={submit} className="space-y-5">
+          {step === 1 ? (
+            <div>
+              <label htmlFor="reset-email" className="block text-sm mb-2">
+                Email
+              </label>
               <Input
+                id="reset-email"
                 type="email"
-                
-                placeholder="Email Address"
+                autoComplete="email"
+                required
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mb-4"
-                
-                aria-label="Email Address"
               />
-              <p className="text-red-500 text-sm">{emailError}</p>
-              <Button type="submit"  className="mt-4 w-full bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-700 dark:bg-blue-500 text-gray-200 dark:text-gray-200">
-                Get Confirmation Code
-              </Button>
+            </div>
+          ) : step === 2 ? (
+            <div>
+              <label htmlFor="code" className="block text-sm mb-2">
+                Confirmation code
+              </label>
+              <Input
+                id="code"
+                autoComplete="one-time-code"
+                required
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+              />
+              <p className="muted text-xs mt-3">Sent to {email}</p>
+            </div>
+          ) : (
+            <>
+              <PasswordField
+                id="new-password"
+                label="New password"
+                value={password}
+                onChange={setPassword}
+              />
+              <PasswordField
+                id="confirm-new-password"
+                label="Confirm new password"
+                value={confirm}
+                onChange={setConfirm}
+              />
             </>
           )}
-
-          {step === 2 && (
-            <>
-              <Input
-                
-                placeholder="Confirmation Code"
-                onChange={(e) => setConfirmationCode(e.target.value)}
-                className="mb-4"
-                
-                aria-label="Confirmation Code"
-              />
-              <p className="text-red-500 text-sm">{codeError}</p>
-              <Button type="submit"  className="mt-4 w-full bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-700 dark:bg-blue-500 text-gray-200 dark:text-gray-200">
-                Confirm Code
-              </Button>
-            </>
+          {error && (
+            <p role="alert" className="notice text-red-600 dark:text-red-400">
+              {error}
+            </p>
           )}
-
-          {step === 3 && (
-            <>
-              <Input
-                type="password"
-                
-                placeholder="New Password"
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="mb-4"
-               
-                aria-label="New Password"
-              />
-              <Input
-                type="password"
-                
-                placeholder="Confirm New Password"
-                onChange={(e) => setConfirmNewPassword(e.target.value)}
-                className="mb-4"
-                
-                aria-label="Confirm New Password"
-              />
-              <p className="text-red-500 text-sm">{passwordError}</p>
-              <Button type="submit"  className="mt-4 w-full bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-700 dark:bg-blue-500 text-gray-200 dark:text-gray-200">
-                Update Password
-              </Button>
-            </>
+          <Button disabled={busy} className="w-full">
+            {busy
+              ? "Please wait…"
+              : ["Send confirmation code", "Confirm code", "Update password"][
+                  step - 1
+                ]}
+          </Button>
+          {step > 1 && (
+            <Button
+              type="button"
+              variant="ghost"
+              disabled={busy}
+              onClick={() => {
+                setStep(1);
+                setError("");
+              }}
+            >
+              Start again
+            </Button>
           )}
         </form>
-
-        <div className="flex flex-col mt-10 justify-start items-start">
-          <Link href="/login" className="font-medium text-sm dark:text-white text-gray-800 hover:underline">Back to Sign In
-          </Link>
-          <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-              Don&apos;t have an account?{" "}
-              <Link href="/register">
-                <span className="font-medium dark:text-white text-gray-800 hover:underline">
-                  Create account here
-                </span>
-              </Link>
-            </p>
-        </div>
-      </div>
-    </div>
+      )}
+      <Link href="/login" className="accent block text-sm mt-6">
+        Back to sign in
+      </Link>
+    </AuthShell>
   );
 }

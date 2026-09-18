@@ -1,286 +1,235 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowUpRight, Folder, Plus, Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Trash2, LayoutGrid, Clock, Database, Sparkles, FolderPlus } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import CreateProjectDialog from "./createProject";
 import {
   createProject,
   getProjects,
   deleteProject,
 } from "@/lib/apicall/project";
-import Link from "next/link";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { motion, AnimatePresence } from "framer-motion";
-
 interface Project {
   project_id: string;
   title: string;
-  description: string;
+  description?: string;
   created_at?: string;
-  sources?: number;
+  createdAt?: string;
+  _id?: string;
 }
-
 export default function MainPage() {
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const fetchProjects = async () => {
+  const [error, setError] = useState("");
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const [deleting, setDeleting] = useState<Project | null>(null);
+  const [busy, setBusy] = useState(false);
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError("");
     try {
-      const token = localStorage.getItem("token") as string;
-      const response = await getProjects(token);
-      const normalized =
-        response?.projects?.map((p: any) => ({
+      const res = await getProjects(localStorage.getItem("token") || "");
+      setProjects(
+        (res.projects || []).map((p: Project) => ({
+          ...p,
           project_id: p.project_id || p._id,
-          title: p.title,
-          description: p.description,
-          created_at: p.createdAt || p.created_at,
-          sources: p.sources || p.filesCount || 0,
-        })) || [];
-      setProjects(normalized);
-    } catch (error) {
-      console.error("Error fetching projects:", error);
+        })),
+      );
+    } catch {
+      setError("Your projects couldn’t be loaded. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchProjects();
   }, []);
-
-  const handleCreateProject = async (data: {
-    name: string;
-    description: string;
-  }) => {
-    const token = localStorage.getItem("token") as string;
-    const res = await createProject(token, {
+  useEffect(() => {
+    void load();
+  }, [load]);
+  const create = async (data: { name: string; description: string }) => {
+    const res = await createProject(localStorage.getItem("token") || "", {
       title: data.name,
       description: data.description,
     });
-
-    const created = res?.project;
-    if (created) {
-      setProjects((prev) => [
-        {
-          project_id: created._id || created.project_id,
-          title: created.title,
-          description: created.description,
-          created_at: created.createdAt || created.created_at,
-          sources: created.sources || 0,
-        },
-        ...prev,
-      ]);
-    } else {
-      await fetchProjects();
-    }
-
-    setOpen(false);
+    const id = res.project?.project_id || res.project?._id;
+    if (id) router.push(`/Dashboard/projects/${id}`);
+    else await load();
   };
-
-  const handleDeleteProject = async (project_id: string) => {
+  async function remove() {
+    if (!deleting || busy) return;
+    setBusy(true);
     try {
-      const token = localStorage.getItem("token") as string;
-      await deleteProject(token, project_id);
-      fetchProjects();
-    } catch (error) {
-      console.error("Error deleting project:", error);
+      await deleteProject(
+        localStorage.getItem("token") || "",
+        deleting.project_id,
+      );
+      setProjects((p) => p.filter((x) => x.project_id !== deleting.project_id));
+      setDeleting(null);
+    } catch {
+      setError("The project couldn’t be deleted. Please try again.");
+      setDeleting(null);
+    } finally {
+      setBusy(false);
     }
-  };
-
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return "RECENTLY ACTIVE";
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
-  };
-
-  if (loading) {
-    return (
-      <div className="space-y-8 animate-in fade-in duration-500">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-white/5 border border-slate-300 dark:border-white/10 animate-pulse" />
-          <div className="h-8 w-64 bg-slate-200 dark:bg-white/5 border border-slate-300 dark:border-white/10 rounded-xl animate-pulse" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-64 glass-cosmos border-slate-200 dark:border-white/5 rounded-3xl p-6 relative overflow-hidden">
-              <div className="absolute inset-0 bg-slate-200/40 dark:bg-white/[0.02] animate-pulse" />
-              <div className="space-y-4 relative z-10">
-                <div className="h-6 w-3/4 bg-slate-200 dark:bg-white/5 rounded-lg" />
-                <div className="space-y-2">
-                  <div className="h-4 w-full bg-slate-200 dark:bg-white/5 rounded-lg" />
-                  <div className="h-4 w-2/3 bg-slate-200 dark:bg-white/5 rounded-lg" />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
   }
-
+  const visible = projects.filter((p) =>
+    `${p.title} ${p.description || ""}`
+      .toLowerCase()
+      .includes(query.toLowerCase()),
+  );
   return (
-    <div className="space-y-10">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="hidden dark:block absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
-            <div className="w-14 h-14 bg-slate-900 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-2xl flex items-center justify-center relative overflow-hidden">
-              <LayoutGrid className="w-7 h-7 text-blue-400" />
-            </div>
-          </div>
-          <div>
-            <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
-              Study Workspace
-            </h1>
-            <p className="text-xs font-black text-slate-500 dark:text-white/30 tracking-[0.2em] uppercase mt-1">
-              Manage your subjects and materials in one place // Active projects: {projects.length}
-            </p>
-          </div>
+    <div className="mx-auto max-w-6xl">
+      <div className="flex flex-wrap justify-between gap-5 items-center">
+        <div>
+          <p className="eyebrow mb-2">Your workspace</p>
+          <h1 className="page-heading">A place for every subject.</h1>
+          <p className="muted mt-3 text-sm">
+            Pick up a project, or make room for something new.
+          </p>
         </div>
-
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-          <Button
-            onClick={() => setOpen(true)}
-            className="h-14 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-2xl border-0 shadow-[0_0_30px_rgba(59,130,246,0.3)] group/btn relative overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
-            <FolderPlus className="mr-3 h-5 w-5" />
-            <span className="font-black tracking-[0.1em] uppercase text-xs">Create New Project</span>
+        <Button onClick={() => setOpen(true)}>
+          <Plus size={18} />
+          New project
+        </Button>
+      </div>
+      <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-b pb-5">
+        <h2 className="font-medium">
+          Your projects{" "}
+          <span className="muted ml-2 text-sm">{projects.length}</span>
+        </h2>
+        <div className="relative w-full sm:w-72">
+          <Search className="absolute left-3 top-3 muted" size={16} />
+          <Input
+            className="pl-9 h-10"
+            aria-label="Search projects"
+            placeholder="Search projects…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+      </div>
+      {error && (
+        <div
+          role="alert"
+          className="notice mt-5 flex flex-wrap items-center justify-between gap-3"
+        >
+          {error}
+          <Button variant="outline" onClick={load}>
+            Try again
           </Button>
-        </motion.div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl p-4">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-500 dark:text-white/30">Total Projects</p>
-          <p className="text-2xl font-black text-slate-900 dark:text-white mt-2">{projects.length}</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl p-4">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-500 dark:text-white/30">Study Sources</p>
-          <p className="text-2xl font-black text-slate-900 dark:text-white mt-2">
-            {projects.reduce((acc, project) => acc + (project.sources || 0), 0)}
+      )}
+      {loading ? (
+        <div role="status" className="py-16 muted">
+          Loading your projects…
+        </div>
+      ) : projects.length === 0 && !error ? (
+        <div className="surface my-6 rounded-2xl p-10 sm:p-16 text-center">
+          <Folder size={32} className="accent mx-auto mb-5" />
+          <h2 className="text-2xl font-semibold">
+            Start with what you&apos;re learning.
+          </h2>
+          <p className="muted mx-auto mt-3 max-w-md text-sm leading-7">
+            Create a project, add your notes, then explore them with chat,
+            flashcards, and quizzes.
           </p>
+          <Button className="mt-6" onClick={() => setOpen(true)}>
+            <Plus size={16} />
+            Create your first project
+          </Button>
         </div>
-        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl p-4">
-          <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-500 dark:text-white/30">Latest Activity</p>
-          <p className="text-sm font-bold text-slate-700 dark:text-white/70 mt-3">
-            {projects[0]?.created_at ? `Last project created ${formatDate(projects[0].created_at)}` : "Create your first project to get started"}
-          </p>
-        </div>
-      </div>
-
-      {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <AnimatePresence mode="popLayout">
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.project_id}
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.05 }}
-              layout
+      ) : (
+        <div className="grid gap-4 py-6 sm:grid-cols-2 xl:grid-cols-3">
+          {visible.map((p, i) => (
+            <article
+              key={p.project_id}
+              className="surface group rounded-xl p-6 flex min-h-56 flex-col transition-colors hover:border-blue-500/50"
             >
-              <div className="group/card glass-cosmos border-slate-200 dark:border-white/5 rounded-[2rem] p-8 min-h-[280px] flex flex-col relative overflow-hidden hover:border-blue-500/30 transition-all duration-500">
-                {/* Background Text Accent */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[120px] font-black text-slate-300/20 dark:text-white/[0.01] pointer-events-none select-none italic tracking-tighter">
-                  {index + 1 < 10 ? `0${index + 1}` : index + 1}
-                </div>
-
-                {/* Dropdown Menu */}
-                <div className="absolute top-6 right-6 z-20">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 border border-transparent hover:border-slate-300 dark:hover:border-white/10 transition-all">
-                        <MoreVertical className="w-5 h-5 text-slate-500 dark:text-white/40" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="glass-cosmos border-slate-300 dark:border-white/10 bg-white/95 dark:bg-slate-900/95 p-2">
-                      <DropdownMenuItem 
-                        onClick={() => handleDeleteProject(project.project_id)}
-                        className="text-red-400 focus:text-red-300 focus:bg-red-500/10 p-3 rounded-xl cursor-pointer"
-                      >
-                        <Trash2 className="w-4 h-4 mr-3" />
-                        <span className="font-bold text-xs uppercase tracking-widest">Decommission</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-
-                {/* Project Header */}
-                <div className="mb-6 relative z-10">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
-                    <span className="text-[10px] font-black text-blue-500 tracking-[0.2em] uppercase italic">Project Ready</span>
-                  </div>
-                  <h3 className="text-2xl font-black text-slate-900 dark:text-white group-hover/card:text-blue-500 dark:group-hover/card:text-blue-400 transition-colors line-clamp-1">
-                    {project.title}
-                  </h3>
-                </div>
-
-                {/* Description */}
-                <p className="text-sm font-bold text-slate-600 dark:text-white/40 line-clamp-3 mb-8 flex-1 leading-relaxed relative z-10">
-                  {project.description || "No description yet. Add details so you can quickly identify this project later."}
-                </p>
-
-                {/* Footer */}
-                <div className="mt-auto pt-6 border-t border-slate-200 dark:border-white/5 flex items-center justify-between relative z-10">
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-3 h-3 text-slate-500 dark:text-white/20" />
-                    <span className="text-[10px] font-black text-slate-500 dark:text-white/20 tracking-widest uppercase">
-                      {formatDate(project.created_at)}
-                    </span>
-                  </div>
-                  
-                  <Link href={`/Dashboard/projects/${project.project_id}`}>
-                    <motion.div
-                      whileHover={{ scale: 1.05, x: 5 }}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-300 dark:border-white/10 group-hover/card:border-blue-500/50 group-hover/card:bg-blue-500/10 transition-all cursor-pointer"
-                    >
-                      <Database className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
-                      <span className="text-[10px] font-black text-blue-700 dark:text-blue-100 uppercase tracking-widest">Open Project</span>
-                    </motion.div>
-                  </Link>
-                </div>
-
-                {/* Hover Effects */}
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-br from-blue-500/[0.03] to-indigo-500/[0.03] opacity-0 group-hover/card:opacity-100 transition-opacity pointer-events-none" />
-                <div className="hidden dark:block absolute -bottom-10 -right-10 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full opacity-0 group-hover/card:opacity-100 transition-all duration-700" />
+              <div className="flex justify-between items-center">
+                <span
+                  className={`flex h-10 w-10 items-center justify-center rounded-xl ${["bg-blue-500/10 text-blue-500", "bg-violet-500/10 text-violet-500", "bg-emerald-500/10 text-emerald-500"][i % 3]}`}
+                >
+                  <Folder size={20} />
+                </span>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  aria-label={`Delete ${p.title}`}
+                  onClick={() => setDeleting(p)}
+                >
+                  <Trash2 size={16} className="muted" />
+                </Button>
               </div>
-            </motion.div>
+              <h3 className="mt-5 text-lg font-semibold break-words">
+                <Link href={`/Dashboard/projects/${p.project_id}`}>
+                  {p.title}
+                </Link>
+              </h3>
+              <p className="muted mt-2 text-sm leading-6 line-clamp-2">
+                {p.description || "Add your materials and start exploring."}
+              </p>
+              <div className="mt-auto pt-6 flex items-center justify-between">
+                <span className="muted text-xs">
+                  {(p.created_at || p.createdAt) &&
+                  !isNaN(new Date(p.created_at || p.createdAt || "").getTime())
+                    ? `Created ${new Date(p.created_at || p.createdAt || "").toLocaleDateString(undefined, { month: "short", day: "numeric" })}`
+                    : "Study project"}
+                </span>
+                <Link
+                  className="accent flex items-center gap-1 text-sm"
+                  href={`/Dashboard/projects/${p.project_id}`}
+                >
+                  Open project
+                  <ArrowUpRight size={16} />
+                </Link>
+              </div>
+            </article>
           ))}
-        </AnimatePresence>
-
-        {/* Empty State */}
-        {projects.length === 0 && (
-          <div className="col-span-full py-32 flex flex-col items-center justify-center text-center">
-            <div className="relative mb-8">
-              <div className="hidden dark:block absolute inset-0 bg-blue-500/20 blur-3xl animate-pulse rounded-full" />
-              <div className="w-24 h-24 bg-slate-900 dark:bg-slate-900 border border-slate-300 dark:border-white/10 rounded-3xl flex items-center justify-center relative overflow-hidden group">
-                <Sparkles className="w-10 h-10 text-blue-400 group-hover:scale-125 transition-transform duration-500" />
-                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent" />
-              </div>
-            </div>
-            <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter mb-2">No Projects Yet</h3>
-            <p className="text-slate-500 dark:text-white/30 text-sm font-bold uppercase tracking-widest max-w-sm">
-              Create your first project to organize files, chat with your notes, and start studying faster.
-            </p>
-          </div>
-        )}
-      </div>
-
+        </div>
+      )}
+      {!loading && projects.length > 0 && visible.length === 0 && (
+        <p className="muted py-12 text-center">
+          No projects match “{query}”. Try another search.
+        </p>
+      )}
       <CreateProjectDialog
         open={open}
         onOpenChange={setOpen}
-        onCreate={handleCreateProject}
+        onCreate={create}
       />
+      <Dialog
+        open={!!deleting}
+        onOpenChange={(v) => !v && !busy && setDeleting(null)}
+      >
+        <DialogContent>
+          <DialogTitle>Delete “{deleting?.title}”?</DialogTitle>
+          <DialogDescription>
+            This permanently deletes the project and its study materials. This
+            action cannot be undone.
+          </DialogDescription>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              disabled={busy}
+              onClick={() => setDeleting(null)}
+            >
+              Cancel
+            </Button>
+            <Button variant="destructive" disabled={busy} onClick={remove}>
+              {busy ? "Deleting…" : "Delete project"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

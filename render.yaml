@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: studymate-api
+    runtime: docker
+    rootDir: back-end
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health/ready
+    preDeployCommand: python -m app.db.migrate
+    autoDeployTrigger: off
+    maxShutdownDelaySeconds: 30
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: AUTH_MODE
+        value: supabase
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: METRICS_BEARER_TOKEN
+        generateValue: true
+      - key: OTEL_EXPORTER_OTLP_ENDPOINT
+        sync: false

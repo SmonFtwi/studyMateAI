@@ -1,0 +1,54 @@
+name: studymate
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: studymate
+      POSTGRES_USER: studymate
+      POSTGRES_PASSWORD: studymate-local-only
+    volumes:
+      - studymate_postgres:/var/lib/postgresql/data
+      - ./back-end/migrations/001_initial.sql:/docker-entrypoint-initdb.d/001_initial.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U studymate -d studymate"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks:
+      - backend
+
+  backend:
+    build:
+      context: ./back-end
+      target: runtime
+    environment:
+      ENVIRONMENT: local
+      AUTH_MODE: local
+      LOCAL_JWT_SECRET: ${LOCAL_JWT_SECRET:-local-development-secret-change-before-sharing}
+      DATABASE_URL: postgresql://studymate:studymate-local-only@db:5432/studymate
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      CORS_ORIGINS: http://localhost:3000
+      HUMAN_APPROVAL_ENABLED: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3005:3005"
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  studymate_postgres:

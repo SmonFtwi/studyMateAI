@@ -1,0 +1,432 @@
+{
+  "evaluation_cases": 60,
+  "retrieval_hit_rate": 1.0,
+  "grounded_answer_pass_rate": 1.0,
+  "behavior_pass_rate": 1.0,
+  "p95_latency_ms": 0.144,
+  "mean_latency_ms": 0.1043,
+  "cost_per_request_usd": 0.0,
+  "mode": "offline-deterministic",
+  "results": [
+    {
+      "id": "bio-001",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "biology-01.md",
+      "latency_ms": 0.2462
+    },
+    {
+      "id": "bio-002",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "biology-02.md",
+      "latency_ms": 0.1465
+    },
+    {
+      "id": "bio-003",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "biology-03.md",
+      "latency_ms": 0.144
+    },
+    {
+      "id": "bio-004",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "biology-04.md",
+      "latency_ms": 0.1362
+    },
+    {
+      "id": "bio-005",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "biology-05.md",
+      "latency_ms": 0.1358
+    },
+    {
+      "id": "chem-001",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "chemistry-01.md",
+      "latency_ms": 0.1158
+    },
+    {
+      "id": "chem-002",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "chemistry-02.md",
+      "latency_ms": 0.1152
+    },
+    {
+      "id": "chem-003",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "chemistry-03.md",
+      "latency_ms": 0.1231
+    },
+    {
+      "id": "chem-004",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "chemistry-04.md",
+      "latency_ms": 0.1233
+    },
+    {
+      "id": "chem-005",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "chemistry-05.md",
+      "latency_ms": 0.117
+    },
+    {
+      "id": "physics-001",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "physics-01.md",
+      "latency_ms": 0.1225
+    },
+    {
+      "id": "physics-002",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "physics-02.md",
+      "latency_ms": 0.1147
+    },
+    {
+      "id": "physics-003",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "physics-03.md",
+      "latency_ms": 0.1155
+    },
+    {
+      "id": "physics-004",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "physics-04.md",
+      "latency_ms": 0.1225
+    },
+    {
+      "id": "physics-005",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "physics-05.md",
+      "latency_ms": 0.1082
+    },
+    {
+      "id": "math-001",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "mathematics-01.md",
+      "latency_ms": 0.1323
+    },
+    {
+      "id": "math-002",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "mathematics-02.md",
+      "latency_ms": 0.1097
+    },
+    {
+      "id": "math-003",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "mathematics-03.md",
+      "latency_ms": 0.1288
+    },
+    {
+      "id": "math-004",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "mathematics-04.md",
+      "latency_ms": 0.1086
+    },
+    {
+      "id": "math-005",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "mathematics-05.md",
+      "latency_ms": 0.1145
+    },
+    {
+      "id": "history-001",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "history-01.md",
+      "latency_ms": 0.1149
+    },
+    {
+      "id": "history-002",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "history-02.md",
+      "latency_ms": 0.1312
+    },
+    {
+      "id": "history-003",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "history-03.md",
+      "latency_ms": 0.1144
+    },
+    {
+      "id": "history-004",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "history-04.md",
+      "latency_ms": 0.1146
+    },
+    {
+      "id": "history-005",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "history-05.md",
+      "latency_ms": 0.1285
+    },
+    {
+      "id": "computing-001",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "computing-01.md",
+      "latency_ms": 0.137
+    },
+    {
+      "id": "computing-002",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "computing-02.md",
+      "latency_ms": 0.179
+    },
+    {
+      "id": "computing-003",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "computing-03.md",
+      "latency_ms": 0.1373
+    },
+    {
+      "id": "computing-004",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "computing-04.md",
+      "latency_ms": 0.1286
+    },
+    {
+      "id": "computing-005",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "computing-05.md",
+      "latency_ms": 0.1254
+    },
+    {
+      "id": "economics-001",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "economics-01.md",
+      "latency_ms": 0.1096
+    },
+    {
+      "id": "economics-002",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "economics-02.md",
+      "latency_ms": 0.0949
+    },
+    {
+      "id": "economics-003",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "economics-03.md",
+      "latency_ms": 0.114
+    },
+    {
+      "id": "economics-004",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "economics-04.md",
+      "latency_ms": 0.1383
+    },
+    {
+      "id": "economics-005",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "economics-05.md",
+      "latency_ms": 0.1179
+    },
+    {
+      "id": "literature-001",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "literature-01.md",
+      "latency_ms": 0.1319
+    },
+    {
+      "id": "literature-002",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "literature-02.md",
+      "latency_ms": 0.1123
+    },
+    {
+      "id": "literature-003",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "literature-03.md",
+      "latency_ms": 0.1221
+    },
+    {
+      "id": "literature-004",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "literature-04.md",
+      "latency_ms": 0.1095
+    },
+    {
+      "id": "literature-005",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "literature-05.md",
+      "latency_ms": 0.1221
+    },
+    {
+      "id": "geography-001",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "geography-01.md",
+      "latency_ms": 0.1082
+    },
+    {
+      "id": "geography-002",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "geography-02.md",
+      "latency_ms": 0.1213
+    },
+    {
+      "id": "geography-003",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "geography-03.md",
+      "latency_ms": 0.109
+    },
+    {
+      "id": "geography-004",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "geography-04.md",
+      "latency_ms": 0.1083
+    },
+    {
+      "id": "geography-005",
+      "behavior": "answer",
+      "passed": true,
+      "top_source": "geography-05.md",
+      "latency_ms": 0.13
+    },
+    {
+      "id": "unknown-001",
+      "behavior": "abstain",
+      "passed": true,
+      "top_source": "approval-01.md",
+      "latency_ms": 0.1148
+    },
+    {
+      "id": "unknown-002",
+      "behavior": "abstain",
+      "passed": true,
+      "top_source": "approval-01.md",
+      "latency_ms": 0.1213
+    },
+    {
+      "id": "unknown-003",
+      "behavior": "abstain",
+      "passed": true,
+      "top_source": "approval-01.md",
+      "latency_ms": 0.117
+    },
+    {
+      "id": "unknown-004",
+      "behavior": "abstain",
+      "passed": true,
+      "top_source": "approval-01.md",
+      "latency_ms": 0.12
+    },
+    {
+      "id": "unknown-005",
+      "behavior": "abstain",
+      "passed": true,
+      "top_source": "approval-01.md",
+      "latency_ms": 0.1194
+    },
+    {
+      "id": "guard-001",
+      "behavior": "block",
+      "passed": true,
+      "top_source": null,
+      "latency_ms": 0.0041
+    },
+    {
+      "id": "guard-002",
+      "behavior": "block",
+      "passed": true,
+      "top_source": null,
+      "latency_ms": 0.0027
+    },
+    {
+      "id": "guard-003",
+      "behavior": "block",
+      "passed": true,
+      "top_source": null,
+      "latency_ms": 0.0016
+    },
+    {
+      "id": "guard-004",
+      "behavior": "block",
+      "passed": true,
+      "top_source": null,
+      "latency_ms": 0.0022
+    },
+    {
+      "id": "guard-005",
+      "behavior": "block",
+      "passed": true,
+      "top_source": null,
+      "latency_ms": 0.0017
+    },
+    {
+      "id": "approval-001",
+      "behavior": "approval",
+      "passed": true,
+      "top_source": null,
+      "latency_ms": 0.0023
+    },
+    {
+      "id": "approval-002",
+      "behavior": "approval",
+      "passed": true,
+      "top_source": null,
+      "latency_ms": 0.0031
+    },
+    {
+      "id": "approval-003",
+      "behavior": "approval",
+      "passed": true,
+      "top_source": null,
+      "latency_ms": 0.0041
+    },
+    {
+      "id": "approval-004",
+      "behavior": "approval",
+      "passed": true,
+      "top_source": null,
+      "latency_ms": 0.0017
+    },
+    {
+      "id": "approval-005",
+      "behavior": "approval",
+      "passed": true,
+      "top_source": null,
+      "latency_ms": 0.004
+    }
+  ]
+}

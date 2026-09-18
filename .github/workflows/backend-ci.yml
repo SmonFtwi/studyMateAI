@@ -1,0 +1,89 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main]
+    paths: ["back-end/**", "docker-compose.yml", ".github/workflows/backend-ci.yml"]
+  pull_request:
+    paths: ["back-end/**", "docker-compose.yml", ".github/workflows/backend-ci.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: studymate_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d studymate_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      ENVIRONMENT: test
+      AUTH_MODE: local
+      LOCAL_JWT_SECRET: test-only-secret-with-at-least-32-characters
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/studymate_test
+    defaults:
+      run:
+        working-directory: back-end
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: back-end/requirements-dev.txt
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt pip-audit
+      - name: Lint
+        run: ruff check app tests
+      - name: Apply PostgreSQL migration
+        run: python -m app.db.migrate
+      - name: Test
+        run: pytest
+      - name: Run 50+ case evaluation gate
+        run: python -m app.evaluation.runner --dataset evaluation/cases.jsonl --output evaluation/report.json --min-retrieval-hit-rate 0.90 --min-grounded-pass-rate 0.90
+      - name: Dependency audit
+        run: pip-audit -r requirements.txt
+      - name: Build backend image
+        run: docker build --tag studymate-api:ci .
+
+  publish:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/studymate-api
+          tags: |
+            type=sha
+            type=raw,value=latest
+      - uses: docker/build-push-action@v6
+        with:
+          context: ./back-end
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+

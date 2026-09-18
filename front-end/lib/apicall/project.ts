@@ -1,5 +1,15 @@
-export const createProject = async (token: string, projectData: any) => {
-  console.log("projectData", projectData);
+async function responseMessage(response: Response, fallback: string) {
+  const body = await response.json().catch(() => null);
+  const message = body?.error || body?.message || body?.detail;
+  return typeof message === "string" && message.length < 240
+    ? message
+    : fallback;
+}
+
+export const createProject = async (
+  token: string,
+  projectData: { title: string; description: string },
+) => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_backend_url}/projects/createProject`,
     {
@@ -9,7 +19,7 @@ export const createProject = async (token: string, projectData: any) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(projectData),
-    }
+    },
   );
   if (!response.ok) {
     throw new Error("Failed to create project");
@@ -27,7 +37,7 @@ export const getProjects = async (token: string) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
     if (!response.ok) {
       throw new Error("Failed to get projects");
@@ -41,7 +51,6 @@ export const getProjects = async (token: string) => {
 };
 
 export const deleteProject = async (token: string, project_id: string) => {
-  console.log("project_id", project_id);
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_backend_url}/projects/deleteProject/${project_id}`,
@@ -50,7 +59,7 @@ export const deleteProject = async (token: string, project_id: string) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
     if (!response.ok) {
       throw new Error("Failed to delete project");
@@ -66,7 +75,7 @@ export const deleteProject = async (token: string, project_id: string) => {
 export const uploadProjectSources = async (
   token: string,
   projectId: string,
-  files: File[]
+  files: File[],
 ) => {
   const formData = new FormData();
   files.forEach((file) => formData.append("files", file));
@@ -79,13 +88,16 @@ export const uploadProjectSources = async (
         Authorization: `Bearer ${token}`,
       },
       body: formData,
-    }
+    },
   );
 
   if (!response.ok) {
-    const errorText = await response.text();
+    const errorText = await responseMessage(
+      response,
+      "The request couldn’t be completed. Please try again.",
+    );
     throw new Error(
-      errorText || "Failed to upload sources. Please try again later."
+      errorText || "Failed to upload sources. Please try again later.",
     );
   }
 
@@ -100,11 +112,14 @@ export const getProjectFiles = async (token: string, projectId: string) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
 
   if (!response.ok) {
-    const message = await response.text();
+    const message = await responseMessage(
+      response,
+      "The request couldn’t be completed. Please try again.",
+    );
     throw new Error(message || "Failed to fetch project files");
   }
 
@@ -114,7 +129,7 @@ export const getProjectFiles = async (token: string, projectId: string) => {
 export const createChatSession = async (
   token: string,
   projectId: string,
-  title?: string
+  title?: string,
 ) => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/chat/sessions`,
@@ -125,10 +140,13 @@ export const createChatSession = async (
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ title }),
-    }
+    },
   );
   if (!response.ok) {
-    const message = await response.text();
+    const message = await responseMessage(
+      response,
+      "The request couldn’t be completed. Please try again.",
+    );
     throw new Error(message || "Failed to create chat session");
   }
   return response.json();
@@ -142,10 +160,13 @@ export const getChatSessions = async (token: string, projectId: string) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
   if (!response.ok) {
-    const message = await response.text();
+    const message = await responseMessage(
+      response,
+      "The request couldn’t be completed. Please try again.",
+    );
     throw new Error(message || "Failed to fetch chat sessions");
   }
   return response.json();
@@ -154,7 +175,7 @@ export const getChatSessions = async (token: string, projectId: string) => {
 export const getChatMessages = async (
   token: string,
   projectId: string,
-  sessionId: string
+  sessionId: string,
 ) => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/chat/${sessionId}/messages`,
@@ -163,10 +184,13 @@ export const getChatMessages = async (
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
   if (!response.ok) {
-    const message = await response.text();
+    const message = await responseMessage(
+      response,
+      "The request couldn’t be completed. Please try again.",
+    );
     throw new Error(message || "Failed to fetch chat messages");
   }
   return response.json();
@@ -176,7 +200,7 @@ export const sendChatMessage = async (
   token: string,
   projectId: string,
   sessionId: string,
-  message: string
+  message: string,
 ) => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/chat/${sessionId}/messages`,
@@ -187,10 +211,13 @@ export const sendChatMessage = async (
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ message }),
-    }
+    },
   );
   if (!response.ok) {
-    const messageText = await response.text();
+    const messageText = await responseMessage(
+      response,
+      "The request couldn’t be completed. Please try again.",
+    );
     throw new Error(messageText || "Failed to send chat message");
   }
   return response.json();
@@ -204,10 +231,13 @@ export const generateFlashcards = async (token: string, projectId: string) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
   if (!response.ok) {
-    const message = await response.text();
+    const message = await responseMessage(
+      response,
+      "The request couldn’t be completed. Please try again.",
+    );
     throw new Error(message || "Failed to generate flashcards");
   }
   return response.json();
@@ -221,10 +251,13 @@ export const getFlashcards = async (token: string, projectId: string) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
   if (!response.ok) {
-    const message = await response.text();
+    const message = await responseMessage(
+      response,
+      "The request couldn’t be completed. Please try again.",
+    );
     throw new Error(message || "Failed to fetch flashcards");
   }
   return response.json();
@@ -238,10 +271,13 @@ export const generateQuiz = async (token: string, projectId: string) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
   if (!response.ok) {
-    const message = await response.text();
+    const message = await responseMessage(
+      response,
+      "The request couldn’t be completed. Please try again.",
+    );
     throw new Error(message || "Failed to generate quiz");
   }
   return response.json();
@@ -255,10 +291,13 @@ export const getQuiz = async (token: string, projectId: string) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
   if (!response.ok) {
-    const message = await response.text();
+    const message = await responseMessage(
+      response,
+      "The request couldn’t be completed. Please try again.",
+    );
     throw new Error(message || "Failed to fetch quiz");
   }
   return response.json();
