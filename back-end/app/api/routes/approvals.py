@@ -75,7 +75,7 @@ async def decide_approval(
         user_id=approval.user_id,
         role="assistant",
         content=result.get("answer", "A reviewer rejected this request."),
-        sources=public_sources(source_models),
+        sources=public_sources(source_models) if result.get("grounded") else [],
     )
     db.add(message)
 

@@ -10,6 +10,7 @@ from app.core.config import Settings
 from app.core.guardrails import has_valid_citation, inspect_query
 from app.db.session import SessionFactory
 from app.schemas import RetrievedSource
+from app.services.conversation import conversational_reply
 from app.services.llm import OpenAIService
 from app.services.retrieval import RetrievalService, format_context
 
@@ -113,6 +114,7 @@ class StudyGraph:
         builder = StateGraph(RAGState)
         builder.add_node("guard", self._guard)
         builder.add_node("blocked", self._blocked)
+        builder.add_node("conversation", self._conversation)
         builder.add_node("retrieve", self._retrieve)
         builder.add_node("no_context", self._no_context)
         builder.add_node("approval", self._approval)
@@ -123,9 +125,12 @@ class StudyGraph:
 
         builder.add_edge(START, "guard")
         builder.add_conditional_edges(
-            "guard", self._route_after_guard, {"blocked": "blocked", "retrieve": "retrieve"}
+            "guard",
+            self._route_after_guard,
+            {"blocked": "blocked", "retrieve": "retrieve", "conversation": "conversation"},
         )
         builder.add_edge("blocked", END)
+        builder.add_edge("conversation", END)
         builder.add_conditional_edges(
             "retrieve",
             self._route_after_retrieval,
@@ -157,8 +162,22 @@ class StudyGraph:
         }
 
     @staticmethod
-    def _route_after_guard(state: RAGState) -> Literal["blocked", "retrieve"]:
-        return "blocked" if state.get("status") == "blocked" else "retrieve"
+    def _route_after_guard(state: RAGState) -> Literal["blocked", "retrieve", "conversation"]:
+        if state.get("status") == "blocked":
+            return "blocked"
+        if not state.get("requires_approval") and conversational_reply(state["question"]):
+            return "conversation"
+        return "retrieve"
+
+    @staticmethod
+    def _conversation(state: RAGState) -> dict[str, Any]:
+        return {
+            "answer": conversational_reply(state["question"]),
+            "sources": [],
+            "grounded": False,
+            "retrieval_hit": False,
+            "status": "completed",
+        }
 
     @staticmethod
     def _blocked(state: RAGState) -> dict[str, Any]:
@@ -177,9 +196,7 @@ class StudyGraph:
                 project_id=uuid.UUID(state["project_id"]),
                 user_id=uuid.UUID(state["user_id"]),
             )
-        hit = bool(
-            sources and sources[0].score >= self.settings.retrieval_min_similarity
-        )
+        hit = bool(sources and sources[0].score >= self.settings.retrieval_min_similarity)
         return {
             "sources": [source.model_dump() for source in sources],
             "retrieval_hit": hit,

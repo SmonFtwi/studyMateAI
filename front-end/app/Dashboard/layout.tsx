@@ -19,7 +19,10 @@ export default function DashboardLayout({
               <DashboardNavigation />
             </div>
           </aside>
-          <main id="main-content" className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
+          <main
+            id="main-content"
+            className="min-w-0 flex-1 p-4 sm:px-6 lg:px-8"
+          >
             {children}
           </main>
         </div>

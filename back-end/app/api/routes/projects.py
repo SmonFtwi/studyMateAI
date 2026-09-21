@@ -345,7 +345,7 @@ async def send_chat_message(
                 "role": "assistant",
                 "content": "This request is waiting for human approval.",
             },
-            "sources": public_sources(sources),
+            "sources": [],
         }
 
     assistant = ChatMessage(
@@ -354,7 +354,7 @@ async def send_chat_message(
         user_id=user.id,
         role="assistant",
         content=result.get("answer", "I could not complete that request."),
-        sources=public_sources(sources),
+        sources=public_sources(sources) if result.get("grounded") else [],
     )
     db.add(assistant)
     await db.commit()

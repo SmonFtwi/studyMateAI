@@ -20,12 +20,12 @@ export function AuthShell({
     <>
       <Navbar />
       <main className="page-width grid gap-12 py-12 lg:grid-cols-2 lg:items-center lg:gap-24 lg:py-20">
-        <div>
+        <div className="hidden lg:block">
           <p className="eyebrow mb-5">Your next chapter starts here</p>
-          <h1 className="text-4xl sm:text-5xl font-semibold leading-tight max-w-lg">
+          <h2 className="text-4xl sm:text-5xl font-semibold leading-tight max-w-lg">
             A clear head.
             <br />A focused <span className="accent">study space.</span>
-          </h1>
+          </h2>
           <p className="muted mt-6 text-lg leading-8 max-w-md">
             Bring your materials together and make progress, one idea at a time.
           </p>
@@ -46,8 +46,8 @@ export function AuthShell({
             Built around the way you learn.
           </div>
         </div>
-        <section className="surface w-full max-w-lg rounded-2xl p-6 sm:p-9">
-          <h2 className="text-2xl font-semibold">{title}</h2>
+        <section className="surface mx-auto w-full max-w-lg rounded-2xl p-6 sm:p-9">
+          <h1 className="text-2xl font-semibold">{title}</h1>
           <p className="muted mt-2 mb-7 text-sm leading-6">{description}</p>
           {children}
         </section>

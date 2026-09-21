@@ -1,0 +1,262 @@
+/* Landing-only movement: content stays readable without JavaScript. */
+.landing-motion {
+  overflow-x: clip;
+}
+.landing-motion .landing-reveal {
+  --reveal-delay: 0ms;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .landing-motion[data-motion-ready]
+    .landing-reveal:not([data-in-view]):not(:focus-within) {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .landing-motion .landing-reveal {
+    transition:
+      opacity 700ms ease var(--reveal-delay),
+      transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1) var(--reveal-delay);
+  }
+  .landing-hero-copy > * {
+    animation: landing-arrive 750ms both;
+  }
+  .landing-hero-copy > :nth-child(2) {
+    animation-delay: 90ms;
+  }
+  .landing-hero-copy > :nth-child(3) {
+    animation-delay: 180ms;
+  }
+  .landing-hero-copy > :nth-child(4) {
+    animation-delay: 270ms;
+  }
+  .landing-hero-copy > :nth-child(5) {
+    animation-delay: 360ms;
+  }
+  .landing-highlight::after {
+    animation: landing-underline 900ms 600ms both;
+    transform-origin: left;
+  }
+  .landing-preview[data-in-view] .landing-preview-caption {
+    animation: landing-arrive 750ms 650ms both;
+  }
+  .landing-preview-content {
+    animation: landing-arrive 380ms both;
+  }
+  .landing-message {
+    animation: landing-arrive 650ms both;
+  }
+  .landing-message-one {
+    animation-delay: 120ms;
+  }
+  .landing-message-two {
+    animation-delay: 450ms;
+  }
+  .landing-message-three {
+    animation-delay: 780ms;
+  }
+  .landing-preview[data-in-view] .landing-orbit {
+    animation: landing-orbit-arrive 1400ms both;
+  }
+  .landing-step[data-in-view] .landing-step-number {
+    animation: landing-number 650ms both;
+  }
+  .landing-motion details[open] > p {
+    animation: landing-arrive 300ms both;
+  }
+  .landing-flashcard-inner {
+    transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .landing-feature,
+  .landing-preview-window,
+  .landing-quiz-option,
+  .landing-cta a,
+  .landing-preview-tab {
+    transition:
+      transform 250ms ease,
+      border-color 250ms ease,
+      box-shadow 250ms ease,
+      background-color 250ms ease;
+  }
+  .landing-feature svg,
+  .landing-cta svg {
+    transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .landing-feature:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 16px 40px #2563eb0c;
+      border-color: var(--accent);
+    }
+    .landing-feature:hover svg {
+      transform: rotate(-10deg) scale(1.12);
+    }
+    .landing-preview-window:hover {
+      transform: perspective(1200px) rotateY(-2deg) rotateX(1deg);
+    }
+    .landing-quiz-option:hover {
+      transform: translateX(3px);
+      border-color: var(--accent);
+    }
+    .landing-cta a:hover {
+      transform: translateY(-2px);
+    }
+    .landing-cta a:hover svg {
+      transform: translateX(4px);
+    }
+    .landing-preview-tab:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+.landing-highlight {
+  position: relative;
+  display: inline-block;
+}
+.landing-highlight::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.08em;
+  width: 100%;
+  height: 0.13em;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.2;
+  transform: rotate(-2deg);
+}
+.landing-orbit {
+  position: absolute;
+  width: 110%;
+  height: 85%;
+  left: -5%;
+  top: 7%;
+  border: 1px dashed color-mix(in srgb, var(--accent) 28%, transparent);
+  border-radius: 50%;
+  transform: rotate(-15deg);
+  pointer-events: none;
+}
+.landing-orbit span {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  background: var(--accent);
+  border: 3px solid var(--background);
+  border-radius: 50%;
+}
+.landing-orbit span:nth-child(1) {
+  top: 25%;
+  left: 1%;
+}
+.landing-orbit span:nth-child(2) {
+  top: 50%;
+  right: -4px;
+}
+.landing-orbit span:nth-child(3) {
+  bottom: 5%;
+  right: 25%;
+}
+.landing-source-path {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.45;
+}
+.landing-source-path span {
+  height: 3px;
+  width: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.landing-step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.landing-flashcard {
+  display: block;
+  perspective: 1000px;
+  width: 100%;
+  text-align: center;
+  border-radius: 14px;
+}
+.landing-flashcard-inner {
+  position: relative;
+  display: grid;
+  min-height: 244px;
+  transform-style: preserve-3d;
+}
+.landing-flashcard.is-flipped .landing-flashcard-inner {
+  transform: rotateY(180deg);
+}
+.landing-flashcard-face {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.landing-flashcard-back {
+  transform: rotateY(180deg);
+  background: color-mix(in srgb, var(--surface) 94%, var(--accent));
+}
+@keyframes landing-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes landing-underline {
+  from {
+    transform: scaleX(0) rotate(-2deg);
+  }
+  to {
+    transform: scaleX(1) rotate(-2deg);
+  }
+}
+@keyframes landing-orbit-arrive {
+  from {
+    opacity: 0;
+    transform: rotate(-28deg) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-15deg) scale(1);
+  }
+}
+@keyframes landing-number {
+  from {
+    transform: rotate(-15deg) scale(0.8);
+  }
+  to {
+    transform: rotate(0) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-motion .landing-reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .landing-flashcard-inner,
+  .landing-flashcard.is-flipped .landing-flashcard-inner,
+  .landing-flashcard-back {
+    transform: none;
+  }
+  .landing-flashcard-face[aria-hidden="true"] {
+    visibility: hidden;
+  }
+}

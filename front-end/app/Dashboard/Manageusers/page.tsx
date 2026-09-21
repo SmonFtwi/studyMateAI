@@ -71,17 +71,15 @@ const AdminPage: React.FC = () => {
           body: JSON.stringify({ user_id: userId, user_role: newRole }),
         },
       );
-      if (!response.ok) {
-        console.log("error", response);
-      }
+      if (!response.ok) throw new Error("Failed to update user role");
       const data = await response.json();
       if (data.status === "success") {
         fetchAllUsers();
       } else {
-        setErrorWithTimeout("Failed to update user role");
+        throw new Error("Failed to update user role");
       }
     } catch (err) {
-      setErrorWithTimeout("Error updating role");
+      throw new Error("Failed to update user role");
     }
   };
 
@@ -238,9 +236,8 @@ const AdminPage: React.FC = () => {
           filteredUsers.find((user) => user.user_id === currentUserId)?.role ||
           ""
         }
-        onUpdate={(newRole) => {
-          if (currentUserId) updateUserRole(currentUserId, newRole);
-          setShowUpdateRoleDialog(false);
+        onUpdate={async (newRole) => {
+          if (currentUserId) await updateUserRole(currentUserId, newRole);
         }}
       />
       <DeleteUserDialog

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +19,7 @@ interface UpdateRoleDialogProps {
   open: boolean;
   onClose: () => void;
   currentRole: string;
-  onUpdate: (newRole: string) => void;
+  onUpdate: (newRole: string) => void | Promise<void>;
 }
 
 const UpdateRoleDialog: React.FC<UpdateRoleDialogProps> = ({
@@ -29,20 +30,44 @@ const UpdateRoleDialog: React.FC<UpdateRoleDialogProps> = ({
 }) => {
   const [selectedRole, setSelectedRole] = useState(currentRole);
 
-  const handleUpdate = () => {
-    onUpdate(selectedRole);
-    onClose();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    if (open) {
+      setSelectedRole(currentRole);
+      setError("");
+    }
+  }, [open, currentRole]);
+  const handleUpdate = async () => {
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      await onUpdate(selectedRole);
+      onClose();
+    } catch {
+      setError("The role couldn’t be updated. Please try again.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={() => !busy && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Update User Role</DialogTitle>
+          <DialogTitle>Update user role</DialogTitle>
+          <DialogDescription>
+            Choose the account’s access level.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <Select value={selectedRole} onValueChange={setSelectedRole}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger
+              aria-label="User role"
+              disabled={busy}
+              className="w-full"
+            >
               <span>{selectedRole}</span>
             </SelectTrigger>
             <SelectContent>
@@ -52,12 +77,21 @@ const UpdateRoleDialog: React.FC<UpdateRoleDialogProps> = ({
             </SelectContent>
           </Select>
         </div>
+        {error && (
+          <p role="alert" className="text-sm text-red-500">
+            {error}
+          </p>
+        )}
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" disabled={busy} onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="default" onClick={handleUpdate}>
-            Update
+          <Button
+            variant="default"
+            disabled={busy || !selectedRole}
+            onClick={handleUpdate}
+          >
+            {busy ? "Updating…" : "Update role"}
           </Button>
         </DialogFooter>
       </DialogContent>

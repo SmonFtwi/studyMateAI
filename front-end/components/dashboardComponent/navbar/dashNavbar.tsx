@@ -88,7 +88,7 @@ export function DashboardNavigation({
 export function DashNavBar() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="flex h-20 shrink-0 items-center justify-between border-b px-4 sm:px-6">
+    <header className="flex h-16 shrink-0 items-center justify-between border-b px-4 sm:px-6">
       <div className="flex items-center gap-3">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>

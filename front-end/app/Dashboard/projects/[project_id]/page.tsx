@@ -87,7 +87,36 @@ function StudyProject({ id }: { id: string }) {
   const bottom = useRef<HTMLDivElement>(null);
   const messageRequest = useRef(0);
   const actionLock = useRef(false);
+  const activeSession = useRef<string | null>(null);
+  const chooseSession = useCallback(
+    async (value: string) => {
+      if (actionLock.current) return;
+      activeSession.current = value;
+      const request = ++messageRequest.current;
+      setSession(value);
+      setError("");
+      setMessages([]);
+      if (!value) {
+        setChatLoading(false);
+        return;
+      }
+      setChatLoading(true);
+      try {
+        const res = await api.getChatMessages(token(), id, value);
+        if (request === messageRequest.current) setMessages(res.messages || []);
+      } catch {
+        if (request === messageRequest.current)
+          setError(
+            "This conversation couldn’t be loaded. Use Reload to try again.",
+          );
+      } finally {
+        if (request === messageRequest.current) setChatLoading(false);
+      }
+    },
+    [id],
+  );
   const load = useCallback(async () => {
+    const request = ++messageRequest.current;
     setLoading(true);
     setError("");
     const results = await Promise.allSettled([
@@ -97,6 +126,7 @@ function StudyProject({ id }: { id: string }) {
       api.getFlashcards(token(), id),
       api.getQuiz(token(), id),
     ]);
+    if (request !== messageRequest.current) return;
     const [p, f, s, c, q] = results;
     if (p.status === "fulfilled") {
       const project = p.value.projects?.find(
@@ -106,7 +136,11 @@ function StudyProject({ id }: { id: string }) {
       if (project) setTitle(project.title);
     }
     if (f.status === "fulfilled") setFiles(f.value.files || []);
-    if (s.status === "fulfilled") setSessions(s.value.sessions || []);
+    if (s.status === "fulfilled") {
+      const savedSessions: Session[] = s.value.sessions || [];
+      setSessions(savedSessions);
+      await chooseSession(activeSession.current ?? savedSessions[0]?._id ?? "");
+    }
     if (c.status === "fulfilled") {
       setCards(c.value.flashcards || []);
       setCardIndex(0);
@@ -124,7 +158,7 @@ function StudyProject({ id }: { id: string }) {
         "Some study materials couldn’t be loaded. Try reloading your project.",
       );
     setLoading(false);
-  }, [id]);
+  }, [id, chooseSession]);
   useEffect(() => {
     void load();
     const requestTracker = messageRequest;
@@ -155,29 +189,6 @@ function StudyProject({ id }: { id: string }) {
       setBusy("");
     }
   }
-  async function chooseSession(value: string) {
-    if (busy) return;
-    const request = ++messageRequest.current;
-    setSession(value);
-    setError("");
-    setMessages([]);
-    if (!value) {
-      setChatLoading(false);
-      return;
-    }
-    setChatLoading(true);
-    try {
-      const res = await api.getChatMessages(token(), id, value);
-      if (request === messageRequest.current) setMessages(res.messages || []);
-    } catch {
-      if (request === messageRequest.current)
-        setError(
-          "This conversation couldn’t be loaded. Select it again to retry.",
-        );
-    } finally {
-      if (request === messageRequest.current) setChatLoading(false);
-    }
-  }
   const upload = () =>
     run("upload", async () => {
       if (!selected.length) return;
@@ -192,15 +203,16 @@ function StudyProject({ id }: { id: string }) {
   const send = (e: React.FormEvent) => {
     e.preventDefault();
     const text = input.trim();
-    if (!text || busy || chatLoading) return;
+    if (!text || busy || loading || chatLoading) return;
     void run("chat", async () => {
       let current = session;
       if (!current) {
-        const res = await api.createChatSession(token(), id, "New chat");
+        const res = await api.createChatSession(token(), id, text.slice(0, 80));
         current = res.session?._id;
         if (!current)
           throw new Error("Couldn’t start a conversation. Please try again.");
         setSessions((old) => [res.session, ...old]);
+        activeSession.current = current;
         setSession(current);
       }
       setInput("");
@@ -312,6 +324,16 @@ function StudyProject({ id }: { id: string }) {
   }
   const sources = (
     <div className="space-y-5">
+      {sourcesOpen && error && (
+        <p role="alert" className="notice text-sm">
+          {error}
+        </p>
+      )}
+      {sourcesOpen && notice && (
+        <p role="status" className="notice text-sm">
+          {notice}
+        </p>
+      )}
       <div className="flex justify-between items-center">
         <h2 className="font-semibold">
           Sources <span className="muted text-sm">{files.length}</span>
@@ -419,25 +441,25 @@ function StudyProject({ id }: { id: string }) {
   );
   return (
     <div className="mx-auto max-w-[1440px]">
-      <Link
-        href="/Dashboard"
-        className="inline-flex items-center gap-2 muted text-sm mb-5"
-      >
-        <ArrowLeft size={16} />
-        All projects
-      </Link>
-      <div className="flex flex-wrap justify-between items-center gap-4">
-        <div className="min-w-0">
-          <h1 className="text-2xl sm:text-3xl font-semibold break-words">
-            {title}
-          </h1>
-          <p className="muted mt-2 text-sm">
-            Understand it. Remember it. Put it into practice.
-          </p>
-        </div>
+      <div className="flex min-w-0 items-center gap-3">
+        <Link
+          href="/Dashboard"
+          aria-label="Back to all projects"
+          className="muted inline-flex h-11 shrink-0 items-center gap-2 rounded-lg px-2 text-sm hover:bg-blue-500/10 sm:h-9"
+        >
+          <ArrowLeft size={16} />
+          <span className="hidden sm:inline">All projects</span>
+        </Link>
+        <span aria-hidden="true" className="h-5 border-l" />
+        <h1
+          className="min-w-0 flex-1 truncate text-lg font-semibold sm:text-xl"
+          title={title}
+        >
+          {title}
+        </h1>
         <Button
           variant="outline"
-          className="lg:hidden"
+          className="h-11 shrink-0 px-3 text-xs lg:hidden"
           onClick={() => setSourcesOpen(true)}
         >
           <FileText size={16} />
@@ -445,7 +467,7 @@ function StudyProject({ id }: { id: string }) {
         </Button>
         <Button
           variant="outline"
-          className="hidden lg:inline-flex"
+          className="hidden h-9 shrink-0 px-3 lg:inline-flex"
           onClick={() => setDesktopSources((v) => !v)}
         >
           <FileText size={16} />
@@ -453,7 +475,7 @@ function StudyProject({ id }: { id: string }) {
         </Button>
       </div>
       <div
-        className="mt-7 flex gap-1 border-b"
+        className="mt-3 flex gap-1 border-b"
         role="tablist"
         aria-label="Study activities"
       >
@@ -482,7 +504,7 @@ function StudyProject({ id }: { id: string }) {
               }
             }}
             onClick={() => setTab(tabId)}
-            className={`flex items-center gap-2 px-4 py-4 text-sm border-b-2 ${tab === tabId ? "border-blue-500 accent font-medium" : "border-transparent muted"}`}
+            className={`flex items-center gap-2 px-4 py-3 text-sm border-b-2 ${tab === tabId ? "border-blue-500 accent font-medium" : "border-transparent muted"}`}
           >
             <Icon size={16} />
             {label}
@@ -506,7 +528,7 @@ function StudyProject({ id }: { id: string }) {
         </p>
       )}
       <div
-        className={`grid gap-6 mt-6 ${desktopSources ? "lg:grid-cols-[minmax(0,1fr)_280px]" : ""}`}
+        className={`grid gap-4 mt-4 ${desktopSources ? "lg:grid-cols-[minmax(0,1fr)_280px]" : ""}`}
       >
         <section
           role="tabpanel"
@@ -515,7 +537,7 @@ function StudyProject({ id }: { id: string }) {
           className="surface rounded-xl min-w-0 overflow-hidden"
         >
           {tab === "chat" ? (
-            <div className="flex flex-col h-[max(560px,calc(100dvh-300px))]">
+            <div className="flex flex-col h-[max(420px,calc(100dvh-216px))]">
               <div className="flex flex-wrap justify-between items-center gap-3 border-b p-4">
                 <div className="min-w-0">
                   <label htmlFor="conversation" className="sr-only">
@@ -539,7 +561,7 @@ function StudyProject({ id }: { id: string }) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  disabled={!!busy}
+                  disabled={!!busy || loading}
                   onClick={() => void chooseSession("")}
                 >
                   <Plus size={16} />
@@ -557,7 +579,7 @@ function StudyProject({ id }: { id: string }) {
                       key={i}
                       className={
                         m.role === "user"
-                          ? "ml-auto max-w-[90%] rounded-xl bg-blue-500/10 p-4"
+                          ? "ml-auto w-fit max-w-[90%] rounded-xl bg-blue-500/10 px-4 py-3"
                           : "max-w-3xl"
                       }
                     >
@@ -569,23 +591,27 @@ function StudyProject({ id }: { id: string }) {
                           {m.content}
                         </ReactMarkdown>
                       </div>
-                      {m.sources?.length ? (
+                      {m.sources?.some((_, n) =>
+                        m.content.includes(`[S${n + 1}]`),
+                      ) ? (
                         <div className="mt-4 space-y-2">
-                          {m.sources.map((s, n) => (
-                            <details
-                              key={n}
-                              className="rounded-lg border px-3 py-2 text-xs"
-                            >
-                              <summary className="cursor-pointer accent">
-                                {s.label || `Source ${n + 1}`} ·{" "}
-                                {s.metadata?.filename || "Study material"}
-                              </summary>
-                              <p className="muted mt-3 leading-6 whitespace-pre-wrap">
-                                {s.metadata?.chunk ||
-                                  "No excerpt is available for this source."}
-                              </p>
-                            </details>
-                          ))}
+                          {m.sources.map((s, n) =>
+                            m.content.includes(`[S${n + 1}]`) ? (
+                              <details
+                                key={n}
+                                className="rounded-lg border px-3 py-2 text-xs"
+                              >
+                                <summary className="cursor-pointer accent">
+                                  {s.label || `Source ${n + 1}`} ·{" "}
+                                  {s.metadata?.filename || "Study material"}
+                                </summary>
+                                <p className="muted mt-3 leading-6 whitespace-pre-wrap">
+                                  {s.metadata?.chunk ||
+                                    "No excerpt is available for this source."}
+                                </p>
+                              </details>
+                            ) : null,
+                          )}
                         </div>
                       ) : null}
                     </article>
@@ -652,7 +678,7 @@ function StudyProject({ id }: { id: string }) {
                   <Button
                     type="submit"
                     size="icon"
-                    disabled={!!busy || chatLoading || !input.trim()}
+                    disabled={!!busy || loading || chatLoading || !input.trim()}
                     aria-label="Send question"
                   >
                     <Send size={18} />
