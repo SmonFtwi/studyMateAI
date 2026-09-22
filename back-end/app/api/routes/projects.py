@@ -137,9 +137,7 @@ async def list_project_files(project_id: uuid.UUID, db: DbSession, user: Current
     documents = (
         await db.scalars(
             select(SourceDocument)
-            .where(
-                SourceDocument.project_id == project_id, SourceDocument.user_id == user.id
-            )
+            .where(SourceDocument.project_id == project_id, SourceDocument.user_id == user.id)
             .order_by(SourceDocument.created_at.desc())
         )
     ).all()
@@ -269,9 +267,7 @@ async def send_chat_message(
             .limit(10)
         )
     ).all()
-    history = [
-        {"role": item.role, "content": item.content} for item in reversed(history_rows)
-    ]
+    history = [{"role": item.role, "content": item.content} for item in reversed(history_rows)]
     db.add(
         ChatMessage(
             session_id=session_id,
@@ -287,15 +283,29 @@ async def send_chat_message(
 
     started = time.perf_counter()
     run_id = f"{session_id}:{uuid.uuid4()}"
-    result = await request.app.state.study_graph.run(
-        run_id=run_id,
-        user_id=user.id,
-        project_id=project_id,
-        session_id=session_id,
-        question=payload.message.strip(),
-        history=history,
-        explicit_approval=payload.require_approval,
-    )
+    try:
+        result = await request.app.state.study_graph.run(
+            run_id=run_id,
+            user_id=user.id,
+            project_id=project_id,
+            session_id=session_id,
+            question=payload.message.strip(),
+            history=history,
+            explicit_approval=payload.require_approval,
+        )
+    except Exception:
+        db.add(
+            ChatRun(
+                session_id=session_id,
+                project_id=project_id,
+                user_id=user.id,
+                status="failed",
+                latency_ms=(time.perf_counter() - started) * 1000,
+                trace_id=_trace_id(),
+            )
+        )
+        await db.commit()
+        raise
     elapsed_ms = (time.perf_counter() - started) * 1_000
     sources = [RetrievedSource.model_validate(item) for item in result.get("sources", [])]
     chat_run = ChatRun(

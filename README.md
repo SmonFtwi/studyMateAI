@@ -186,3 +186,61 @@ service URL. Render runs the PostgreSQL migration before starting the new Docker
 ## License
 
 MIT.
+
+## Live answer-quality evaluation
+
+The default CI suite remains offline and free. To benchmark actual OpenAI embeddings and
+answers, run the opt-in evaluator from `back-end`:
+
+```bash
+.venv/bin/python -m app.evaluation.live \
+  --dataset evaluation/cases.jsonl \
+  --output evaluation/live-report.json \
+  --limit 60 --min-pass-rate 0.8 --allow-paid-api
+```
+
+This sends the selected questions and benchmark documents to OpenAI and incurs API charges.
+Use synthetic or approved evaluation data. `--limit` caps evaluated questions (default 10);
+the complete benchmark document corpus is embedded even with a smaller question limit.
+It never inserts benchmark documents into the application's database.
+
+The report includes recall@6, mean reciprocal rank@6, per-case answers and retrieved IDs,
+behavior checks, case latency, and estimated generation/judge costs. An LLM judge scores
+faithfulness, correctness, relevance, and citation support from 0 to 1 with a written reason.
+Answer cases require every score to reach 0.8; API errors fail their cases. The command exits
+nonzero when the overall pass rate misses `--min-pass-rate`.
+
+The judge uses the same configured model in a separate call, which can introduce correlated
+bias. Review a sample of its judgments manually; these scores are not proof of correctness.
+This is an isolated cosine-similarity benchmark using the production embedding and answer
+helpers, not an end-to-end test of ingestion, pgvector SQL, authentication, or approvals.
+Reported latency includes judging and excludes initial corpus embedding. Cost excludes
+embeddings and usage from failed calls. Keep model prices in backend settings current.
+
+## Viewing application performance
+
+Open **Analytics** from the dashboard sidebar (`/Dashboard/Dash`). Students see only their
+own recorded chat runs; admins see workspace-wide runs. Select 24 hours, 7 days, or 30 days
+and click **Refresh** for current data. The page shows p95 response time, recorded token usage,
+estimated generation cost, retrieval/citation-check rates, outcomes, and the latest 20 runs.
+Greeting and abstention runs count in the displayed rate denominators. Citation checks do
+not measure factual correctness. No runs means no observations, not a healthy service signal.
+Failed graph requests are now recorded as failed runs; older failures are not backfilled.
+
+For deeper troubleshooting:
+
+- **Container logs:** `docker compose logs --tail=100 backend` (use
+  `docker compose -f docker-compose.supabase.yml logs --tail=100 backend` for Supabase mode).
+- **Health:** `/health/live` checks liveness; `/health/ready` checks readiness.
+- **Prometheus:** scrape `/metrics` using `METRICS_BEARER_TOKEN` when configured.
+  Example PromQL: `histogram_quantile(0.95, sum by (le) (rate(studymate_http_request_duration_seconds_bucket[5m])))`
+  for HTTP p95, and `sum(rate(studymate_http_requests_total{status=~"5.."}[5m]))`
+  for recorded HTTP server errors per second. Use Grafana with your Prometheus data source
+  to graph these series; neither service is installed by this change.
+- **Traces:** set `OTEL_EXPORTER_OTLP_ENDPOINT` to your collector's OTLP HTTP trace endpoint
+  (typically ending in `/v1/traces`) and restart the backend. HTTP traces use service name
+  `studymate-api`; admins can copy a recorded trace ID from Analytics into their trace viewer.
+  A recorded trace ID alone does not mean a collector received the trace.
+
+Live evaluation JSON reports are local artifacts, separate from production Analytics.
+Prometheus counters reset when the process restarts; recorded chat metrics persist in PostgreSQL.

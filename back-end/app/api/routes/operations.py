@@ -24,22 +24,63 @@ async def prometheus_metrics(
 
 
 @router.get("/ops/metrics/summary")
-async def metric_summary(
-    db: DbSession, _admin: AdminUser, hours: int = 24
-) -> dict:
+async def metric_summary(db: DbSession, _admin: AdminUser, hours: int = 24) -> dict:
+    return await _chat_metrics(db, hours=hours)
+
+
+@router.get("/activity/summary")
+async def personal_summary(db: DbSession, user: CurrentUser, hours: int = 24) -> dict:
+    return await _chat_metrics(db, hours=hours, user_id=user.id)
+
+
+async def _chat_metrics(db: DbSession, *, hours: int, user_id: uuid.UUID | None = None) -> dict:
     safe_hours = max(1, min(hours, 24 * 30))
     since = datetime.now(UTC) - timedelta(hours=safe_hours)
+    filters = [ChatRun.created_at >= since]
+    if user_id is not None:
+        filters.append(ChatRun.user_id == user_id)
     statement = select(
         func.count(ChatRun.id),
         func.coalesce(func.percentile_cont(0.95).within_group(ChatRun.latency_ms), 0.0),
         func.coalesce(func.avg(ChatRun.estimated_cost_usd), 0.0),
         func.coalesce(func.avg(case((ChatRun.retrieval_hit.is_(True), 1.0), else_=0.0)), 0.0),
         func.coalesce(func.avg(case((ChatRun.grounded.is_(True), 1.0), else_=0.0)), 0.0),
-    ).where(ChatRun.created_at >= since)
-    count, p95, avg_cost, retrieval_hit_rate, grounded_rate = (
-        await db.execute(statement)
+    ).where(*filters)
+    count, p95, avg_cost, retrieval_hit_rate, grounded_rate = (await db.execute(statement)).one()
+    statuses = (
+        await db.execute(
+            select(ChatRun.status, func.count(ChatRun.id)).where(*filters).group_by(ChatRun.status)
+        )
+    ).all()
+    recent = (
+        await db.scalars(
+            select(ChatRun).where(*filters).order_by(ChatRun.created_at.desc()).limit(20)
+        )
+    ).all()
+    totals = (
+        await db.execute(
+            select(
+                func.coalesce(func.sum(ChatRun.estimated_cost_usd), 0),
+                func.coalesce(func.sum(ChatRun.prompt_tokens + ChatRun.completion_tokens), 0),
+            ).where(*filters)
+        )
     ).one()
     return {
+        "scope": "personal" if user_id is not None else "workspace",
+        "status_counts": dict(statuses),
+        "total_estimated_cost_usd": float(totals[0]),
+        "total_tokens": int(totals[1]),
+        "recent_runs": [
+            {
+                "id": str(run.id),
+                "status": run.status,
+                "created_at": run.created_at.isoformat(),
+                "latency_ms": run.latency_ms,
+                "estimated_cost_usd": run.estimated_cost_usd,
+                "trace_id": run.trace_id,
+            }
+            for run in recent
+        ],
         "window_hours": safe_hours,
         "requests": count,
         "p95_latency_ms": round(float(p95), 2),
@@ -52,9 +93,7 @@ async def metric_summary(
 @router.get("/integrations/document-processing/{job_id}")
 async def document_job(job_id: uuid.UUID, db: DbSession, user: CurrentUser) -> dict:
     job = await db.scalar(
-        select(IntegrationJob).where(
-            IntegrationJob.id == job_id, IntegrationJob.user_id == user.id
-        )
+        select(IntegrationJob).where(IntegrationJob.id == job_id, IntegrationJob.user_id == user.id)
     )
     if job is None:
         raise NotFoundError("Document processing job not found")
@@ -96,4 +135,3 @@ async def audit_logs(db: DbSession, user: CurrentUser, limit: int = 100) -> dict
             for entry in entries
         ]
     }
-
