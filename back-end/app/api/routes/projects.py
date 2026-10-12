@@ -1,7 +1,10 @@
+import asyncio
+import json
 import time
 import uuid
 
 from fastapi import APIRouter, Request, Response, UploadFile, status
+from fastapi.responses import StreamingResponse
 from opentelemetry import trace
 from sqlalchemy import delete, func, select
 
@@ -19,11 +22,13 @@ from app.db.models import (
     SourceDocument,
     utcnow,
 )
+from app.db.session import SessionFactory
 from app.schemas import ChatRequest, ChatSessionCreateRequest, ProjectCreateRequest, RetrievedSource
 from app.services.audit import record_audit
 from app.services.documents import DocumentProcessingService
 from app.services.llm import OpenAIService
 from app.services.retrieval import RetrievalService, public_sources
+from app.services.streaming import chat_events
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -246,6 +251,71 @@ async def list_chat_messages(
     return {"messages": [_message_json(message) for message in messages]}
 
 
+@router.post("/{project_id}/chat/{session_id}/messages/stream")
+async def stream_chat_message(
+    project_id: uuid.UUID,
+    session_id: uuid.UUID,
+    payload: ChatRequest,
+    request: Request,
+    db: DbSession,
+    user: CurrentUser,
+):
+    await _owned_session(db, session_id=session_id, project_id=project_id, user_id=user.id)
+
+    async def events():
+        queue = asyncio.Queue(maxsize=32)
+
+        async def emit(kind, data):
+            await queue.put((kind, data))
+
+        async def produce():
+            token = chat_events.set(emit)
+            try:
+                async with SessionFactory() as stream_db:
+                    result = await send_chat_message(
+                        project_id, session_id, payload, request, Response(), stream_db, user
+                    )
+                await emit(
+                    "approval-required" if result.get("approval_id") else "completion", result
+                )
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                await emit(
+                    "error",
+                    {
+                        "message": (
+                            "The answer was interrupted. "
+                            "Reload the conversation to check saved messages."
+                        )
+                    },
+                )
+            finally:
+                chat_events.reset(token)
+
+        task = asyncio.create_task(produce())
+        try:
+            while True:
+                try:
+                    kind, data = await asyncio.wait_for(queue.get(), timeout=15)
+                except TimeoutError:
+                    yield ": keep-alive\n\n"
+                    continue
+                yield f"event: {kind}\ndata: {json.dumps(data)}\n\n"
+                if kind in {"completion", "approval-required", "error"}:
+                    break
+        finally:
+            if not task.done():
+                task.cancel()
+            await asyncio.shield(asyncio.gather(task, return_exceptions=True))
+
+    return StreamingResponse(
+        events(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
 @router.post("/{project_id}/chat/{session_id}/messages")
 async def send_chat_message(
     project_id: uuid.UUID,
@@ -293,13 +363,13 @@ async def send_chat_message(
             history=history,
             explicit_approval=payload.require_approval,
         )
-    except Exception:
+    except (Exception, asyncio.CancelledError) as exc:
         db.add(
             ChatRun(
                 session_id=session_id,
                 project_id=project_id,
                 user_id=user.id,
-                status="failed",
+                status="interrupted" if isinstance(exc, asyncio.CancelledError) else "failed",
                 latency_ms=(time.perf_counter() - started) * 1000,
                 trace_id=_trace_id(),
             )

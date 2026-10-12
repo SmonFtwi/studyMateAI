@@ -302,3 +302,33 @@ export const getQuiz = async (token: string, projectId: string) => {
   }
   return response.json();
 };
+
+export async function streamChatMessage(
+  token: string,
+  projectId: string,
+  sessionId: string,
+  message: string,
+  onEvent: (event: import("../chat-stream").ChatEvent) => void,
+  signal: AbortSignal,
+) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_backend_url}/projects/${projectId}/chat/${sessionId}/messages/stream`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ message }),
+      signal,
+    },
+  );
+  if (!response.ok)
+    throw new Error(
+      await responseMessage(response, "Couldn’t send your message."),
+    );
+  if (!response.body)
+    throw new Error("Streaming is unavailable. Reload the conversation.");
+  const { readChatStream } = await import("../chat-stream");
+  await readChatStream(response.body, onEvent);
+}

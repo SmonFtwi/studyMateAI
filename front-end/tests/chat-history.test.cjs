@@ -123,12 +123,12 @@ test("reopening a project restores saved messages; New chat clears the view", as
     app.find((n) => n.props?.id === "conversation").props.value,
     "latest",
   );
-  assert.ok(app.find((n) => n.props?.children === "Saved answer: latest"));
+  assert.ok(app.find((n) => n.props?.content === "Saved answer: latest"));
   await app
     .find((n) => n.props?.id === "conversation")
     .props.onChange({ target: { value: "older" } });
   await app.settle();
-  assert.ok(app.find((n) => n.props?.children === "Saved answer: older"));
+  assert.ok(app.find((n) => n.props?.content === "Saved answer: older"));
   const newChat = app.find(
     (n) =>
       Array.isArray(n.props?.children) && n.props.children.includes("New chat"),
@@ -136,7 +136,7 @@ test("reopening a project restores saved messages; New chat clears the view", as
   await newChat.props.onClick();
   assert.equal(app.find((n) => n.props?.id === "conversation").props.value, "");
   assert.equal(
-    app.find((n) => n.props?.children === "Saved answer: older"),
+    app.find((n) => n.props?.content === "Saved answer: older"),
     undefined,
   );
 });
@@ -162,21 +162,28 @@ test("failed saved history can be retried with Reload", async () => {
   );
   assert.ok(reload);
   await reload.props.onClick();
-  assert.ok(app.find((n) => n.props?.children === "Recovered answer"));
+  assert.ok(app.find((n) => n.props?.content === "Recovered answer"));
 });
 
-test("uncited retrieved excerpts are hidden, while actual citations remain visible", async () => {
-  const sources = [1, 2].map(n => ({ label: `Source ${n}`, metadata: { filename: 'Notes.pdf', chunk: `Excerpt ${n}` } }));
-  const app = mount(async () => ({ messages: [
-    { role: 'assistant', content: "I don't have enough information in the uploaded sources.", sources },
-  ] }));
-  app.render(); await app.settle();
-  assert.equal(app.find(n => n.type === 'details'), undefined);
-  const cited = mount(async () => ({ messages: [
-    { role: 'assistant', content: 'A supported answer [S2]', sources },
-  ] }));
-  cited.render(); await cited.settle();
-  assert.ok(cited.find(n => n.type === 'details'));
-  assert.ok(cited.find(n => n.props?.children === 'Excerpt 2'));
-  assert.equal(cited.find(n => n.props?.children === 'Excerpt 1'), undefined);
+test("saved source metadata reaches the inline renderer without separate source cards", async () => {
+  const sources = [
+    {
+      id: "S2",
+      metadata: { filename: "Notes.pdf", chunk: "Original passage" },
+    },
+  ];
+  const app = mount(async () => ({
+    messages: [{ role: "assistant", content: "Supported [S2]", sources }],
+  }));
+  app.render();
+  await app.settle();
+  assert.equal(
+    app.find((n) => n.type === "details"),
+    undefined,
+  );
+  assert.equal(
+    app.find((n) => n.props?.content === "Supported [S2]").props.sources[0]
+      .metadata.chunk,
+    "Original passage",
+  );
 });

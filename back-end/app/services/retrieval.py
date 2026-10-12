@@ -75,6 +75,7 @@ def format_context(sources: list[RetrievedSource]) -> str:
 def public_sources(sources: list[RetrievedSource]) -> list[dict]:
     return [
         {
+            "id": f"S{index}",
             "label": f"Source {index}",
             "score": round(source.score, 4),
             "metadata": {
@@ -82,6 +83,7 @@ def public_sources(sources: list[RetrievedSource]) -> list[dict]:
                 "chunk_id": source.chunk_id,
                 "document_id": source.document_id,
                 "filename": source.filename,
+                "chunk": source.content,
             },
         }
         for index, source in enumerate(sources, start=1)

@@ -12,7 +12,8 @@ from app.db.session import SessionFactory
 from app.schemas import RetrievedSource
 from app.services.conversation import conversational_reply
 from app.services.llm import OpenAIService
-from app.services.retrieval import RetrievalService, format_context
+from app.services.retrieval import RetrievalService, format_context, public_sources
+from app.services.streaming import chat_events
 
 
 class RAGState(TypedDict, total=False):
@@ -256,11 +257,21 @@ class StudyGraph:
 
     async def _generate(self, state: RAGState) -> dict[str, Any]:
         sources = [RetrievedSource.model_validate(source) for source in state["sources"]]
-        result = await self.llm.answer(
+        sink = chat_events.get()
+        arguments = dict(
             question=state["question"],
             context=format_context(sources),
             history=state.get("history", []),
         )
+        if sink is not None:
+            await sink("sources", {"sources": public_sources(sources)})
+
+            async def delta(text: str) -> None:
+                await sink("delta", {"text": text})
+
+            result = await self.llm.stream_answer(**arguments, on_delta=delta)
+        else:
+            result = await self.llm.answer(**arguments)
         return {
             "answer": result.text,
             "prompt_tokens": result.prompt_tokens,

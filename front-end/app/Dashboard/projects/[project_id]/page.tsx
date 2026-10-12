@@ -1,8 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { ChatAnswer } from "@/components/chat-answer";
 import {
   ArrowLeft,
   BookOpen,
@@ -25,6 +24,7 @@ import {
 } from "@/components/ui/sheet";
 import * as api from "@/lib/apicall/project";
 interface Source {
+  id?: string;
   label?: string;
   metadata?: { filename?: string; chunk?: string };
 }
@@ -32,6 +32,8 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   sources?: Source[];
+  interrupted?: boolean;
+  streaming?: boolean;
 }
 interface Session {
   _id: string;
@@ -86,6 +88,7 @@ function StudyProject({ id }: { id: string }) {
   const [dragging, setDragging] = useState(false);
   const bottom = useRef<HTMLDivElement>(null);
   const messageRequest = useRef(0);
+  const streamController = useRef<AbortController | null>(null);
   const actionLock = useRef(false);
   const activeSession = useRef<string | null>(null);
   const chooseSession = useCallback(
@@ -164,6 +167,7 @@ function StudyProject({ id }: { id: string }) {
     const requestTracker = messageRequest;
     return () => {
       requestTracker.current++;
+      streamController.current?.abort();
     };
   }, [load]);
   useEffect(() => {
@@ -217,29 +221,57 @@ function StudyProject({ id }: { id: string }) {
       }
       setInput("");
       setMessages((old) => [...old, { role: "user", content: text }]);
+      const controller = new AbortController();
+      streamController.current = controller;
+      setMessages((old) => [
+        ...old,
+        { role: "assistant", content: "", streaming: true },
+      ]);
+      const updateAnswer = (update: (message: Message) => Message) =>
+        setMessages((old) =>
+          old.map((message, index) =>
+            index === old.length - 1 ? update(message) : message,
+          ),
+        );
       try {
-        const res = await api.sendChatMessage(token(), id, current, text);
-        if (res.message?.content)
-          setMessages((old) => [
-            ...old,
-            {
-              role: "assistant",
-              content: res.message.content,
-              sources: res.sources || res.message.sources,
-            },
-          ]);
-        else if (res.approval_id)
-          setNotice(
-            "Your question is waiting for review. You can return to this conversation later.",
-          );
-        else
-          throw new Error(
-            "No answer was returned. Please try your question again.",
-          );
+        await api.streamChatMessage(
+          token(),
+          id,
+          current,
+          text,
+          (event) => {
+            if (event.type === "sources")
+              updateAnswer((m) => ({ ...m, sources: event.data.sources }));
+            if (event.type === "delta")
+              updateAnswer((m) => ({
+                ...m,
+                content: m.content + event.data.text,
+              }));
+            if (
+              event.type === "completion" ||
+              event.type === "approval-required"
+            ) {
+              updateAnswer((m) => ({
+                ...m,
+                content: event.data.message.content,
+                sources: event.data.sources || [],
+                streaming: false,
+              }));
+              if (event.type === "approval-required")
+                setNotice("Your question is waiting for review.");
+            }
+            if (event.type === "error") throw new Error(event.data.message);
+          },
+          controller.signal,
+        );
       } catch (e) {
-        setInput(text);
-        setMessages((old) => old.slice(0, -1));
-        throw e;
+        if (!controller.signal.aborted) {
+          updateAnswer((m) => ({ ...m, streaming: false, interrupted: true }));
+          throw e;
+        }
+      } finally {
+        if (streamController.current === controller)
+          streamController.current = null;
       }
     });
   };
@@ -587,33 +619,24 @@ function StudyProject({ id }: { id: string }) {
                         {m.role === "user" ? "You" : "StudyMate"}
                       </p>
                       <div className="study-prose">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {m.content}
-                        </ReactMarkdown>
+                        <ChatAnswer
+                          content={m.content}
+                          sources={m.role === "assistant" ? m.sources : []}
+                        />
                       </div>
-                      {m.sources?.some((_, n) =>
-                        m.content.includes(`[S${n + 1}]`),
-                      ) ? (
-                        <div className="mt-4 space-y-2">
-                          {m.sources.map((s, n) =>
-                            m.content.includes(`[S${n + 1}]`) ? (
-                              <details
-                                key={n}
-                                className="rounded-lg border px-3 py-2 text-xs"
-                              >
-                                <summary className="cursor-pointer accent">
-                                  {s.label || `Source ${n + 1}`} ·{" "}
-                                  {s.metadata?.filename || "Study material"}
-                                </summary>
-                                <p className="muted mt-3 leading-6 whitespace-pre-wrap">
-                                  {s.metadata?.chunk ||
-                                    "No excerpt is available for this source."}
-                                </p>
-                              </details>
-                            ) : null,
-                          )}
-                        </div>
-                      ) : null}
+                      {m.streaming && (
+                        <p role="status" className="muted text-xs mt-2">
+                          Generating answer…
+                        </p>
+                      )}
+                      {m.interrupted && (
+                        <p className="text-sm mt-2" role="status">
+                          Answer interrupted.{" "}
+                          <button className="accent underline" onClick={load}>
+                            Reload conversation
+                          </button>
+                        </p>
+                      )}
                     </article>
                   ))
                 ) : (
