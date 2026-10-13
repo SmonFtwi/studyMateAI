@@ -5,14 +5,16 @@ import asyncpg
 
 from app.core.config import get_settings
 
-SQL_PATH = Path(__file__).resolve().parents[2] / "migrations" / "001_initial.sql"
+MIGRATIONS = Path(__file__).resolve().parents[2] / "migrations"
 
 
 async def migrate() -> None:
     settings = get_settings()
     connection = await asyncpg.connect(settings.checkpoint_database_url)
     try:
-        await connection.execute(SQL_PATH.read_text(encoding="utf-8"))
+        async with connection.transaction():
+            for path in sorted(MIGRATIONS.glob("*.sql")):
+                await connection.execute(path.read_text(encoding="utf-8"))
     finally:
         await connection.close()
 

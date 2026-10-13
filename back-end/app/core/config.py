@@ -42,6 +42,8 @@ class Settings(BaseSettings):
     llm_input_cost_per_million_usd: float = 0.05
     llm_output_cost_per_million_usd: float = 0.40
 
+    report_context_chars: int = Field(default=60_000, ge=10_000, le=120_000)
+
     retrieval_top_k: int = 6
     retrieval_min_similarity: float = 0.45
     chunk_size_chars: int = 1400

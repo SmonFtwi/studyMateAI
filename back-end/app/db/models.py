@@ -247,3 +247,33 @@ class ChatRun(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow, nullable=False, index=True
     )
+
+
+class Report(Base):
+    __tablename__ = "reports"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    project_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), index=True
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), index=True)
+    title: Mapped[str] = mapped_column(String(240))
+    content: Mapped[str] = mapped_column(Text)
+    topic: Mapped[str] = mapped_column(Text, default="")
+    selected_source_ids: Mapped[list] = mapped_column(JSONB)
+    sources: Mapped[list] = mapped_column(JSONB)
+    coverage: Mapped[list] = mapped_column(JSONB)
+    usage: Mapped[dict] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ReportRun(Base):
+    __tablename__ = "report_runs"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    project_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), index=True
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), index=True)
+    status: Mapped[str] = mapped_column(String(32))
+    latency_ms: Mapped[float] = mapped_column(Float)
+    usage: Mapped[dict] = mapped_column(JSONB, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

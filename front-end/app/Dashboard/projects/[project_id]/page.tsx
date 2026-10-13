@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { Reports } from "@/components/reports";
 import { ChatAnswer } from "@/components/chat-answer";
 import {
   ArrowLeft,
@@ -40,6 +41,7 @@ interface Session {
   title: string;
 }
 interface StudyFile {
+  status?: string;
   file_id: string;
   filename: string;
 }
@@ -52,7 +54,7 @@ interface Question {
   options: string[];
   correctAnswer: string;
 }
-type Tab = "chat" | "flashcards" | "quiz";
+type Tab = "chat" | "flashcards" | "quiz" | "reports";
 const token = () => localStorage.getItem("token") || "";
 export default function ProjectPage({
   params,
@@ -507,7 +509,7 @@ function StudyProject({ id }: { id: string }) {
         </Button>
       </div>
       <div
-        className="mt-3 flex gap-1 border-b"
+        className="mt-3 flex gap-1 border-b overflow-x-auto"
         role="tablist"
         aria-label="Study activities"
       >
@@ -516,6 +518,7 @@ function StudyProject({ id }: { id: string }) {
             { id: "chat", label: "Chat", icon: MessageSquare },
             { id: "flashcards", label: "Flashcards", icon: Layers },
             { id: "quiz", label: "Quiz", icon: BookOpen },
+            { id: "reports", label: "Reports", icon: FileText },
           ] as const
         ).map(({ id: tabId, label, icon: Icon }, index) => (
           <button
@@ -528,15 +531,15 @@ function StudyProject({ id }: { id: string }) {
             onKeyDown={(e) => {
               if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
                 e.preventDefault();
-                const next = (["chat", "flashcards", "quiz"] as Tab[])[
-                  (index + (e.key === "ArrowRight" ? 1 : 2)) % 3
-                ];
+                const next = (
+                  ["chat", "flashcards", "quiz", "reports"] as Tab[]
+                )[(index + (e.key === "ArrowRight" ? 1 : 3)) % 4];
                 setTab(next);
                 document.getElementById(`tab-${next}`)?.focus();
               }
             }}
             onClick={() => setTab(tabId)}
-            className={`flex items-center gap-2 px-4 py-3 text-sm border-b-2 ${tab === tabId ? "border-blue-500 accent font-medium" : "border-transparent muted"}`}
+            className={`flex shrink-0 items-center gap-2 px-3 sm:px-4 py-3 text-sm border-b-2 ${tab === tabId ? "border-blue-500 accent font-medium" : "border-transparent muted"}`}
           >
             <Icon size={16} />
             {label}
@@ -568,7 +571,10 @@ function StudyProject({ id }: { id: string }) {
           aria-labelledby={`tab-${tab}`}
           className="surface rounded-xl min-w-0 overflow-hidden"
         >
-          {tab === "chat" ? (
+          <div hidden={tab !== "reports"}>
+            <Reports projectId={id} files={files} />
+          </div>
+          {tab === "reports" ? null : tab === "chat" ? (
             <div className="flex flex-col h-[max(420px,calc(100dvh-216px))]">
               <div className="flex flex-wrap justify-between items-center gap-3 border-b p-4">
                 <div className="min-w-0">

@@ -96,3 +96,18 @@ test("citation transform excludes code and existing links and preserves incomple
   assert.equal(tree.children[2].value, "[S2]");
   assert.equal(tree.children[3].children[0].type, "text");
 });
+
+test("report export includes only cited source snapshots", () => {
+  const { reportMarkdown } = load("report-export.ts");
+  const result = reportMarkdown("# Title\nClaim [S2]", [
+    { id: "S1", metadata: { filename: "unused.pdf", chunk: "Unused" } },
+    {
+      id: "S2",
+      metadata: { filename: "used.pdf", chunk: "Original\npassage" },
+    },
+  ]);
+  assert.ok(result.includes("Claim [2]"));
+  assert.ok(result.includes("[2] used.pdf"));
+  assert.ok(result.includes("> Original\n> passage"));
+  assert.ok(!result.includes("unused.pdf"));
+});

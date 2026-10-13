@@ -8,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.routes import approvals, auth, health, operations, projects
+from app.api.routes import approvals, auth, health, operations, projects, reports
 from app.core.config import get_settings
 from app.core.errors import StudyMateError
 from app.core.logging import configure_logging
@@ -80,6 +80,7 @@ def create_app() -> FastAPI:
     app.include_router(health.router)
     app.include_router(auth.router)
     app.include_router(projects.router)
+    app.include_router(reports.router)
     app.include_router(approvals.router)
     app.include_router(operations.router)
     configure_tracing(app, settings)
@@ -87,4 +88,3 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
-

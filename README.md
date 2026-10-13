@@ -244,3 +244,39 @@ For deeper troubleshooting:
 
 Live evaluation JSON reports are local artifacts, separate from production Analytics.
 Prometheus counters reset when the process restarts; recorded chat metrics persist in PostgreSQL.
+
+## Blog reports from project sources
+
+Open a project’s **Reports** tab, choose up to 20 completed sources, optionally enter a topic,
+and select **Generate report**. The English educational article streams as a draft and is saved
+only after title/citation validation succeeds. Tab switching preserves generation. Saved versions
+can be reopened, copied, downloaded as Markdown with source references, or deleted after confirmation.
+Reports preserve source excerpts so their citations remain readable after source deletion.
+
+Report context is distributed across every selected document, with a default total budget of
+60,000 characters (`REPORT_CONTEXT_CHARS`). Topic-based selection ranks chunks within each document;
+overviews sample across each document. The UI identifies partial document coverage. Citation checks
+validate source IDs, not factual accuracy. High-stakes topics use the existing chat review workflow.
+
+Apply migrations before running the new backend:
+
+```bash
+docker compose run --rm backend python -m app.db.migrate
+docker compose up -d backend
+```
+
+For Supabase, use `docker compose -f docker-compose.supabase.yml --env-file back-end/.env`
+in place of `docker compose`. The migration runner applies ordered, idempotent SQL files in a
+transaction, including `002_reports.sql`. Reports and separate `report_runs` records are owner scoped
+and removed with their project. Generation token/cost counters use operation `report_generation`;
+report runs do not inflate chat Analytics. Failed calls can have unavailable token/cost usage.
+
+The default Compose file loads `OPENAI_API_KEY` from your shell or the repository-root
+`.env`; it does not automatically read `back-end/.env`. For persistent local configuration,
+set `OPENAI_API_KEY` in the root `.env` (ignored by Git), then recreate the backend:
+
+```bash
+docker compose up -d --build backend
+```
+
+Never commit `.env` files. A missing backend key produces a configuration error when generating reports.

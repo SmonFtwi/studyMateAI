@@ -22,7 +22,11 @@ class OpenAIService:
 
     def _require_client(self) -> AsyncOpenAI:
         if self.client is None:
-            raise ExternalServiceError("OPENAI_API_KEY is not configured")
+            raise ExternalServiceError(
+                "AI generation is unavailable because OPENAI_API_KEY is not configured on the "
+                "backend. Configure the key and restart the backend, then try again.",
+                code="llm_not_configured",
+            )
         return self.client
 
     async def close(self) -> None:
@@ -105,12 +109,27 @@ QUESTION:
         history: list[dict[str, str]],
         on_delta: Callable[[str], Awaitable[None]],
     ) -> LLMResult:
+        return await self.stream_text(
+            self.answer_prompt(question=question, context=context, history=history),
+            on_delta=on_delta,
+            operation="grounded_answer",
+            max_output_tokens=2048,
+        )
+
+    async def stream_text(
+        self,
+        prompt: str,
+        *,
+        on_delta: Callable[[str], Awaitable[None]],
+        operation: str,
+        max_output_tokens: int = 8192,
+    ) -> LLMResult:
         client = self._require_client()
         async with client.responses.stream(
             model=self.settings.openai_chat_model,
-            input=self.answer_prompt(question=question, context=context, history=history),
+            input=prompt,
             reasoning={"effort": self.settings.openai_reasoning_effort},
-            max_output_tokens=2048,
+            max_output_tokens=max_output_tokens,
             store=False,
         ) as stream:
             async for event in stream:
@@ -124,7 +143,7 @@ QUESTION:
         result = self._usage_result(response.output_text or "", response.usage)
         observe_llm_usage(
             model=self.settings.openai_chat_model,
-            operation="grounded_answer",
+            operation=operation,
             prompt_tokens=result.prompt_tokens,
             output_tokens=result.output_tokens,
             cost_usd=result.estimated_cost_usd,

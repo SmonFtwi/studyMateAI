@@ -12,9 +12,9 @@ export type ChatEvent =
     }
   | { type: "error"; data: { message: string } };
 
-export async function readChatStream(
+export async function readChatStream<T = ChatEvent>(
   body: ReadableStream<Uint8Array>,
-  onEvent: (event: ChatEvent) => void,
+  onEvent: (event: T) => void,
 ) {
   const reader = body.getReader();
   const decoder = new TextDecoder();
@@ -39,7 +39,7 @@ export async function readChatStream(
           .map((line) => line.slice(5).trimStart())
           .join("\n");
         if (!type || !data) continue;
-        onEvent({ type, data: JSON.parse(data) } as ChatEvent);
+        onEvent({ type, data: JSON.parse(data) } as T);
         if (["completion", "approval-required", "error"].includes(type)) {
           terminal = true;
           break;
